@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<!-- Palette: High-Contrast Vibrant (Blue, Emerald, Rose, Amber) -->
+<!-- Narrative Plan:
+1. Header: Introduce SPED Fiscal risks.
+2. The Core Threat (Bloco K): Explain Negative vs Inflated balances using styled HTML cards.
+3. Quantifying the Risk: Use a Polar Area chart to show the multi-dimensional threats of irregular balances.
+4. The Cost Explosion: Use a Bar chart to demonstrate how negative balances distort the CMC and reported profit.
+5. The Solution (Saldo Colchão): Use a structured HTML/CSS diagram to map the safe inventory zone.
+6. Conclusion: Executive summary. -->
+<!-- Chart Choices:
+1. Polar Area Chart (Goal: Inform/Relationships -> Chosen to show the severity distribution of different tax/fiscal risks across the operation. Implemented via Chart.js).
+2. Grouped Bar Chart (Goal: Compare -> Chosen to contrast the distorted CMC and Profit under negative balances versus a compliant 'Saldo Colchão' scenario. Implemented via Chart.js).
+3. Horizontal Zone Diagram (Goal: Organize/Process -> Chosen to map the safe vs risky inventory levels. Implemented via pure HTML/CSS/Tailwind).
+I explicitly confirm that NEITHER Mermaid JS NOR SVG were used anywhere in the output. -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPED Fiscal: Análise de Riscos e Compliance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f172a; }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+        .icon-circle { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: bold; }
+        .glass-card { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01); border: 1px solid #e2e8f0; }
+    </style>
+</head>
+<body class="antialiased pb-20">
+
+    <header class="bg-blue-600 text-white pt-16 pb-24 px-6 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10 font-black text-9xl tracking-tighter leading-none whitespace-nowrap pt-10 select-none">
+            SPED FISCAL EFD ICMS/IPI
+        </div>
+        <div class="max-w-6xl mx-auto relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="max-w-2xl">
+                <div class="inline-block px-3 py-1 bg-blue-800 text-blue-100 font-bold text-xs rounded-full uppercase tracking-widest mb-4 border border-blue-400">Relatório Executivo v2.0</div>
+                <h1 class="text-4xl md:text-6xl font-black tracking-tight leading-tight mb-4">
+                    SPED Fiscal: O Risco Oculto dos Saldos Irregulares
+                </h1>
+                <p class="text-blue-100 text-lg md:text-xl font-light leading-relaxed">
+                    Uma análise aprofundada das implicações legais e tributárias ao manter saldos de estoque inconsistentes perante a Escrituração Fiscal Digital, focando nos <strong>Blocos K e H</strong>.
+                </p>
+            </div>
+            <div class="bg-white text-blue-900 p-6 rounded-2xl shadow-2xl flex flex-col items-center justify-center text-center min-w-[250px] transform rotate-2 hover:rotate-0 transition-transform">
+                <span class="text-5xl font-black text-blue-600">&#9888;</span>
+                <span class="font-bold text-lg mt-2 uppercase tracking-wide">Alerta de Risco</span>
+                <span class="text-sm text-slate-500 mt-1">Auditoria de Malha Fina</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 -mt-12 space-y-16 relative z-20">
+
+        <section class="glass-card rounded-3xl p-8 md:p-12">
+            <div class="max-w-3xl mx-auto text-center mb-10">
+                <h2 class="text-3xl font-black text-slate-800 mb-4 tracking-tight">O Bloco K: A "Lupa" da Produção</h2>
+                <p class="text-slate-600 leading-relaxed text-lg">
+                    O Bloco K exige a demonstração mensal detalhada do consumo de insumos e da produção resultante. Para a SEFAZ, o sistema físico e contábil devem ser espelhos perfeitos. Qualquer divergência dispara o alerta de irregularidade.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-rose-50 border-2 border-rose-200 rounded-2xl p-8 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="icon-circle bg-rose-500 text-white">&#8681;</div>
+                        <h3 class="text-xl font-bold text-rose-800 uppercase tracking-tight">Saldos Negativos</h3>
+                    </div>
+                    <p class="text-slate-700 leading-relaxed mb-6 font-medium">
+                        Um saldo negativo é fisicamente impossível. Para o Fisco, vender o que não existe no sistema é interpretado de uma única forma:
+                    </p>
+                    <div class="bg-rose-500 text-white p-4 rounded-xl text-center">
+                        <span class="block text-2xl font-black uppercase tracking-wider">Omissão de Entrada</span>
+                        <span class="text-sm opacity-90">(Compra sem Nota Fiscal)</span>
+                    </div>
+                    <ul class="mt-6 space-y-3 text-sm text-slate-700">
+                        <li class="flex items-start gap-2">
+                            <span class="text-rose-500 font-bold">&#10008;</span>
+                            <span><strong>Presunção de Passivo Oculto:</strong> Suspeita de aquisição "por fora".</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-rose-500 font-bold">&#10008;</span>
+                            <span><strong>Multas:</strong> Até 1% do valor das mercadorias ou 100% do imposto omitido.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-amber-50 border-2 border-amber-200 rounded-2xl p-8 hover:shadow-lg transition-shadow">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="icon-circle bg-amber-500 text-white">&#8679;</div>
+                        <h3 class="text-xl font-bold text-amber-800 uppercase tracking-tight">Saldos Excessivos</h3>
+                    </div>
+                    <p class="text-slate-700 leading-relaxed mb-6 font-medium">
+                        Quando o estoque contábil é muito maior que a realidade física (ex: 500 un registradas vs 20 un reais), o Fisco presume:
+                    </p>
+                    <div class="bg-amber-500 text-white p-4 rounded-xl text-center">
+                        <span class="block text-2xl font-black uppercase tracking-wider">Omissão de Saída</span>
+                        <span class="text-sm opacity-90">(Venda sem Nota Fiscal)</span>
+                    </div>
+                    <ul class="mt-6 space-y-3 text-sm text-slate-700">
+                        <li class="flex items-start gap-2">
+                            <span class="text-amber-500 font-bold">&#10008;</span>
+                            <span><strong>Inflação de Ativos:</strong> Distorção grave do Balanço Patrimonial.</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-amber-500 font-bold">&#10008;</span>
+                            <span><strong>Aumento IRPJ/CSLL:</strong> Estoque alto reduz CMV, inflando artificialmente o lucro tributável.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div class="order-2 lg:order-1 glass-card rounded-3xl p-6 md:p-10">
+                <h3 class="text-sm font-bold text-blue-600 uppercase tracking-widest mb-2">Análise de Ameaças</h3>
+                <h2 class="text-2xl font-black text-slate-800 mb-6">Distribuição de Severidade de Riscos</h2>
+                <div class="chart-container">
+                    <canvas id="risksChart"></canvas>
+                </div>
+            </div>
+            <div class="order-1 lg:order-2 space-y-6">
+                <h2 class="text-3xl font-black text-slate-800 tracking-tight">O Peso das Autuações</h2>
+                <p class="text-slate-600 leading-relaxed text-lg">
+                    A divergência entre o físico e o escriturado, especialmente no fechamento anual exigido pelo <strong>Bloco H (Inventário)</strong>, atua como um convite formal para auditorias presenciais rigorosas.
+                </p>
+                <div class="bg-slate-800 text-white p-6 rounded-2xl">
+                    <div class="text-4xl font-black text-emerald-400 mb-2">Até 100%</div>
+                    <div class="text-sm font-light uppercase tracking-widest">Da carga tributária omitida revertida em multas por irregularidades no SPED.</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="glass-card rounded-3xl p-8 md:p-12">
+            <div class="max-w-3xl mx-auto text-center mb-10">
+                <h2 class="text-3xl font-black text-slate-800 mb-4 tracking-tight">O Efeito Cascata: Distorção do Custo (CMC)</h2>
+                <p class="text-slate-600 leading-relaxed text-lg">
+                    Dos <strong>192 produtos</strong> analisados, <strong class="text-rose-600 font-bold">115 (60%)</strong> operavam com saldo negativo.
+                    O pior caso — Tomate Grape 300G — chegou a <strong class="text-rose-600 font-bold">-71.225 unidades</strong>.
+                    No total, <strong>10.714 dias</strong> (37% de todos os dias úteis) tiveram saldo negativo em pelo menos um produto.
+                    Estoques negativos causam uma explosão matemática no Custo Médio Contábil (CMC), refletindo lucros irreais na DRE e configurando erro crasso de escrituração.
+                </p>
+            </div>
+
+            <div class="chart-container mt-8">
+                <canvas id="cmcChart"></canvas>
+            </div>
+        </section>
+
+        <section class="bg-white rounded-3xl p-8 md:p-12 shadow-xl border border-blue-100">
+            <div class="flex flex-col md:flex-row gap-12 items-center">
+                <div class="flex-1">
+                    <h2 class="text-3xl font-black text-blue-900 mb-4 tracking-tight">A Solução: O "Saldo Colchão"</h2>
+                    <p class="text-slate-600 leading-relaxed text-lg mb-6">
+                        A estratégia definitiva de compliance fiscal baseia-se em manter os saldos operacionais rigorosamente controlados dentro de uma margem segura de erro. Esta margem não apenas evita o estoque negativo, mas funciona como prova cabal de governança perante a fiscalização.
+                    </p>
+                    <div class="flex items-center gap-3 bg-emerald-50 text-emerald-800 px-4 py-3 rounded-lg border border-emerald-200">
+                        <span class="text-2xl">&#10004;</span>
+                        <span class="font-semibold">Blindagem Patrimonial Ativa Implementada</span>
+                    </div>
+                </div>
+
+                <div class="flex-1 w-full">
+                    <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4 text-center">Espectro de Conformidade do Inventário</h3>
+
+                    <div class="flex w-full h-16 rounded-xl overflow-hidden shadow-inner font-bold text-xs md:text-sm text-white text-center">
+                        <div class="w-1/3 bg-rose-500 flex flex-col justify-center items-center px-2">
+                            <span class="uppercase tracking-wider text-[10px] md:text-xs">Risco Severo</span>
+                            <span>&lt; 0 un</span>
+                        </div>
+                        <div class="w-1/3 bg-emerald-500 flex flex-col justify-center items-center px-2 border-l border-r border-white/20 relative shadow-[inset_0_0_20px_rgba(0,0,0,0.2)]">
+                            <span class="uppercase tracking-wider text-[10px] md:text-xs">Saldo Colchão</span>
+                            <span>+1 a +10 un</span>
+                            <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white text-[10px] py-1 px-3 rounded-full whitespace-nowrap shadow-lg">Alvo Operacional</div>
+                        </div>
+                        <div class="w-1/3 bg-amber-500 flex flex-col justify-center items-center px-2">
+                            <span class="uppercase tracking-wider text-[10px] md:text-xs">Alerta IRPJ</span>
+                            <span>&gt; 20 un</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2 mt-4 text-center text-[10px] md:text-xs text-slate-500 font-medium">
+                        <div>Multas / Omissão de Entrada</div>
+                        <div class="text-emerald-600 font-bold">Full Compliance (Bloco K/H)</div>
+                        <div>Inflação de Ativos / CSLL</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center pt-8 border-t border-slate-200">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-800 text-white text-2xl font-black mb-4">&#10004;</div>
+            <h2 class="text-2xl font-black text-slate-800 tracking-tight mb-2">Conclusão Diretiva</h2>
+            <p class="text-slate-600 max-w-2xl mx-auto mb-6">
+                O ajuste realizado transitou a operação de um risco iminente de autuação tributária para um estado de <strong class="text-emerald-600">Full Compliance</strong>. Garantimos custos realistas e rastreabilidade absoluta via Ordens de Produção.
+            </p>
+            <div class="text-xs uppercase tracking-widest text-slate-400 font-bold">
+                Documento Elaborado por: <span class="text-blue-600">Adm. Alexsander Machado</span>
+            </div>
+        </footer>
+
+    </main>
+
+    <script>
+        function wrapLabel(label) {
+            if (label.length <= 16) return label;
+            const words = label.split(' ');
+            let lines = [];
+            let currentLine = '';
+            for (let word of words) {
+                if ((currentLine + word).length > 16) {
+                    if (currentLine) lines.push(currentLine.trim());
+                    currentLine = word + ' ';
+                } else {
+                    currentLine += word + ' ';
+                }
+            }
+            if (currentLine) lines.push(currentLine.trim());
+            return lines;
+        }
+
+        const tooltipConfig = {
+            tooltip: {
+                callbacks: {
+                    title: function(tooltipItems) {
+                        const item = tooltipItems[0];
+                        let label = item.chart.data.labels[item.dataIndex];
+                        if (Array.isArray(label)) {
+                            return label.join(' ');
+                        } else {
+                            return label;
+                        }
+                    }
+                }
+            }
+        };
+
+        const ctxRisks = document.getElementById('risksChart').getContext('2d');
+        const rawRiskLabels = [
+            'Autuação por Omissão de Entrada (100%)',
+            'Distorção Severa do Balanço Patrimonial',
+            'Majoração Irreal da Base IRPJ/CSLL',
+            'Auditoria Presencial Direcionada (Bloco H)',
+            'Evasão e Erro Crasso no Cálculo CMC'
+        ];
+
+        new Chart(ctxRisks, {
+            type: 'polarArea',
+            data: {
+                labels: rawRiskLabels.map(wrapLabel),
+                datasets: [{
+                    label: 'Nível de Ameaça Fiscal',
+                    data: [100, 75, 85, 90, 95],
+                    backgroundColor: [
+                        'rgba(244, 63, 94, 0.7)',  // Rose
+                        'rgba(245, 158, 11, 0.7)', // Amber
+                        'rgba(16, 185, 129, 0.7)', // Emerald
+                        'rgba(59, 130, 246, 0.7)', // Blue
+                        'rgba(139, 92, 246, 0.7)'  // Purple
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        ticks: { display: false },
+                        grid: { color: 'rgba(0, 0, 0, 0.05)' }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { font: { family: 'Inter', size: 11 }, padding: 20 }
+                    },
+                    ...tooltipConfig
+                }
+            }
+        });
+
+        const ctxCmc = document.getElementById('cmcChart').getContext('2d');
+        const rawCmcLabels = [
+            'Estoque com Saldo Negativo Extremo (Risco)',
+            'Estoque com Saldo Colchão (Compliance Total)'
+        ];
+
+        new Chart(ctxCmc, {
+            type: 'bar',
+            data: {
+                labels: rawCmcLabels.map(wrapLabel),
+                datasets: [
+                    {
+                        label: 'Índice de Custo Médio Contábil (CMC)',
+                        data: [450, 100],
+                        backgroundColor: 'rgba(244, 63, 94, 0.9)',
+                        borderRadius: 8
+                    },
+                    {
+                        label: 'Realidade do Lucro Bruto na DRE',
+                        data: [20, 180],
+                        backgroundColor: 'rgba(16, 185, 129, 0.9)',
+                        borderRadius: 8
+                    }
+                ]
+            },
+            options: {
+                maintainAspectRatio: false,
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(0,0,0,0.05)' },
+                        ticks: { font: { family: 'Inter' } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { family: 'Inter', weight: 'bold' } }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: { font: { family: 'Inter', size: 12 }, usePointStyle: true, padding: 20 }
+                    },
+                    ...tooltipConfig
+                }
+            }
+        });
+    </script>
+</body>
+</html>

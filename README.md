@@ -127,15 +127,16 @@ Receita Bruta (soma Total NF das vendas)
 = Margem R$ | %
 ```
 
-### Fórmula de Comissão (confirmada com relatório real)
+### Fórmula de Comissão e Desconto Financeiro (corrigida 2026-03-19)
 ```
-Para cada NF (venda ou devolução):
-  Comissão Bruta    = Valor NF × % Comissão do cliente (0,8% padrão)
-  Desc. Financeiro  = Comissão Bruta × % Desc. Fin. do cliente (0% a 16%)
-  Comissão Líquida  = Comissão Bruta - Desc. Financeiro
+Para cada combinação cliente × produto × mês:
+  Desc. Financeiro  = Receita Bruta × %DF do cliente (0% a 16%)
+  Base Comissão     = Receita Bruta - Desc. Financeiro - Devoluções
+  Comissão          = Base Comissão × %Comissão do cliente (0,8% padrão)
 
-Devoluções entram com sinal negativo (estornam a comissão do vendedor).
-O Desc. Financeiro é sobre a COMISSÃO BRUTA, NÃO sobre a receita.
+O Desc. Financeiro é sobre a RECEITA BRUTA (loja retém no pagamento das NFs).
+NÃO é sobre a comissão bruta (fórmula anterior estava errada).
+Devoluções reduzem a base de comissão.
 ```
 
 ---

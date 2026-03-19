@@ -442,6 +442,77 @@ agregar_por_produto()       # Ranking produtos + detalhe por cliente × mês
 | `fmtVal(v, type)` | Formatação por tipo (int, money, reais, pct) |
 | `mgClass(p)` | Classe de cor da margem (alta/media/baixa) |
 
+### Filtros Avançados (21 variáveis)
+
+| Função | Descrição |
+|--------|-----------|
+| `toggleFilterPanel()` | Abre/fecha o painel colapsável de filtros |
+| `toggleMultiSelect(name)` | Abre/fecha dropdown multi-select (Produtos/Clientes) |
+| `filterMultiOptions(input, id)` | Busca texto dentro do dropdown multi-select |
+| `updateMultiLabel(name)` | Atualiza label do trigger ("Todos" / "3 selecionados") |
+| `togglePill(el, group)` | Toggle ativo/inativo em pill de classificação |
+| `initFilterPanel()` | Popula todos os filtros: pills meses/dias, multi-selects, range sliders, classificações |
+| `updateRange(key)` | Atualiza barra ativa e labels min/max do range slider |
+| `readFilterState()` | Lê todos os inputs do painel e atualiza `FILTER_STATE` |
+| `classifyProduct(card)` | Deriva classificações (faixaMargem, statusDevolucao, tendenciaPreco) dos data-attributes |
+| `getActiveFilterCount()` | Conta quantos filtros estão ativos (para o badge) |
+| `aplicarFiltros()` | Função principal: lê estado, filtra cards, atualiza contagem e badge |
+| `limparFiltros()` | Reseta todos os filtros para padrão e re-aplica |
+| `filtrarProdutos()` | Wrapper legacy → chama `aplicarFiltros()` |
+
+### Objeto FILTER_STATE
+
+```javascript
+{
+    // Dimensões (7)
+    meses: [],           // [0..11] índices de meses ativos
+    produtos: [],        // nomes de produtos selecionados
+    clientes: [],        // nomes de clientes selecionados
+    vendedor: '',        // futuro (Airtable)
+    categoria: '',       // futuro (Airtable)
+    diasSemana: [],      // [0..5] seg=0..sáb=5
+
+    // Métricas (9) — null = sem filtro, {min,max} = range ativo
+    taxaDevolucao, margem, receita, precoMedio, custoUnit,
+    volume, cmvPct, descFinanceiro, comissao
+
+    // Classificações (5) — array de valores ativos
+    faixaMargem: [],     // ['excelente','boa','regular','critica']
+    scoreVariancia: [],  // ['3','2','1','0']
+    faixaVsNormal: [],   // ['acima','normal','abaixo']
+    statusDevolucao: [], // ['normal','atencao','critico']
+    tendenciaPreco: []   // ['alta','estavel','queda']
+}
+```
+
+### Data Attributes nos Cards
+
+Cada `.produto-card` recebe `data-*` para filtragem sem re-render:
+```
+data-nome, data-nome-full, data-pdrs, data-pmg, data-rec,
+data-pp, data-cu, data-qtd, data-pcmv, data-pdf, data-pcom
+```
+
+### Classificações derivadas
+
+| Classificação | Regra |
+|---------------|-------|
+| Faixa Margem | >50% Excelente, 40-50% Boa, 30-40% Regular, <30% Crítica |
+| Status Devolução | <5% Normal, 5-10% Atenção, >10% Crítico |
+| Tendência Preço | Mock: "Estável" (requer dados mensais de todos os produtos) |
+| Score Variância | Pendente (requer dados de variância por produto) |
+| Faixa vs Normal | Pendente (requer medianas de todos os produtos) |
+
+### CSS
+
+Todas as classes prefixadas `adv-filter-*` / `adv-*` para evitar conflito:
+- `.adv-filter-bar` — barra com input, toggle, botões
+- `.adv-filter-body` / `.collapsed` — painel colapsável (max-height transition)
+- `.adv-pill` / `.active` — pills toggle (classificações, meses, dias)
+- `.adv-range-wrap` — dual range slider (2 inputs sobrepostos)
+- `.adv-multi-wrap` / `.adv-multi-dropdown` — dropdown com checkboxes
+- `.adv-btn-apply` / `.adv-btn-clear` — botões de ação
+
 ---
 
 ## 7. Mapa UI (mapa-ui.js)
@@ -508,7 +579,57 @@ Top 10 = 66,8% do total
 
 ---
 
-## 9. Pendências para Produção
+## 9. Seção Devoluções — Dashboard Multinível (sec-devolucoes)
+
+### Redesign completo (2026-03-19)
+Seção substituída por dashboard multinível com Tailwind CSS + Lucide Icons + Inter font.
+
+### Estrutura
+```
+sec-devolucoes (overflow:visible)
+├── Cabeçalho + Badge Alerta (mês com maior % devolução, dinâmico)
+├── KPIs (4 cards: Faturamento, Total Devolvido, Volume Qtd, Impacto Top 10)
+├── Nível 1: Visão Geral e Sazonalidade
+│   ├── Radar — Volume Físico (qtd devolvida por mês, 12 eixos)
+│   └── Gráfico Composto — Eficiência Financeira
+│       ├── Barras cinza: R$ Venda (eixo direito)
+│       ├── Linha vermelha: % Devolução (eixo esquerdo)
+│       ├── Linha verde: Preço Médio Ponderado (eixo oculto y2)
+│       └── Linha tracejada amarela: Meta 5%
+├── Nível 2: Estratégia de Contenção (Top 10)
+│   └── 10 barras verticais proporcionais (altura = valor / máximo × 100%)
+├── Nível 3: Deep Dive — Produto
+│   ├── Share de Vendas (% do faturamento total empresa) ← PENDENTE AIRTABLE
+│   ├── Share de Devoluções (% das devoluções total empresa) ← PENDENTE AIRTABLE
+│   ├── Alerta de Desproporção + Taxa SKU
+│   └── Gráfico Representatividade Mensal
+│       ├── Barras verdes: Receita produto/mês
+│       ├── Linha vermelha: % Devolução/mês
+│       └── Linha indigo tracejada: % Faturamento Total/mês ← MOCK (totalEmpresaMes hardcoded)
+└── Diagnóstico Geral + Ação Estratégica (2 cards texto)
+```
+
+### Dados pendentes (Airtable)
+| Campo | Origem | Status |
+|-------|--------|--------|
+| Share de Vendas (%) | receita produto / receita total empresa | Pendente — exibido como "— %" |
+| Share de Devoluções (%) | devol produto / devol total empresa | Pendente — exibido como "— %" |
+| % Faturamento Total/mês | receita produto mês / receita empresa mês | Mock — array `totalEmpresaMes` hardcoded |
+
+### Fórmula confirmada
+```
+Desc. Financeiro = Receita Bruta × %DF do cliente
+Motivo: a loja retém ao fazer o pagamento das NFs (não é sobre comissão)
+```
+
+### CDNs adicionados
+- Tailwind CSS (preflight desabilitado para não conflitar com CSS existente)
+- Lucide Icons (createIcons() chamado após render)
+- Google Fonts Inter (400, 500, 700, 900)
+
+---
+
+## 10. Pendências para Produção
 
 | Etapa | Status | Descrição |
 |-------|--------|-----------|
@@ -516,6 +637,8 @@ Top 10 = 66,8% do total
 | Calcular 190 produtos | Pendente | Script em lote |
 | Popular Airtable | Pendente | Tabelas Produtos, Clientes, Detalhe, PainelSemanal |
 | Frontend consumir Airtable | Pendente | Trocar mocks por fetch |
+| Share Vendas/Devoluções (Nível 3) | Pendente | Depende de faturamento total empresa no Airtable |
+| totalEmpresaMes (gráfico share) | Pendente | Substituir mock por dados reais |
 | Botão exportar PDF | Pendente | |
 | Botão exportar HTML | Pendente | |
 | Deploy Netlify | Pendente | |
@@ -523,7 +646,29 @@ Top 10 = 66,8% do total
 
 ---
 
-## 10. Changelog
+## 11. Changelog
+
+### v1.2 (2026-03-19)
+- Filtros avançados: 21 variáveis (7 dimensões + 9 métricas + 5 classificações)
+- Painel colapsável com toggle, badge de contagem, limpar/aplicar
+- Dimensões: Meses (pills), Produtos/Clientes (multi-select com busca), Vendedor, Categoria, Dias da Semana
+- Métricas: 9 dual-range sliders (Taxa Devol, Margem, Receita, Preço, Custo, Volume, CMV, DF, Comissão)
+- Classificações: Faixa Margem, Status Devolução, Tendência Preço, Score Variância, Faixa vs Normal
+- Data-attributes nos cards para filtragem sem re-render
+- FILTER_STATE object para estado centralizado
+- 13 funções novas documentadas
+- Pendentes: Vendedor, Categoria, Score Variância, Faixa vs Normal (requerem Airtable)
+
+### v1.1 (2026-03-19)
+- sec-devolucoes redesenhada: dashboard multinível (3 níveis)
+- Nível 1: Radar qtd devolvida + gráfico composto (barras venda + linhas %dev/preço/meta)
+- Nível 2: Top 10 clientes com barras verticais proporcionais (HTML, sem Chart.js)
+- Nível 3: Deep Dive com share vendas/devoluções (pendente Airtable) + gráfico representatividade mensal
+- Diagnóstico + Ação Estratégica (cards texto)
+- CDNs: Tailwind CSS (preflight off), Lucide Icons, Inter font
+- Fórmula DF confirmada: sobre Receita Bruta (loja retém no pagamento)
+- sec-devolucoes movida para depois de sec-analise
+- overflow:visible na sec-devolucoes (evita corte dos elementos Tailwind)
 
 ### v1.0 (2026-03-19)
 - Estrutura do projeto e dados copiados
@@ -535,7 +680,7 @@ Top 10 = 66,8% do total
 - Painel operacional semanal com 8 linhas por semana
 - Análise de variância com mini-cards e semáforos
 - Faixas vs Normal (mediana) com 5 classificações
-- Dias de pagamento destacados (💰🛒)
+- Dias de pagamento destacados
 - Clientes únicos (semana, mês, dia)
 - Design system unificado (indigo, 6 tamanhos, 3 pesos, 2 cinzas)
 - Section headers com borda lateral colorida

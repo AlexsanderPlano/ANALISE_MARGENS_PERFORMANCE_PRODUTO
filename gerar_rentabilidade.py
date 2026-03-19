@@ -269,14 +269,6 @@ def calcular(vendas, devolucoes, cmv_movimentos, comissoes):
     merged['cmc'] = np.where(merged['qtd_vendida'] > 0,
                               merged['cmv'] / merged['qtd_vendida'], 0)
 
-    # Receita líquida
-    merged['receita_liquida'] = merged['receita'] - merged['valor_devolvido']
-
-    # Margem bruta
-    merged['margem_bruta'] = merged['receita_liquida'] - merged['cmv']
-    merged['margem_pct'] = np.where(merged['receita_liquida'] > 0,
-                                     merged['margem_bruta'] / merged['receita_liquida'] * 100, 0)
-
     # % devolução
     merged['pct_dev'] = np.where(merged['qtd_vendida'] > 0,
                                   merged['qtd_devolvida'] / merged['qtd_vendida'] * 100, 0)
@@ -294,13 +286,23 @@ def calcular(vendas, devolucoes, cmv_movimentos, comissoes):
 
     merged['pct_comissao'] = merged['CNPJ'].apply(get_comissao)
     merged['pct_desc_fin'] = merged['CNPJ'].apply(get_desc_fin)
-    # Fórmula correta: comissão sobre valor NF, desc. fin. sobre comissão bruta
-    merged['comissao_bruta'] = merged['receita'] * merged['pct_comissao']
-    merged['desc_financeiro'] = merged['comissao_bruta'] * merged['pct_desc_fin']
-    merged['comissao_liquida'] = merged['comissao_bruta'] - merged['desc_financeiro']
+    # Fórmula confirmada (2026-03-19):
+    # Desc. Financeiro = Receita Bruta × %DF (loja retém no pagamento das NFs)
+    # Comissão = (Receita - DF - Devoluções) × %Comissão
+    merged['desc_financeiro'] = merged['receita'] * merged['pct_desc_fin']
+    merged['base_comissao'] = merged['receita'] - merged['desc_financeiro'] - merged['valor_devolvido']
+    merged['comissao'] = merged['base_comissao'].clip(lower=0) * merged['pct_comissao']
 
-    # Rentabilidade líquida = Receita Líquida - Comissão Líquida - CMV
-    merged['rentabilidade'] = merged['receita_liquida'] - merged['comissao_liquida'] - merged['cmv']
+    # Receita Líquida = Receita - Devoluções - DF - Comissão
+    merged['receita_liquida'] = merged['receita'] - merged['valor_devolvido'] - merged['desc_financeiro'] - merged['comissao']
+
+    # Margem de Contribuição = Receita Líquida - CMV
+    merged['margem_bruta'] = merged['receita_liquida'] - merged['cmv']
+
+    # Rentabilidade = Margem de Contribuição (sinônimo neste contexto)
+    merged['rentabilidade'] = merged['margem_bruta']
+    merged['margem_pct'] = np.where(merged['receita'] > 0,
+                                     merged['margem_bruta'] / merged['receita'] * 100, 0)
 
     produtos_com_cmv = merged[merged['cmv'] > 0]['Produto'].nunique()
     produtos_sem_cmv = merged[merged['cmv'] == 0]['Produto'].nunique()
@@ -326,7 +328,7 @@ def agregar_por_cliente(dados):
             'receita_liq': grupo_cli['receita_liquida'].sum(),
             'cmv': grupo_cli['cmv'].sum(),
             'margem': grupo_cli['margem_bruta'].sum(),
-            'comissao': grupo_cli['comissao_liquida'].sum(),
+            'comissao': grupo_cli['comissao'].sum(),
             'rentabilidade': grupo_cli['rentabilidade'].sum(),
             'qtd_vendida': grupo_cli['qtd_vendida'].sum(),
             'qtd_devolvida': grupo_cli['qtd_devolvida'].sum(),
@@ -356,7 +358,7 @@ def agregar_por_cliente(dados):
                     'qtd_dev': row['qtd_devolvida'],
                     'pct_dev': row['pct_dev'],
                     'valor_dev': row['valor_devolvido'],
-                    'comissao': row['comissao_liquida'],
+                    'comissao': row['comissao'],
                     'pct_comissao': row['pct_comissao'],
                     'desc_fin': row['desc_financeiro'],
                     'pct_desc_fin': row['pct_desc_fin'],
@@ -369,7 +371,7 @@ def agregar_por_cliente(dados):
                 'cmv': grupo_prod['cmv'].sum(),
                 'qtd_dev': grupo_prod['qtd_devolvida'].sum(),
                 'valor_dev': grupo_prod['valor_devolvido'].sum(),
-                'comissao': grupo_prod['comissao_liquida'].sum(),
+                'comissao': grupo_prod['comissao'].sum(),
                 'desc_fin': grupo_prod['desc_financeiro'].sum(),
                 'rentabilidade': grupo_prod['rentabilidade'].sum(),
             }
@@ -430,7 +432,7 @@ def agregar_por_produto(dados):
                     'qtd_dev': row['qtd_devolvida'],
                     'pct_dev': row['pct_dev'],
                     'valor_dev': row['valor_devolvido'],
-                    'comissao': row['comissao_liquida'],
+                    'comissao': row['comissao'],
                     'pct_comissao': row['pct_comissao'],
                     'desc_fin': row['desc_financeiro'],
                     'pct_desc_fin': row['pct_desc_fin'],
@@ -442,7 +444,7 @@ def agregar_por_produto(dados):
                 'cmv': grupo_cli['cmv'].sum(),
                 'qtd_dev': grupo_cli['qtd_devolvida'].sum(),
                 'valor_dev': grupo_cli['valor_devolvido'].sum(),
-                'comissao': grupo_cli['comissao_liquida'].sum(),
+                'comissao': grupo_cli['comissao'].sum(),
                 'desc_fin': grupo_cli['desc_financeiro'].sum(),
                 'rentabilidade': grupo_cli['rentabilidade'].sum(),
             }
@@ -949,6 +951,622 @@ function fecharDetalhe(id){{
 
 
 # ============================================================================
+# AIRTABLE UPLOAD
+# ============================================================================
+
+AIRTABLE_TOKEN = 'pat0KFWb7Vc0aevY1.9511b6c89f912e5c581d17fbd06427e55ca13d5cd2cc0631b4a6d810152b463f'
+AIRTABLE_BASE = 'appC95CSdCeBrKQ83'
+AIRTABLE_TABLES = {
+    'produtos': 'tblvS4zY6EofPsYCr',
+    'clientes': 'tblB6qHTf7MGqjs5K',
+    'detalhe':  'tbluXAa4patQHyxmc',
+    'painel':   'tblUUOhkcr76Hu4oQ',
+}
+AIRTABLE_URL = f'https://api.airtable.com/v0/{AIRTABLE_BASE}'
+
+
+def airtable_batch_create(table_id, records, rate_limit=0.25):
+    """Cria registros em lote no Airtable (máx 10 por request)"""
+    import requests
+    url = f'{AIRTABLE_URL}/{table_id}'
+    headers = {
+        'Authorization': f'Bearer {AIRTABLE_TOKEN}',
+        'Content-Type': 'application/json'
+    }
+    total = len(records)
+    criados = 0
+    erros = 0
+
+    for i in range(0, total, 10):
+        batch = records[i:i+10]
+        payload = {'records': [{'fields': r} for r in batch]}
+        try:
+            resp = requests.post(url, json=payload, headers=headers)
+            if resp.status_code == 200:
+                criados += len(batch)
+            else:
+                erros += len(batch)
+                print(f"    ERRO batch {i//10+1}: {resp.status_code} — {resp.text[:200]}")
+            time.sleep(rate_limit)
+        except Exception as e:
+            erros += len(batch)
+            print(f"    ERRO request: {e}")
+
+    return criados, erros
+
+
+def airtable_delete_all(table_id, rate_limit=0.25):
+    """Deleta todos os registros de uma tabela (para limpar antes de popular)"""
+    import requests
+    url = f'{AIRTABLE_URL}/{table_id}'
+    headers = {'Authorization': f'Bearer {AIRTABLE_TOKEN}'}
+    total_deleted = 0
+
+    while True:
+        resp = requests.get(url, headers=headers, params={'pageSize': 100})
+        if resp.status_code != 200:
+            print(f"    ERRO list: {resp.status_code}")
+            break
+        data = resp.json()
+        record_ids = [r['id'] for r in data.get('records', [])]
+        if not record_ids:
+            break
+
+        # Delete em batches de 10
+        for i in range(0, len(record_ids), 10):
+            batch = record_ids[i:i+10]
+            params = [('records[]', rid) for rid in batch]
+            del_resp = requests.delete(url, headers=headers, params=params)
+            if del_resp.status_code == 200:
+                total_deleted += len(batch)
+            else:
+                print(f"    ERRO delete: {del_resp.status_code}")
+            time.sleep(rate_limit)
+
+    return total_deleted
+
+
+def upload_airtable(dados_produtos, dados_clientes, dados_calc, comissoes_dict, analise_semanal=None):
+    """Popula as 3 tabelas do Airtable com dados calculados"""
+    print("\n  === UPLOAD AIRTABLE ===")
+
+    # 1. Limpar tabelas existentes
+    for nome, tid in AIRTABLE_TABLES.items():
+        print(f"  Limpando tabela {nome}...")
+        n = airtable_delete_all(tid)
+        print(f"    {n} registros deletados")
+
+    # 2. TABELA PRODUTOS
+    print("  Populando Produtos...")
+    prod_records = []
+    for nome_prod, dp in dados_produtos.items():
+        t = dp['totais']
+        rec = t.get('receita', 0)
+        cmv = t.get('cmv', 0)
+        margem = t.get('margem', 0)
+        margem_pct = t.get('margem_pct', 0)
+        qtd_v = t.get('qtd_vendida', 0)
+        qtd_d = t.get('qtd_devolvida', 0)
+        devol = t.get('devol', 0)
+        pct_dev = t.get('pct_dev', 0)
+
+        # Comissão e DF totais para o produto
+        prod_rows = dados_calc[dados_calc['Produto'] == nome_prod]
+        comissao_total = prod_rows['comissao'].sum() if len(prod_rows) > 0 else 0
+        df_total = prod_rows['desc_financeiro'].sum() if len(prod_rows) > 0 else 0
+        rent_total = prod_rows['rentabilidade'].sum() if len(prod_rows) > 0 else 0
+
+        prod_records.append({
+            'Produto': nome_prod,
+            'Receita': round(rec, 2),
+            'CMV': round(cmv, 2),
+            'Margem R$': round(margem, 2),
+            'Margem %': round(margem_pct, 1),
+            'Qtd Vendida': int(qtd_v),
+            'Qtd Devolvida': int(qtd_d),
+            'Devol %': round(pct_dev, 1),
+            'Comissão Bruta': round(comissao_total, 2),
+            'Desc Financeiro': round(df_total, 2),
+            'Comissão Líquida': round(comissao_total, 2),
+            'Rentabilidade': round(rent_total, 2),
+        })
+
+    criados, erros = airtable_batch_create(AIRTABLE_TABLES['produtos'], prod_records)
+    print(f"    Produtos: {criados} criados, {erros} erros")
+
+    # 3. TABELA CLIENTES
+    print("  Populando Clientes...")
+    cli_records = []
+    for nome_cli, dc in dados_clientes.items():
+        t = dc['totais']
+
+        # Buscar CNPJ e vendedor do cliente
+        cli_rows = dados_calc[dados_calc['NomeFantasia'] == nome_cli]
+        cnpj = cli_rows['CNPJ'].iloc[0] if len(cli_rows) > 0 else ''
+        vendedor = comissoes_dict.get(cnpj, {}).get('vendedor', '')
+        pct_df = comissoes_dict.get(cnpj, {}).get('desc_fin', 0)
+        pct_com = comissoes_dict.get(cnpj, {}).get('comissao', 0)
+        comissao_total = cli_rows['comissao'].sum() if len(cli_rows) > 0 else 0
+        df_total = cli_rows['desc_financeiro'].sum() if len(cli_rows) > 0 else 0
+        rent_total = cli_rows['rentabilidade'].sum() if len(cli_rows) > 0 else 0
+
+        cli_records.append({
+            'Cliente': nome_cli,
+            'CNPJ': cnpj,
+            'Vendedor': vendedor,
+            'Receita': round(t.get('receita', 0), 2),
+            'CMV': round(t.get('cmv', 0), 2),
+            'Margem R$': round(t.get('margem', 0), 2),
+            'Margem %': round(t.get('margem_pct', 0), 1),
+            'Qtd Vendida': int(t.get('qtd_vendida', 0)),
+            'Qtd Devolvida': int(t.get('qtd_devolvida', 0)),
+            'Devol %': round(t.get('pct_dev', 0), 1),
+            'Comissão Bruta': round(comissao_total, 2),
+            'Desc Financeiro': round(df_total, 2),
+            'Comissão Líquida': round(comissao_total, 2),
+            'Rentabilidade': round(rent_total, 2),
+            'Pct Desc Fin': round(pct_df * 100 if pct_df < 1 else pct_df, 1),
+            'Pct Comissão': round(pct_com * 100 if pct_com < 1 else pct_com, 1),
+        })
+
+    criados, erros = airtable_batch_create(AIRTABLE_TABLES['clientes'], cli_records)
+    print(f"    Clientes: {criados} criados, {erros} erros")
+
+    # 4. TABELA DETALHE (cliente × produto × mês)
+    print("  Populando Detalhe...")
+    det_records = []
+    for _, row in dados_calc.iterrows():
+        chave = f"{row['NomeFantasia']}|{row['Produto']}|{int(row['MesNum'])}"
+        det_records.append({
+            'Chave': chave,
+            'Cliente': row['NomeFantasia'],
+            'Produto': row['Produto'],
+            'Mês': int(row['MesNum']),
+            'Qtd': int(row['qtd_vendida']),
+            'Preço Unit': round(row['receita'] / row['qtd_vendida'], 2) if row['qtd_vendida'] > 0 else 0,
+            'Receita': round(row['receita'], 2),
+            'Qtd Devolvida': int(row['qtd_devolvida']),
+            'Valor Devolvido': round(row['valor_devolvido'], 2),
+            'CMC Unit': round(row['cmc'], 2),
+            'CMV': round(row['cmv'], 2),
+            'Margem R$': round(row['margem_bruta'], 2),
+            'Margem %': round(row['margem_pct'], 1),
+            'Comissão': round(row['comissao'], 2),
+            'Desc Financeiro': round(row['desc_financeiro'], 2),
+            'Rentabilidade': round(row['rentabilidade'], 2),
+        })
+
+    criados, erros = airtable_batch_create(AIRTABLE_TABLES['detalhe'], det_records, rate_limit=0.2)
+    print(f"    Detalhe: {criados} criados, {erros} erros")
+    print(f"    Total registros Detalhe: {len(det_records)}")
+
+    # 5. TABELA PAINEL (dados semanais como JSON)
+    if analise_semanal:
+        print("  Populando Painel...")
+        import json as _json
+        painel_records = []
+        for nome_prod, dados_sem in analise_semanal.items():
+            painel_records.append({
+                'Produto': nome_prod,
+                'DadosPainel': _json.dumps(dados_sem, ensure_ascii=False),
+            })
+        criados, erros = airtable_batch_create(AIRTABLE_TABLES['painel'], painel_records)
+        print(f"    Painel: {criados} criados, {erros} erros")
+
+    print("  === UPLOAD CONCLUIDO ===\n")
+
+
+# ============================================================================
+# ANÁLISE SEMANAL (dados diários para o painel operacional)
+# ============================================================================
+
+def gerar_analise_semanal(vendas):
+    """Gera dados de vendas por dia da semana, semana do mês, para cada produto.
+    Retorna dict: produto -> { mediaAnualDia, avgAnualPorDia[6], meses[12][semanas] }
+    Cada semana: { id, sales[6], clients[6], nfs[6], deliveries[6], histDayAvg[6] }
+    Dias: 0=SEG, 1=TER, 2=QUA, 3=QUI, 4=SEX, 5=SAB
+    """
+    print("  Gerando analise semanal...")
+    vendas_dt = vendas.copy()
+    vendas_dt['Data'] = pd.to_datetime(vendas_dt['Data'], dayfirst=True, errors='coerce')
+    vendas_dt = vendas_dt.dropna(subset=['Data'])
+    vendas_dt['DiaSemana'] = vendas_dt['Data'].dt.dayofweek  # 0=Mon..6=Sun
+    vendas_dt = vendas_dt[vendas_dt['DiaSemana'] < 6]  # Excluir domingo
+    vendas_dt['SemanaNo'] = vendas_dt['Data'].apply(lambda d: (d.day - 1) // 7)  # 0-based week of month
+    vendas_dt['DiaMes'] = vendas_dt['Data'].dt.day
+
+    resultado = {}
+
+    for nome_prod, grupo in vendas_dt.groupby('Produto'):
+        meses_data = []
+        qtd_por_dia_ano = [0] * 6  # total qtd por dia da semana no ano
+        dias_por_dia_ano = [0] * 6  # qtd de dias úteis por dia da semana no ano
+        datas_semana = []  # 12 meses x N semanas x 6 dias
+        medianas_mes = []  # 12 meses x 6 dias
+        clientes_unicos_mes = []
+        clientes_unicos_semana = []
+
+        for mes in range(1, 13):
+            gm = grupo[grupo['MesNum'] == mes]
+
+            # Contar dias úteis por dia da semana neste mês
+            dias_no_mes = [0] * 6
+            if len(gm) > 0:
+                datas_unicas = gm['Data'].dt.date.unique()
+                for d in datas_unicas:
+                    dow = pd.Timestamp(d).dayofweek
+                    if dow < 6:
+                        dias_no_mes[dow] += 1
+
+            # Agrupar por semana do mês
+            semanas_dict = {}
+            for _, row in gm.iterrows():
+                sw = row['SemanaNo']
+                if sw not in semanas_dict:
+                    semanas_dict[sw] = {'sales': [0]*6, 'clients': [set() for _ in range(6)],
+                                         'nfs': [0]*6, 'deliveries': [0]*6, 'datas': [0]*6}
+                di = row['DiaSemana']
+                semanas_dict[sw]['sales'][di] += row['Quantidade']
+                semanas_dict[sw]['clients'][di].add(row['NomeFantasia'])
+                semanas_dict[sw]['nfs'][di] += 1
+                semanas_dict[sw]['datas'][di] = row['DiaMes']
+
+            # Entregas: dia seguinte útil
+            # SEG->TER, TER->QUA, QUA->QUI, QUI->SEX, SEX->SAB, SAB->SEG(prox semana)
+            for sw in semanas_dict:
+                s = semanas_dict[sw]
+                deliv = [0] * 6
+                for di in range(5):  # seg-sex → entrega no dia seguinte
+                    deliv[di + 1] += s['nfs'][di]
+                # SAB → entrega SEG (próxima semana, mas contamos nesta)
+                deliv[0] += s['nfs'][5]
+                s['deliveries'] = deliv
+
+            # Média do mês por dia
+            qtd_dia_mes = [0] * 6
+            for sw in semanas_dict:
+                for di in range(6):
+                    qtd_dia_mes[di] += semanas_dict[sw]['sales'][di]
+
+            hist_day_avg = [0] * 6
+            for di in range(6):
+                hist_day_avg[di] = round(qtd_dia_mes[di] / dias_no_mes[di]) if dias_no_mes[di] > 0 else 0
+                qtd_por_dia_ano[di] += qtd_dia_mes[di]
+                dias_por_dia_ano[di] += dias_no_mes[di]
+
+            # Mediana do mês por dia (mediana das qtd semanais, excluindo zeros)
+            med_mes = [0] * 6
+            for di in range(6):
+                vals = [semanas_dict[sw]['sales'][di] for sw in semanas_dict if semanas_dict[sw]['sales'][di] > 0]
+                if vals:
+                    vals.sort()
+                    n = len(vals)
+                    med_mes[di] = round((vals[n//2] + vals[(n-1)//2]) / 2)
+            medianas_mes.append(med_mes)
+
+            # Clientes únicos do mês por dia
+            cli_sets_dia = [set() for _ in range(6)]
+            cli_set_mes = set()
+            for sw in semanas_dict:
+                for di in range(6):
+                    cli_sets_dia[di].update(semanas_dict[sw]['clients'][di])
+                    cli_set_mes.update(semanas_dict[sw]['clients'][di])
+            clientes_unicos_mes.append({
+                'total': len(cli_set_mes),
+                'porDia': [len(cli_sets_dia[di]) for di in range(6)]
+            })
+
+            # Clientes únicos por semana
+            cli_sem = []
+            for sw in sorted(semanas_dict.keys()):
+                cli_set = set()
+                for di in range(6):
+                    cli_set.update(semanas_dict[sw]['clients'][di])
+                cli_sem.append(len(cli_set))
+            clientes_unicos_semana.append(cli_sem)
+
+            # Datas por semana
+            datas_mes = []
+            for sw in sorted(semanas_dict.keys()):
+                datas_mes.append(semanas_dict[sw]['datas'])
+            datas_semana.append(datas_mes)
+
+            # Semanas para output
+            weeks = []
+            for sw in sorted(semanas_dict.keys()):
+                s = semanas_dict[sw]
+                weeks.append({
+                    'id': str(sw + 1),
+                    'sales': [int(v) for v in s['sales']],
+                    'clients': [len(s['clients'][di]) for di in range(6)],
+                    'nfs': s['nfs'],
+                    'deliveries': s['deliveries'],
+                    'histDayAvg': hist_day_avg,
+                })
+            meses_data.append(weeks)
+
+        # Médias anuais por dia
+        avg_anual = [round(qtd_por_dia_ano[di] / dias_por_dia_ano[di]) if dias_por_dia_ano[di] > 0 else 0 for di in range(6)]
+
+        # Mediana anual por dia
+        mediana_ano = [0] * 6
+        for di in range(6):
+            all_weekly_vals = []
+            for mes in range(12):
+                for w in meses_data[mes]:
+                    if w['sales'][di] > 0:
+                        all_weekly_vals.append(w['sales'][di])
+            if all_weekly_vals:
+                all_weekly_vals.sort()
+                n = len(all_weekly_vals)
+                mediana_ano[di] = round((all_weekly_vals[n//2] + all_weekly_vals[(n-1)//2]) / 2)
+
+        resultado[nome_prod] = {
+            'avgAnualPorDia': avg_anual,
+            'meses': meses_data,
+            'datasSemanais': datas_semana,
+            'medianasMes': medianas_mes,
+            'medianaAno': mediana_ano,
+            'clientesUnicosMes': clientes_unicos_mes,
+            'clientesUnicosSemana': clientes_unicos_semana,
+        }
+
+    print(f"    {len(resultado)} produtos com dados semanais")
+    return resultado
+
+
+# ============================================================================
+# GERAR JS COM DADOS PARA O FRONTEND
+# ============================================================================
+
+def gerar_js_lista(dados_calc, dados_produtos, dados_clientes):
+    """Gera dados-lista.js LEVE (~50KB) com só totais anuais para carga inicial rápida"""
+    import json
+    print("  Gerando dados-lista.js (leve)...")
+
+    all_produtos = []
+    for nome_prod in sorted(dados_produtos.keys()):
+        dp = dados_produtos[nome_prod]
+        t = dp['totais']
+        rec = t.get('receita', 0)
+        cmv_val = t.get('cmv', 0)
+        mg = t.get('margem', 0)
+        qtd = t.get('qtd_vendida', 0)
+        dq_val = t.get('qtd_devolvida', 0)
+        devol = t.get('devol', 0)
+        pp = rec / qtd if qtd > 0 else 0
+        cu = cmv_val / qtd if qtd > 0 else 0
+
+        prod_rows = dados_calc[dados_calc['Produto'] == nome_prod]
+        df_total = prod_rows['desc_financeiro'].sum() if len(prod_rows) > 0 else 0
+        com_total = prod_rows['comissao'].sum() if len(prod_rows) > 0 else 0
+
+        all_produtos.append({
+            'nome': nome_prod,
+            'qtd': int(qtd), 'pp': round(pp, 2), 'rec': round(rec, 0),
+            'dq': int(dq_val), 'pdq': round((dq_val/qtd*100) if qtd > 0 else 0, 1),
+            'drs': round(devol, 0), 'pdrs': round((devol/rec*100) if rec > 0 else 0, 1),
+            'df': round(df_total, 0), 'pdf': round((df_total/rec*100) if rec > 0 else 0, 1),
+            'com': round(com_total, 0), 'pcom': round((com_total/rec*100) if rec > 0 else 0, 1),
+            'cu': round(cu, 2), 'pcu': round((cu/pp*100) if pp > 0 else 0, 1),
+            'cmv': round(cmv_val, 0), 'pcmv': round((cmv_val/rec*100) if rec > 0 else 0, 1),
+            'mg': round(mg, 0), 'pmg': round((mg/rec*100) if rec > 0 else 0, 1),
+            'meses': [],  # vazio — será carregado sob demanda do Airtable
+        })
+
+    all_clientes = []
+    for nome_cli in sorted(dados_clientes.keys(), key=lambda x: -dados_clientes[x]['totais']['receita']):
+        dc = dados_clientes[nome_cli]
+        t = dc['totais']
+        cli_rows = dados_calc[dados_calc['NomeFantasia'] == nome_cli]
+        com_val = cli_rows['comissao'].sum() if len(cli_rows) > 0 else 0
+        all_clientes.append({
+            'nome': nome_cli,
+            'rec': round(t.get('receita', 0)),
+            'drs': round(t.get('devol', 0)),
+            'pdrs': round(t.get('pct_dev', 0), 1),
+            'com': round(com_val),
+            'cmv': round(t.get('cmv', 0)),
+            'mg': round(t.get('margem', 0)),
+            'pmg': round(t.get('margem_pct', 0), 1),
+        })
+
+    js = '// dados-lista.js — LEVE (so totais anuais, sem detalhe mensal)\n'
+    js += f'// {len(all_produtos)} produtos, {len(all_clientes)} clientes\n'
+    js += f'// Gerado em: {datetime.now().strftime("%d/%m/%Y %H:%M")}\n\n'
+    js += 'const ALL_PRODUTOS = ' + json.dumps(all_produtos, ensure_ascii=False) + ';\n\n'
+    js += 'const ALL_CLIENTES = ' + json.dumps(all_clientes, ensure_ascii=False) + ';\n'
+
+    saida = PASTA_BASE / 'dados-lista.js'
+    with open(saida, 'w', encoding='utf-8') as f:
+        f.write(js)
+
+    tamanho = saida.stat().st_size / 1024
+    print(f"    {len(all_produtos)} produtos + {len(all_clientes)} clientes ({tamanho:.0f} KB)")
+
+
+def gerar_js_dados(dados_calc, dados_produtos, dados_clientes, devolucoes, comissoes_dict, vendas=None, analise_semanal_precomp=None):
+    """Gera dados-produtos.js com todos os produtos no formato do frontend"""
+    import json
+    print("  Gerando dados-produtos.js...")
+
+    # Análise semanal (dados diários) — usa pre-computado se disponível
+    analise_semanal = analise_semanal_precomp if analise_semanal_precomp else (gerar_analise_semanal(vendas) if vendas is not None else {})
+
+    # Agregar detalhe por produto × mês (somar todos os clientes)
+    prod_mes = dados_calc.groupby(['Produto', 'MesNum']).agg(
+        qtd=('qtd_vendida', 'sum'),
+        rec=('receita', 'sum'),
+        cmv=('cmv', 'sum'),
+        dq=('qtd_devolvida', 'sum'),
+        drs=('valor_devolvido', 'sum'),
+        df=('desc_financeiro', 'sum'),
+        com=('comissao', 'sum'),
+    ).reset_index()
+
+    # Agregar devoluções por produto × mês (para top clientes)
+    dev_prod_cli = devolucoes.groupby(['Produto', 'NomeFantasia']).agg(
+        qtd_dev=('Quantidade', 'sum'),
+        val_dev=('TotalNF', 'sum'),
+    ).reset_index()
+
+    # Devoluções mensais por produto
+    MES_MAP = {}
+    for i, m in enumerate(['Janeiro','Fevereiro','Marco','Março','Abril','Maio','Junho',
+                            'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'], 1):
+        MES_MAP[m] = i
+    devolucoes_cp = devolucoes.copy()
+    devolucoes_cp['MesNum'] = devolucoes_cp['Mes'].map(MES_MAP)
+    dev_prod_mes = devolucoes_cp.groupby(['Produto', 'MesNum']).agg(
+        qtd_dev=('Quantidade', 'sum'),
+        val_dev=('TotalNF', 'sum'),
+        n_cli=('NomeFantasia', 'nunique'),
+    ).reset_index()
+    # Top cliente por produto × mês
+    dev_top_cli_mes = devolucoes_cp.groupby(['Produto', 'MesNum', 'NomeFantasia']).agg(
+        val=('TotalNF', 'sum'),
+    ).reset_index()
+
+    all_produtos = []
+    for nome_prod in sorted(dados_produtos.keys()):
+        dp = dados_produtos[nome_prod]
+        t = dp['totais']
+        rec = t.get('receita', 0)
+        cmv_val = t.get('cmv', 0)
+        mg = t.get('margem', 0)
+        qtd = t.get('qtd_vendida', 0)
+        dq_val = t.get('qtd_devolvida', 0)
+        devol = t.get('devol', 0)
+
+        pp = rec / qtd if qtd > 0 else 0
+        cu = cmv_val / qtd if qtd > 0 else 0
+        pdq = (dq_val / qtd * 100) if qtd > 0 else 0
+        pdrs = (devol / rec * 100) if rec > 0 else 0
+        pcmv = (cmv_val / rec * 100) if rec > 0 else 0
+        pmg = (mg / rec * 100) if rec > 0 else 0
+
+        # DF e comissão totais
+        prod_rows = dados_calc[dados_calc['Produto'] == nome_prod]
+        df_total = prod_rows['desc_financeiro'].sum() if len(prod_rows) > 0 else 0
+        com_total = prod_rows['comissao'].sum() if len(prod_rows) > 0 else 0
+        pdf = (df_total / rec * 100) if rec > 0 else 0
+        pcom = (com_total / rec * 100) if rec > 0 else 0
+        pcu = (cu / pp * 100) if pp > 0 else 0
+
+        # Meses
+        pm = prod_mes[prod_mes['Produto'] == nome_prod]
+        meses = []
+        for m in range(1, 13):
+            row = pm[pm['MesNum'] == m]
+            if len(row) > 0:
+                r = row.iloc[0]
+                m_rec = r['rec']
+                m_qtd = r['qtd']
+                m_cmv = r['cmv']
+                m_dq = r['dq']
+                m_drs = r['drs']
+                m_df = r['df']
+                m_com = r['com']
+                m_pp = m_rec / m_qtd if m_qtd > 0 else 0
+                m_cu = m_cmv / m_qtd if m_qtd > 0 else 0
+                m_mg = m_rec - m_drs - m_df - m_com - m_cmv
+                meses.append({
+                    'qtd': int(m_qtd), 'pp': round(m_pp, 2), 'rec': round(m_rec, 0),
+                    'dq': int(m_dq), 'pdq': round((m_dq/m_qtd*100) if m_qtd > 0 else 0, 1),
+                    'drs': round(m_drs, 0), 'pdrs': round((m_drs/m_rec*100) if m_rec > 0 else 0, 1),
+                    'df': round(m_df, 0), 'pdf': round((m_df/m_rec*100) if m_rec > 0 else 0, 1),
+                    'com': round(m_com, 0), 'pcom': round((m_com/m_rec*100) if m_rec > 0 else 0, 1),
+                    'cu': round(m_cu, 2), 'pcu': round((m_cu/m_pp*100) if m_pp > 0 else 0, 1),
+                    'cmv': round(m_cmv, 0), 'pcmv': round((m_cmv/m_rec*100) if m_rec > 0 else 0, 1),
+                    'mg': round(m_mg, 0), 'pmg': round((m_mg/m_rec*100) if m_rec > 0 else 0, 1),
+                })
+            else:
+                meses.append({'qtd':0,'pp':0,'rec':0,'dq':0,'pdq':0,'drs':0,'pdrs':0,
+                              'df':0,'pdf':0,'com':0,'pcom':0,'cu':0,'pcu':0,
+                              'cmv':0,'pcmv':0,'mg':0,'pmg':0})
+
+        # Devoluções (para dashboard multinível)
+        dev_meses_data = []
+        dm = dev_prod_mes[dev_prod_mes['Produto'] == nome_prod]
+        for mi in range(1, 13):
+            dm_row = dm[dm['MesNum'] == mi]
+            m_data = pm[pm['MesNum'] == mi]
+            qtd_venda = int(m_data.iloc[0]['qtd']) if len(m_data) > 0 else 0
+            rec_venda = round(m_data.iloc[0]['rec']) if len(m_data) > 0 else 0
+            if len(dm_row) > 0:
+                dr = dm_row.iloc[0]
+                qtd_d = int(dr['qtd_dev'])
+                rs_d = round(dr['val_dev'])
+                n_c = int(dr['n_cli'])
+                # Top cliente do mês
+                top_rows = dev_top_cli_mes[(dev_top_cli_mes['Produto'] == nome_prod) & (dev_top_cli_mes['MesNum'] == mi)]
+                top_cli = top_rows.sort_values('val', ascending=False).iloc[0]['NomeFantasia'] if len(top_rows) > 0 else ''
+            else:
+                qtd_d = 0; rs_d = 0; n_c = 0; top_cli = ''
+            dev_meses_data.append({
+                'qtdVenda': qtd_venda, 'recVenda': rec_venda,
+                'qtdDev': qtd_d, 'rsDev': rs_d,
+                'pctQtd': round((qtd_d/qtd_venda*100) if qtd_venda > 0 else 0, 1),
+                'pctRec': round((rs_d/rec_venda*100) if rec_venda > 0 else 0, 1),
+                'nCli': n_c, 'topCli': top_cli,
+            })
+
+        # Top 10 clientes devolução (anual)
+        dpc = dev_prod_cli[dev_prod_cli['Produto'] == nome_prod].sort_values('val_dev', ascending=False).head(10)
+        top_clientes_devol = [{'nome': r['NomeFantasia'], 'qtd': int(r['qtd_dev']), 'valor': round(r['val_dev'])} for _, r in dpc.iterrows()]
+
+        all_produtos.append({
+            'nome': nome_prod,
+            'qtd': int(qtd), 'pp': round(pp, 2), 'rec': round(rec, 0),
+            'dq': int(dq_val), 'pdq': round(pdq, 1),
+            'drs': round(devol, 0), 'pdrs': round(pdrs, 1),
+            'df': round(df_total, 0), 'pdf': round(pdf, 1),
+            'com': round(com_total, 0), 'pcom': round(pcom, 1),
+            'cu': round(cu, 2), 'pcu': round(pcu, 1),
+            'cmv': round(cmv_val, 0), 'pcmv': round(pcmv, 1),
+            'mg': round(mg, 0), 'pmg': round(pmg, 1),
+            'meses': meses,
+            'devolucoes': {'meses': dev_meses_data},
+            'topClientesDevol': top_clientes_devol,
+            'painel': analise_semanal.get(nome_prod, None),
+        })
+
+    # Clientes
+    all_clientes = []
+    for nome_cli in sorted(dados_clientes.keys(), key=lambda x: -dados_clientes[x]['totais']['receita']):
+        dc = dados_clientes[nome_cli]
+        t = dc['totais']
+        cli_rows = dados_calc[dados_calc['NomeFantasia'] == nome_cli]
+        cnpj = cli_rows['CNPJ'].iloc[0] if len(cli_rows) > 0 else ''
+        com_val = cli_rows['comissao'].sum() if len(cli_rows) > 0 else 0
+        all_clientes.append({
+            'nome': nome_cli,
+            'rec': round(t.get('receita', 0)),
+            'drs': round(t.get('devol', 0)),
+            'pdrs': round(t.get('pct_dev', 0), 1),
+            'com': round(com_val),
+            'cmv': round(t.get('cmv', 0)),
+            'mg': round(t.get('margem', 0)),
+            'pmg': round(t.get('margem_pct', 0), 1),
+        })
+
+    # Escrever JS
+    js = '// Dados gerados automaticamente por gerar_rentabilidade.py\n'
+    js += f'// {len(all_produtos)} produtos, {len(all_clientes)} clientes\n'
+    js += f'// Gerado em: {datetime.now().strftime("%d/%m/%Y %H:%M")}\n\n'
+    js += 'const ALL_PRODUTOS = ' + json.dumps(all_produtos, ensure_ascii=False) + ';\n\n'
+    js += 'const ALL_CLIENTES = ' + json.dumps(all_clientes, ensure_ascii=False) + ';\n'
+
+    saida = PASTA_BASE / 'dados-produtos.js'
+    with open(saida, 'w', encoding='utf-8') as f:
+        f.write(js)
+
+    tamanho = saida.stat().st_size / 1024
+    print(f"    {len(all_produtos)} produtos + {len(all_clientes)} clientes")
+    print(f"    Salvo: {saida} ({tamanho:.0f} KB)")
+
+
+# ============================================================================
 # MAIN
 # ============================================================================
 
@@ -982,19 +1600,31 @@ def main():
     dados_produtos = agregar_por_produto(dados)
     print(f"    {len(dados_produtos)} produtos")
 
-    # Gerar HTML
-    html = gerar_html(dados_clientes, dados_produtos, dados)
+    # Gerar análise semanal (usada pelo JS e pelo Airtable)
+    analise_semanal = gerar_analise_semanal(vendas)
 
-    # Salvar
-    with open(ARQUIVO_SAIDA, 'w', encoding='utf-8') as f:
-        f.write(html)
+    # Gerar JS para o frontend
+    gerar_js_lista(dados, dados_produtos, dados_clientes)  # leve (~50KB)
+    gerar_js_dados(dados, dados_produtos, dados_clientes, devolucoes, comissoes, vendas=vendas, analise_semanal_precomp=analise_semanal)  # completo (~2.4MB)
+
+    # Upload Airtable
+    if '--no-airtable' not in sys.argv:
+        upload_airtable(dados_produtos, dados_clientes, dados, comissoes, analise_semanal=analise_semanal)
+    else:
+        print("  (Airtable upload ignorado — --no-airtable)")
+
+    # Gerar HTML
+    if '--no-html' not in sys.argv:
+        html = gerar_html(dados_clientes, dados_produtos, dados)
+        with open(ARQUIVO_SAIDA, 'w', encoding='utf-8') as f:
+            f.write(html)
+        tamanho = ARQUIVO_SAIDA.stat().st_size / 1024
+        print(f"\n  HTML salvo: {ARQUIVO_SAIDA} ({tamanho:.0f} KB)")
+    else:
+        print("  (HTML ignorado — --no-html)")
 
     duracao = time.time() - inicio
-    tamanho = ARQUIVO_SAIDA.stat().st_size / 1024
-
-    print(f"\n  Salvo: {ARQUIVO_SAIDA}")
-    print(f"  Tamanho: {tamanho:.0f} KB")
-    print(f"  Duração: {duracao:.1f}s")
+    print(f"  Duração total: {duracao:.1f}s")
     print("=" * 70)
 
 

@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rentabilidade Vendas 2025</title>
+    <title>Inteligência de Rentabilidade — Margens de Contribuição, Performance e Tendências de Vendas</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.31/dist/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>tailwind.config={corePlugins:{preflight:false}}</script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
         canvas { image-rendering: -webkit-optimize-contrast; }
     </style>
@@ -156,10 +160,10 @@ body {
 }
 .app-header-hamburger:hover { background: var(--border-light); }
 .app-header-title {
-    font-size:var(--fs-lg);
+    font-size:var(--fs-2xl);
     font-weight:var(--fw-black);
     color: var(--text);
-    letter-spacing: -0.3px;
+    letter-spacing: -0.5px;
 }
 .app-header-right {
     display: flex;
@@ -193,9 +197,9 @@ body {
     gap: 0;
 }
 .tab-item {
-    padding: 12px 20px;
-    font-size:var(--fs-md);
-    font-weight:var(--fw-bold);
+    padding: 18px 24px;
+    font-size:var(--fs-lg);
+    font-weight:var(--fw-black);
     color: var(--text-muted);
     cursor: pointer;
     border-bottom: 3px solid transparent;
@@ -207,6 +211,10 @@ body {
 .tab-item.active {
     color: var(--accent);
     border-bottom-color: var(--accent);
+}
+@keyframes pulse-tab {
+    0%, 100% { background: transparent; }
+    50% { background: rgba(26,92,255,0.15); border-radius: 8px; }
 }
 
 /* ============================================
@@ -477,11 +485,11 @@ tr.col-head td {
     padding: 10px 4px;
     text-align: center;
     border-bottom: 1px solid var(--border);
-    width: 62px;
+    width: 74px;
 }
 tr.col-head td:first-child {
     text-align: left;
-    width: 130px;
+    width: 150px;
     color: var(--text);
     font-weight:var(--fw-black);
 }
@@ -596,6 +604,66 @@ tbody tr:hover td { background: var(--accent-dim); }
 .kpi-card.kpi-success .kpi-value { color: var(--success); }
 .kpi-card.kpi-danger .kpi-value { color: var(--danger); }
 
+/* Tabela Ajustes — linha clicável */
+#tblAjustes tbody tr { cursor: pointer; transition: background 0.15s; }
+#tblAjustes tbody tr:hover td { background: var(--accent-dim); }
+#tblAjustes tbody tr.aj-selected td { background: #eff6ff; border-bottom-color: var(--accent); }
+.aj-delta-pos { color: var(--success); font-weight: var(--fw-bold); }
+.aj-delta-neg { color: var(--danger); font-weight: var(--fw-bold); }
+.aj-delta-zero { color: var(--text-muted); }
+
+/* Seção intro ajustes */
+.aj-intro { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: var(--radius); padding: 28px 32px; margin-bottom: 24px; color: #fff; }
+.aj-intro h3 { font-size: 1.15rem; font-weight: var(--fw-black); margin: 0 0 12px; color: #fff; }
+.aj-intro p { font-size: var(--fs-lg); color: #cbd5e1; margin: 0 0 8px; line-height: 1.6; }
+.aj-intro .aj-highlight { display: inline-block; background: rgba(26,92,255,0.2); color: #93c5fd; padding: 2px 8px; border-radius: 4px; font-weight: var(--fw-bold); }
+.aj-intro-stats { display: flex; gap: 24px; margin-top: 16px; flex-wrap: wrap; }
+.aj-intro-stat { text-align: center; }
+.aj-intro-stat .aj-stat-value { font-size: 1.5rem; font-weight: var(--fw-black); font-family: 'JetBrains Mono', monospace; color: #fff; }
+.aj-intro-stat .aj-stat-label { font-size: var(--fs-xs); color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+
+/* Compliance CTA card (Visão Geral) */
+.compliance-cta {
+    display: flex; align-items: center; gap: 20px;
+    background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 50%, #f0fdf4 100%);
+    border: 2px solid var(--accent); border-radius: 16px;
+    padding: 24px 28px; margin-bottom: 24px; cursor: pointer;
+    transition: all 0.25s ease; position: relative; overflow: hidden;
+}
+.compliance-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,92,255,0.15); border-color: #3b82f6; }
+.compliance-cta-icon {
+    flex-shrink: 0; width: 56px; height: 56px; border-radius: 14px;
+    background: linear-gradient(135deg, var(--accent), #3b82f6);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 1.4rem; box-shadow: 0 4px 12px rgba(26,92,255,0.3);
+}
+.compliance-cta-body { flex: 1; }
+.compliance-cta-tag {
+    font-size: var(--fs-xs); font-weight: var(--fw-black);
+    text-transform: uppercase; letter-spacing: 1px;
+    color: var(--accent); margin-bottom: 4px;
+}
+.compliance-cta-title { font-size: 1.05rem; font-weight: var(--fw-black); color: var(--primary); margin-bottom: 6px; }
+.compliance-cta-desc { font-size: var(--fs-md); color: var(--text-muted); line-height: 1.5; }
+.compliance-cta-arrow {
+    flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%;
+    background: var(--accent); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; transition: transform 0.2s;
+}
+.compliance-cta:hover .compliance-cta-arrow { transform: translateX(4px); }
+
+/* Compliance status cards */
+.compliance-stat { position: relative; overflow: hidden; }
+.compliance-stat::after {
+    content: ''; position: absolute; top: 0; right: 0;
+    width: 48px; height: 48px; border-radius: 50%;
+    opacity: 0.08; transform: translate(30%, -30%);
+}
+.compliance-stat.stat-fiscal::after { background: var(--success); }
+.compliance-stat.stat-recovery::after { background: var(--accent); }
+.compliance-stat.stat-skus::after { background: var(--primary); }
+
 /* ============================================
    RANKING TABLE
    ============================================ */
@@ -674,6 +742,134 @@ tbody tr:hover td { background: var(--accent-dim); }
 }
 
 /* ============================================
+   ADVANCED FILTERS
+   ============================================ */
+.adv-filter-bar {
+    display: flex; align-items: center; gap: 10px; margin: 0 auto 12px;
+    max-width: 1300px; flex-wrap: wrap;
+}
+.adv-filter-toggle {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border: 1px solid var(--border); border-radius: 10px;
+    background: var(--white); color: var(--text-secondary); font-family: 'Outfit'; font-size: var(--fs-sm);
+    font-weight: var(--fw-black); cursor: pointer; transition: all 0.2s; position: relative;
+}
+.adv-filter-toggle:hover { background: var(--bg); border-color: #cbd5e1; }
+.adv-filter-toggle .adv-badge {
+    position: absolute; top: -6px; right: -6px; min-width: 18px; height: 18px;
+    background: var(--danger); color: #fff; border-radius: 50%; font-size: 9px;
+    font-weight: 900; display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono'; box-shadow: 0 2px 6px rgba(220,53,69,0.4);
+}
+.adv-filter-toggle .adv-badge:empty { display: none; }
+.adv-filter-body {
+    max-width: 1300px; margin: 0 auto 20px; background: var(--white);
+    border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.3s ease;
+    box-shadow: var(--shadow);
+}
+.adv-filter-body.collapsed { max-height: 0 !important; opacity: 0; margin-bottom: 0; border: none; }
+.adv-filter-body .adv-inner { padding: 20px 24px; }
+.adv-filter-section {
+    margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border-light);
+}
+.adv-filter-section:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+.adv-section-title {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 14px;
+    font-family: 'Outfit'; font-size: 11px; font-weight: 900; color: var(--text);
+    text-transform: uppercase; letter-spacing: 1.5px;
+}
+.adv-section-title .adv-dot { width: 4px; height: 20px; border-radius: 4px; }
+.adv-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.adv-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.adv-field-label {
+    display: block; font-family: 'Outfit'; font-size: var(--fs-xs); font-weight: var(--fw-black);
+    color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
+}
+.adv-select, .adv-text-input {
+    width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 8px 12px; font-family: 'Outfit'; font-size: var(--fs-sm); font-weight: var(--fw-bold);
+    color: var(--text); outline: none; transition: border-color 0.15s;
+    appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 10px center; background-size: 14px;
+}
+.adv-text-input { background-image: none; padding-left: 32px; }
+.adv-select:focus, .adv-text-input:focus { border-color: var(--accent); }
+.adv-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.adv-pill {
+    padding: 5px 10px; border: 1px solid var(--border); border-radius: 8px;
+    font-family: 'Outfit'; font-size: var(--fs-xs); font-weight: var(--fw-black);
+    color: var(--text-muted); background: var(--bg); cursor: pointer;
+    transition: all 0.15s; text-transform: uppercase; letter-spacing: 0.3px; user-select: none;
+}
+.adv-pill:hover { border-color: #cbd5e1; color: var(--text-secondary); }
+.adv-pill.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 2px 8px rgba(67,56,202,0.2); }
+.adv-pill.active-success { background: var(--success); color: #fff; border-color: var(--success); }
+.adv-pill.active-danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+.adv-pill.active-warning { background: var(--warning); color: #fff; border-color: var(--warning); }
+.adv-range-wrap { position: relative; height: 36px; display: flex; align-items: center; }
+.adv-range-wrap input[type=range] {
+    position: absolute; width: 100%; height: 6px; appearance: none; background: transparent;
+    pointer-events: none; outline: none;
+}
+.adv-range-wrap input[type=range]::-webkit-slider-thumb {
+    appearance: none; width: 16px; height: 16px; border-radius: 50%;
+    background: var(--accent); border: 2px solid #fff; box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    cursor: pointer; pointer-events: auto;
+}
+.adv-range-track {
+    position: absolute; width: 100%; height: 6px; background: var(--border-light); border-radius: 3px;
+}
+.adv-range-active {
+    position: absolute; height: 6px; background: var(--accent); border-radius: 3px; opacity: 0.3;
+}
+.adv-range-vals {
+    display: flex; justify-content: space-between; margin-top: 4px;
+    font-family: 'JetBrains Mono'; font-size: var(--fs-xs); font-weight: var(--fw-black); color: var(--text-secondary);
+}
+.adv-multi-wrap { position: relative; }
+.adv-multi-trigger {
+    width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px;
+    padding: 8px 12px; font-family: 'Outfit'; font-size: var(--fs-sm); font-weight: var(--fw-bold);
+    color: var(--text); cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+}
+.adv-multi-dropdown {
+    display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
+    background: var(--white); border: 1px solid var(--border); border-radius: 10px;
+    box-shadow: var(--shadow-lg); max-height: 200px; overflow-y: auto; margin-top: 4px;
+}
+.adv-multi-dropdown.open { display: block; }
+.adv-multi-dropdown label {
+    display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+    font-family: 'Outfit'; font-size: var(--fs-sm); font-weight: var(--fw-bold);
+    color: var(--text); cursor: pointer; transition: background 0.1s;
+}
+.adv-multi-dropdown label:hover { background: var(--bg); }
+.adv-multi-dropdown input[type=text] {
+    width: 100%; border: none; border-bottom: 1px solid var(--border); padding: 8px 12px;
+    font-family: 'Outfit'; font-size: var(--fs-sm); outline: none; background: var(--bg);
+}
+.adv-btn-apply {
+    padding: 8px 20px; background: var(--primary); color: #fff; border: none; border-radius: 10px;
+    font-family: 'Outfit'; font-size: var(--fs-sm); font-weight: var(--fw-black);
+    cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s;
+}
+.adv-btn-apply:hover { opacity: 0.9; transform: translateY(-1px); }
+.adv-btn-clear {
+    padding: 8px 14px; background: transparent; color: var(--text-muted); border: none;
+    font-family: 'Outfit'; font-size: var(--fs-sm); font-weight: var(--fw-black);
+    cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.adv-btn-clear:hover { color: var(--text); }
+@media (max-width: 768px) {
+    .adv-grid-3 { grid-template-columns: 1fr; }
+    .adv-grid-2 { grid-template-columns: 1fr; }
+    .adv-filter-bar { flex-direction: column; align-items: stretch; }
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============================================
    FOOTER
    ============================================ */
 .footer {
@@ -710,7 +906,7 @@ tbody tr:hover td { background: var(--accent-dim); }
             <button class="app-header-hamburger" onclick="toggleSidebar()" title="Menu">
                 <i class="fas fa-bars"></i>
             </button>
-            <span class="app-header-title">Rentabilidade Vendas 2025</span>
+            <span class="app-header-title">Inteligência de Rentabilidade — Margens de Contribuição, Performance e Tendências de Vendas</span>
         </div>
         <div class="app-header-right">
             <span class="status-dot"></span>
@@ -790,6 +986,27 @@ tbody tr:hover td { background: var(--accent-dim); }
             </div>
         </div>
 
+        <!-- Camada 1: Status Compliance -->
+        <div class="cards-grid" id="cardsCompliance" style="margin-bottom:24px;"></div>
+
+        <!-- Camada 2: Memorial Descritivo / Compliance -->
+        <div class="compliance-cta" onclick="window.open('compliance.html','_blank')">
+            <div class="compliance-cta-icon">
+                <i class="fas fa-shield-halved"></i>
+            </div>
+            <div class="compliance-cta-body">
+                <div class="compliance-cta-tag">Memorial Descritivo</div>
+                <div class="compliance-cta-title">Blindagem Patrimonial & Compliance Fiscal</div>
+                <div class="compliance-cta-desc">
+                    Relatorio tecnico completo: metodologia Saldo Colchao, riscos SPED Fiscal (Blocos K/H),
+                    e auditoria dos 190 SKUs com rastreabilidade total via Ordens de Producao.
+                </div>
+            </div>
+            <div class="compliance-cta-arrow">
+                <i class="fas fa-arrow-right"></i>
+            </div>
+        </div>
+
         <!-- Summary Cards -->
         <div class="cards-grid" id="cardsVisaoGeral"></div>
 
@@ -850,9 +1067,115 @@ tbody tr:hover td { background: var(--accent-dim); }
             </div>
         </div>
 
-        <div class="filter-bar">
-            <input type="text" class="filter-input" id="filtroProduto" placeholder="Buscar produto..." oninput="filtrarProdutos()">
+        <!-- Barra de filtro + toggle -->
+        <div class="adv-filter-bar">
+            <input type="text" class="filter-input" id="filtroProduto" placeholder="Buscar produto..." oninput="aplicarFiltros()" style="flex:1;min-width:200px;">
+            <button class="adv-filter-toggle" onclick="toggleFilterPanel()">
+                <i class="fas fa-sliders-h"></i> Filtros
+                <span class="adv-badge" id="filterBadge"></span>
+            </button>
             <span class="filter-count" id="countProdutos"></span>
+            <button class="adv-btn-clear" onclick="limparFiltros()">Limpar</button>
+            <button class="adv-btn-apply" onclick="aplicarFiltros()">Aplicar</button>
+        </div>
+
+        <!-- Painel de filtros avançados (colapsável) -->
+        <div class="adv-filter-body collapsed" id="filterPanelBody">
+            <div class="adv-inner">
+
+                <!-- DIMENSÕES -->
+                <div class="adv-filter-section">
+                    <div class="adv-section-title"><div class="adv-dot" style="background:var(--accent);"></div> Dimensões</div>
+                    <div class="adv-grid-3">
+                        <!-- Meses -->
+                        <div>
+                            <span class="adv-field-label">Mês(es)</span>
+                            <div class="adv-pills" id="filterMeses"></div>
+                        </div>
+                        <!-- Produto -->
+                        <div>
+                            <span class="adv-field-label">Produto(s)</span>
+                            <div class="adv-multi-wrap">
+                                <div class="adv-multi-trigger" onclick="toggleMultiSelect('Produtos')">
+                                    <span id="multiProdutosLabel">Todos</span>
+                                    <i class="fas fa-chevron-down" style="font-size:10px;color:var(--text-muted);"></i>
+                                </div>
+                                <div class="adv-multi-dropdown" id="multiProdutos">
+                                    <input type="text" placeholder="Buscar..." oninput="filterMultiOptions(this,'multiProdutos')">
+                                    <div id="multiProdutosOpts"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Cliente -->
+                        <div>
+                            <span class="adv-field-label">Cliente(s)</span>
+                            <div class="adv-multi-wrap">
+                                <div class="adv-multi-trigger" onclick="toggleMultiSelect('Clientes')">
+                                    <span id="multiClientesLabel">Todos</span>
+                                    <i class="fas fa-chevron-down" style="font-size:10px;color:var(--text-muted);"></i>
+                                </div>
+                                <div class="adv-multi-dropdown" id="multiClientes">
+                                    <input type="text" placeholder="Buscar..." oninput="filterMultiOptions(this,'multiClientes')">
+                                    <div id="multiClientesOpts"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="adv-grid-3" style="margin-top:14px;">
+                        <!-- Vendedor -->
+                        <div>
+                            <span class="adv-field-label">Vendedor</span>
+                            <select class="adv-select" id="filterVendedor"><option value="">Todos</option></select>
+                        </div>
+                        <!-- Categoria -->
+                        <div>
+                            <span class="adv-field-label">Categoria</span>
+                            <select class="adv-select" id="filterCategoria"><option value="">Todas</option></select>
+                        </div>
+                        <!-- Dia da Semana -->
+                        <div>
+                            <span class="adv-field-label">Dia da Semana</span>
+                            <div class="adv-pills" id="filterDias"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MÉTRICAS (Range Sliders) -->
+                <div class="adv-filter-section">
+                    <div class="adv-section-title"><div class="adv-dot" style="background:var(--success);"></div> Métricas</div>
+                    <div class="adv-grid-3" id="filterMetricsGrid"></div>
+                </div>
+
+                <!-- CLASSIFICAÇÕES -->
+                <div class="adv-filter-section">
+                    <div class="adv-section-title"><div class="adv-dot" style="background:var(--danger);"></div> Classificações</div>
+                    <div class="adv-grid-3">
+                        <div>
+                            <span class="adv-field-label">Faixa de Margem</span>
+                            <div class="adv-pills" id="filterFaixaMargem"></div>
+                        </div>
+                        <div>
+                            <span class="adv-field-label">Status Devolução</span>
+                            <div class="adv-pills" id="filterStatusDevol"></div>
+                        </div>
+                        <div>
+                            <span class="adv-field-label">Tendência Preço</span>
+                            <div class="adv-pills" id="filterTendencia"></div>
+                        </div>
+                    </div>
+                    <div class="adv-grid-2" style="margin-top:14px;">
+                        <div>
+                            <span class="adv-field-label">Score Variância</span>
+                            <div class="adv-pills" id="filterScoreVar"></div>
+                        </div>
+                        <div>
+                            <span class="adv-field-label">Faixa vs Normal</span>
+                            <div class="adv-pills" id="filterFaixaNormal"></div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
 
         <div id="containerProdutos" style="max-width:1300px;margin:0 auto;"></div>
@@ -903,16 +1226,66 @@ tbody tr:hover td { background: var(--accent-dim); }
         <div class="page-header">
             <div>
                 <h2>Ajustes de Estoque</h2>
-                <p>DRE Comparativa — Antes vs Depois do ajuste</p>
+                <p>DRE Comparativa — Antes vs Depois do ajuste · 111 produtos com DRE</p>
             </div>
         </div>
 
+        <!-- Intro: contexto do projeto -->
+        <div class="aj-intro">
+            <h3><i class="fas fa-microscope" style="margin-right:8px;"></i> Por que este ajuste importa?</h3>
+            <p>
+                O estoque da Plano operava com <span class="aj-highlight">CMC distorcido</span> — entradas antigas,
+                devoluções sem custo e saldos negativos contaminavam o custo médio contábil de cada produto.
+                Dos 190 produtos analisados, <span class="aj-highlight">115 (60%)</span> tinham saldo negativo.
+                Em <span class="aj-highlight">10.714 dias</span> (37% do período) pelo menos um produto estava negativo.
+                Isso significa que a margem de contribuição que aparecia nos relatórios <strong>não era real</strong>.
+            </p>
+            <p>
+                Foram <span class="aj-highlight">190 produtos</span> auditados, com reimportação completa dos
+                movimentos via API OMIE e recálculo do CMC mês a mês. Ordens de Produção caíram de
+                <span class="aj-highlight">13.562 para 5.612</span> (-59%). O resultado: uma DRE com margens que
+                refletem a realidade operacional, permitindo decisões de pricing, mix e compras com dados confiáveis.
+            </p>
+            <div class="aj-intro-stats" id="ajIntroStats"></div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="cards-grid" id="cardsAjusteSummary"></div>
+
+        <!-- Filtro -->
         <div class="filter-bar">
             <input type="text" class="filter-input" id="filtroAjuste" placeholder="Buscar produto..." oninput="filtrarAjustes()">
             <span class="filter-count" id="countAjustes"></span>
         </div>
 
-        <div id="containerAjustes"></div>
+        <!-- Tabela Ranking -->
+        <div class="card">
+            <div class="card-header card-header-dark" onclick="toggleCard(this)">
+                <span><i class="fas fa-scale-balanced" style="margin-right:8px"></i> Impacto por Produto</span>
+                <i class="fas fa-chevron-up card-toggle" style="transition:transform 0.3s"></i>
+            </div>
+            <div class="card-body card-collapsible">
+                <div class="table-wrap">
+                    <table class="ranking-table" id="tblAjustes">
+                        <thead><tr>
+                            <th style="width:40px">#</th>
+                            <th>Produto</th>
+                            <th class="text-right">Receita</th>
+                            <th class="text-right">CMV Antes</th>
+                            <th class="text-right">CMV Depois</th>
+                            <th class="text-right">Δ CMV</th>
+                            <th class="text-right">Mg% Antes</th>
+                            <th class="text-right">Mg% Depois</th>
+                            <th class="text-right">Δ Margem</th>
+                        </tr></thead>
+                        <tbody id="tbodyAjustes"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detalhe expandido (preenchido via JS ao clicar) -->
+        <div id="containerAjusteDetalhe" style="margin-top:16px;"></div>
     </section>
 
 </div>
@@ -922,14 +1295,16 @@ tbody tr:hover td { background: var(--accent-dim); }
 <!-- ============================================
      SCRIPTS
      ============================================ -->
+<script src="dados-lista.js"></script>
+<!-- dados-ajustes.js removido — agora vem do Airtable -->
 <script>
 // =============================================
 // NAVEGAÇÃO
 // =============================================
 function navegarTab(el) {
+    const tab = el.dataset.tab;
     document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
     el.classList.add('active');
-    const tab = el.dataset.tab;
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
     document.getElementById(tab).classList.add('active');
 }
@@ -950,7 +1325,163 @@ function toggleCard(header) {
         body.style.maxHeight = body.scrollHeight + 'px';
         body.style.opacity = '1';
         if (icon) icon.style.transform = 'rotate(0deg)';
+        // Lazy load: carregar detalhe do Airtable se necessário
+        const card = header.closest('.produto-card');
+        if (card && !card.dataset.loaded) {
+            lazyLoadProduto(card);
+        }
     }
+}
+
+// Cache de produtos já carregados
+const PRODUTO_CACHE = {};
+
+async function lazyLoadProduto(card) {
+    const nome = card.dataset.nomeFull;
+    const idx = Array.from(document.querySelectorAll('.produto-card')).indexOf(card);
+    if (!nome || card.dataset.loaded === 'true') return;
+
+    // Marcar como carregando
+    card.dataset.loaded = 'loading';
+
+    // Mostrar loading overlay
+    const body = card.querySelector('.card-collapsible');
+    const loadingOverlay = document.createElement('div');
+    loadingOverlay.className = 'lazy-loading-overlay';
+    loadingOverlay.style.cssText = 'position:relative;background:linear-gradient(135deg,#eff6ff,#f0fdf4);border-radius:12px;margin:16px;padding:40px 24px;text-align:center;border:2px dashed var(--accent);';
+    loadingOverlay.innerHTML = `
+        <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+            <div style="width:48px;height:48px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;"></div>
+            <div style="font-family:Outfit;font-size:var(--fs-lg);font-weight:var(--fw-black);color:var(--accent);">Carregando dados do Airtable</div>
+            <div style="font-family:Outfit;font-size:var(--fs-sm);color:var(--text-muted);">DRE mensal + Devoluções + Análise Histórica</div>
+        </div>
+    `;
+    if (body) body.prepend(loadingOverlay);
+
+    try {
+        // Buscar detalhe do Airtable filtrado por produto
+        const records = await airtableFetchAll(AIRTABLE.tables.detalhe, {
+            filterByFormula: '{Produto}="' + nome + '"'
+        });
+
+        if (records.length === 0) {
+            card.dataset.loaded = 'empty';
+            return;
+        }
+
+        // Agregar por mês (somar clientes)
+        const mesesMap = {};
+        records.forEach(r => {
+            const f = r.fields;
+            const m = f['Mês'] || f['Mes'];
+            if (!m) return;
+            if (!mesesMap[m]) mesesMap[m] = { qtd:0, rec:0, cmv:0, dq:0, drs:0, df:0, com:0 };
+            mesesMap[m].qtd += f.Qtd || 0;
+            mesesMap[m].rec += f.Receita || 0;
+            mesesMap[m].cmv += f.CMV || 0;
+            mesesMap[m].dq += f['Qtd Devolvida'] || 0;
+            mesesMap[m].drs += f['Valor Devolvido'] || 0;
+            mesesMap[m].df += f['Desc Financeiro'] || 0;
+            mesesMap[m].com += (f['Comissão'] || f['Comissao'] || 0);
+        });
+
+        // Converter para array de 12 meses
+        const meses = [];
+        for (let i = 1; i <= 12; i++) {
+            const m = mesesMap[i] || { qtd:0, rec:0, cmv:0, dq:0, drs:0, df:0, com:0 };
+            const pp = m.qtd > 0 ? m.rec / m.qtd : 0;
+            const cu = m.qtd > 0 ? m.cmv / m.qtd : 0;
+            const mg = m.rec - m.drs - m.df - m.com - m.cmv;
+            meses.push({
+                qtd: Math.round(m.qtd), pp: Math.round(pp*100)/100, rec: Math.round(m.rec),
+                dq: Math.round(m.dq), pdq: m.qtd > 0 ? Math.round(m.dq/m.qtd*1000)/10 : 0,
+                drs: Math.round(m.drs), pdrs: m.rec > 0 ? Math.round(m.drs/m.rec*1000)/10 : 0,
+                df: Math.round(m.df), pdf: m.rec > 0 ? Math.round(m.df/m.rec*1000)/10 : 0,
+                com: Math.round(m.com), pcom: m.rec > 0 ? Math.round(m.com/m.rec*1000)/10 : 0,
+                cu: Math.round(cu*100)/100, pcu: pp > 0 ? Math.round(cu/pp*1000)/10 : 0,
+                cmv: Math.round(m.cmv), pcmv: m.rec > 0 ? Math.round(m.cmv/m.rec*1000)/10 : 0,
+                mg: Math.round(mg), pmg: m.rec > 0 ? Math.round(mg/m.rec*1000)/10 : 0,
+            });
+        }
+
+        // Devoluções por mês (para dashboard)
+        const devMeses = meses.map(m => ({
+            qtdVenda: m.qtd, recVenda: m.rec,
+            qtdDev: m.dq, rsDev: m.drs,
+            pctQtd: m.pdq, pctRec: m.pdrs,
+            nCli: 0, topCli: '',
+        }));
+
+        // Top clientes devolução (agregar por cliente)
+        const cliDevMap = {};
+        records.forEach(r => {
+            const f = r.fields;
+            const cli = f.Cliente;
+            const dv = f['Valor Devolvido'] || 0;
+            const dq = f['Qtd Devolvida'] || 0;
+            if (dv > 0) {
+                if (!cliDevMap[cli]) cliDevMap[cli] = { nome: cli, valor: 0, qtd: 0 };
+                cliDevMap[cli].valor += dv;
+                cliDevMap[cli].qtd += dq;
+            }
+        });
+        const topClientesDevol = Object.values(cliDevMap).sort((a,b) => b.valor - a.valor).slice(0,10);
+
+        // Buscar painel semanal do Airtable
+        let painelData = null;
+        try {
+            const painelRecords = await airtableFetchAll(AIRTABLE.tables.painel, {
+                filterByFormula: '{Produto}="' + nome + '"'
+            });
+            if (painelRecords.length > 0 && painelRecords[0].fields.DadosPainel) {
+                painelData = JSON.parse(painelRecords[0].fields.DadosPainel);
+            }
+        } catch (e) { console.warn('Painel nao carregado para', nome, e); }
+
+        // Atualizar o produto no MOCK_PRODUTOS
+        const prodIdx = MOCK_PRODUTOS.findIndex(p => p.nome === nome);
+        if (prodIdx >= 0) {
+            MOCK_PRODUTOS[prodIdx].meses = meses;
+            MOCK_PRODUTOS[prodIdx].devolucoes = { meses: devMeses };
+            MOCK_PRODUTOS[prodIdx].topClientesDevol = topClientesDevol;
+            if (painelData) MOCK_PRODUTOS[prodIdx].painel = painelData;
+        }
+
+        // Re-renderizar apenas este card
+        card.dataset.loaded = 'true';
+        reRenderProdutoCard(card, idx, MOCK_PRODUTOS[prodIdx]);
+
+    } catch (err) {
+        console.warn('Lazy load falhou para', nome, err);
+        card.dataset.loaded = 'error';
+    }
+}
+
+function reRenderProdutoCard(card, idx, prod) {
+    // Estratégia: destruir card e recriar usando renderSingleProduto()
+    // Isso garante que TODAS as 5 seções renderizam com dados completos
+    const container = card.parentElement;
+    const nextSibling = card.nextSibling;
+
+    // Criar novo card com dados completos
+    const newCard = renderSingleProduto(prod, idx);
+    newCard.dataset.loaded = 'true';
+
+    // Substituir no DOM
+    container.removeChild(card);
+    if (nextSibling) container.insertBefore(newCard, nextSibling);
+    else container.appendChild(newCard);
+
+    // Abrir o card (estava aberto quando o lazy load iniciou)
+    const body = newCard.querySelector('.card-collapsible');
+    const icon = newCard.querySelector('.card-toggle');
+    setTimeout(() => {
+        if (body) { body.style.maxHeight = body.scrollHeight + 'px'; body.style.opacity = '1'; }
+        if (icon) icon.style.transform = 'rotate(0deg)';
+    }, 100);
+    // Reajustar maxHeight após gráficos renderizarem
+    setTimeout(() => { if (body) body.style.maxHeight = body.scrollHeight + 'px'; }, 1000);
+    setTimeout(() => { if (body) body.style.maxHeight = body.scrollHeight + 'px'; }, 2000);
 }
 
 function trocarMesPainel(painelId, mesIdx) {
@@ -1269,7 +1800,9 @@ const AIRTABLE = {
     tables: {
         produtos:  'tblvS4zY6EofPsYCr',
         clientes:  'tblB6qHTf7MGqjs5K',
-        detalhe:   'tbluXAa4patQHyxmc'
+        detalhe:   'tbluXAa4patQHyxmc',
+        painel:    'tblUUOhkcr76Hu4oQ',
+        ajustes:   'tblDkBDYexZi3bY1E'
     }
 };
 
@@ -1288,17 +1821,84 @@ async function airtableFetch(tableId, params = {}) {
 }
 
 // Busca todos os registros (paginação automática)
-async function airtableFetchAll(tableId) {
+async function airtableFetchAll(tableId, extraParams = {}) {
     let allRecords = [];
     let offset = null;
     do {
-        const params = { pageSize: '100' };
+        const params = { pageSize: '100', ...extraParams };
         if (offset) params.offset = offset;
         const data = await airtableFetch(tableId, params);
         allRecords = allRecords.concat(data.records || []);
         offset = data.offset || null;
     } while (offset);
     return allRecords;
+}
+
+// Carrega tabela Ajustes do Airtable e converte pro formato DADOS_AJUSTES
+let DADOS_AJUSTES = [];
+const MESES_SHORT_FIELDS = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+async function carregarAjustes() {
+    try {
+        const records = await airtableFetchAll(AIRTABLE.tables.ajustes);
+        DADOS_AJUSTES = records.map(r => {
+            const f = r.fields;
+            return {
+                nome: f['Produto'] || '',
+                qtdVendida: f['Qtd Vendida'] || 0,
+                qtdDevolvida: f['Qtd Devolvida'] || 0,
+                receita: f['Receita'] || 0,
+                devolucao: f['Devolucao R$'] || 0,
+                recAntes: f['Receita'] || 0,
+                cmvAntes: f['CMV Antes'] || 0,
+                mgAntes: f['Margem R$ Antes'] || 0,
+                pmgAntes: f['Margem Pct Antes'] || 0,
+                recDepois: f['Receita'] || 0,
+                cmvDepois: f['CMV Depois'] || 0,
+                mgDepois: f['Margem R$ Depois'] || 0,
+                pmgDepois: f['Margem Pct Depois'] || 0,
+                saldoAntes: f['Saldo Antes'] || 0,
+                saldoDepois: f['Saldo Depois'] || 0,
+                cmcFinalAntes: f['CMC Final Antes'] || 0,
+                cmcFinalDepois: f['CMC Final Depois'] || 0,
+                vlrEstoqueAntes: f['Vlr Estoque Antes'] || 0,
+                vlrEstoqueDepois: f['Vlr Estoque Depois'] || 0,
+                opsAntes: f['OPs Antes'] || 0,
+                opsDepois: f['OPs Depois'] || 0,
+                precoMedio: f['Preco Medio'] || 0,
+                // Diagnostico diario (ANTES)
+                diasTotal: f['Dias Total'] || 0,
+                diasNegativo: f['Dias Negativo'] || 0,
+                diasExcessivo: f['Dias Excessivo'] || 0,
+                diasOk: f['Dias OK'] || 0,
+                piorSaldo: f['Pior Saldo'] || 0,
+                maiorSaldo: f['Maior Saldo'] || 0,
+                diasCmcAlto: f['Dias CMC Alto'] || 0,
+                cmcMediana: f['CMC Mediana'] || 0,
+                cmcMax: f['CMC Max'] || 0,
+                // Diagnostico diario (DEPOIS)
+                diasNegativoDepois: f['Dias Negativo Depois'] || 0,
+                diasExcessivoDepois: f['Dias Excessivo Depois'] || 0,
+                diasOkDepois: f['Dias OK Depois'] || 0,
+                // Arrays mensais
+                cmcMesAntes: MESES_SHORT_FIELDS.map(m => f['CMC ' + m + ' Antes'] || 0),
+                cmcMesDepois: MESES_SHORT_FIELDS.map(m => f['CMC ' + m + ' Depois'] || 0),
+                qtdMes: MESES_SHORT_FIELDS.map(m => f['Qtd ' + m] || 0),
+                cmvMesAntes: [],  // calculado: qtdMes[i] * cmcMesAntes[i]
+                cmvMesDepois: [], // calculado: qtdMes[i] * cmcMesDepois[i]
+                recMes: MESES_SHORT_FIELDS.map(m => f['Rec ' + m] || 0),
+            };
+        });
+        // Calcular cmvMes a partir dos arrays
+        DADOS_AJUSTES.forEach(aj => {
+            aj.cmvMesAntes = aj.qtdMes.map((q, i) => +(q * aj.cmcMesAntes[i]).toFixed(2));
+            aj.cmvMesDepois = aj.qtdMes.map((q, i) => +(q * aj.cmcMesDepois[i]).toFixed(2));
+        });
+        console.log(`Ajustes carregados do Airtable: ${DADOS_AJUSTES.length} produtos`);
+    } catch (e) {
+        console.error('Erro ao carregar Ajustes do Airtable:', e);
+        DADOS_AJUSTES = [];
+    }
 }
 
 // Tenta carregar do Airtable; se vazio, usa mock
@@ -1359,9 +1959,10 @@ function fmtPct(v) { return v === 0 ? '-' : v.toFixed(1).replace('.', ',') + '%'
 function mgClass(p) { return p >= 50 ? 'mg-alta' : p >= 30 ? 'mg-media' : 'mg-baixa'; }
 
 // =============================================
-// DADOS MOCKADOS
+// DADOS — usa ALL_PRODUTOS/ALL_CLIENTES de dados-produtos.js (184 produtos reais)
+// Fallback: mock inline se o JS externo não carregar
 // =============================================
-const MOCK_PRODUTOS = [
+const MOCK_PRODUTOS = (typeof ALL_PRODUTOS !== 'undefined') ? ALL_PRODUTOS : [
     { nome: 'ALFACE AMERICANA 150G', qtd: 333660, pp: 3.56, rec: 1186457, dq: 19218, pdq: 5.8, drs: 66755, pdrs: 5.6, df: 77345, pdf: 6.5, com: 8340, pcom: 0.7, cu: 1.36, pcu: 38.2, cmv: 455065, pcmv: 38.4, mg: 578950, pmg: 48.8,
       meses: [
         {qtd:26639,pp:4.19,rec:111731,dq:1813,pdq:6.8,drs:6936,pdrs:6.2,df:6940,pdf:6.2,com:783,pcom:0.7,cu:1.31,pcu:31.3,cmv:34801,pcmv:31.1,mg:62270,pmg:55.7},
@@ -1434,7 +2035,7 @@ const MOCK_PRODUTOS = [
     { nome: 'PEPINO JAPONES 450G', qtd: 9800, pp: 4.50, rec: 44100, dq: 490, pdq: 5.0, drs: 2205, pdrs: 5.0, df: 220, pdf: 0.5, com: 310, pcom: 0.7, cu: 1.80, pcu: 40.0, cmv: 17640, pcmv: 40.0, mg: 23725, pmg: 53.8, meses: [] },
 ];
 
-const MOCK_CLIENTES = [
+const MOCK_CLIENTES = (typeof ALL_CLIENTES !== 'undefined') ? ALL_CLIENTES : [
     { nome: 'MUFFATO PORTAO', rec: 185400, drs: 18540, pdrs: 10.0, com: 1483, cmv: 70452, mg: 94925, pmg: 51.2 },
     { nome: 'CONDOR CENTRO', rec: 142300, drs: 11384, pdrs: 8.0, com: 998, cmv: 54074, mg: 75844, pmg: 53.3 },
     { nome: 'ANGELONI BATEL', rec: 128700, drs: 15444, pdrs: 12.0, com: 901, cmv: 48906, mg: 63449, pmg: 49.3 },
@@ -1447,18 +2048,26 @@ const MOCK_CLIENTES = [
     { nome: 'SUPER BONI', rec: 38900, drs: 2334, pdrs: 6.0, com: 272, cmv: 15171, mg: 21123, pmg: 54.3 },
 ];
 
-const MOCK_AJUSTES = [
-    { nome: 'CEBOLETE KG', qtd: 10, recAntes: 1200, cmvAntes: 890, mgAntes: 310, pmgAntes: 25.8, recDepois: 1200, cmvDepois: 540, mgDepois: 660, pmgDepois: 55.0 },
-    { nome: 'ALFACE AMERICANA 150G', qtd: 21063, recAntes: 75037, cmvAntes: 42020, mgAntes: 33017, pmgAntes: 44.0, recDepois: 75037, cmvDepois: 28526, mgDepois: 46511, pmgDepois: 62.0 },
-    { nome: 'BROCOLIS JAPONES 300G', qtd: 15200, recAntes: 72960, cmvAntes: 40128, mgAntes: 32832, pmgAntes: 45.0, recDepois: 72960, cmvDepois: 28892, mgDepois: 44068, pmgDepois: 60.4 },
-    { nome: 'CENOURA 450G', qtd: 12800, recAntes: 37120, cmvAntes: 14848, mgAntes: 22272, pmgAntes: 60.0, recDepois: 37120, cmvDepois: 12176, mgDepois: 24944, pmgDepois: 67.2 },
-    { nome: 'COUVE MANTEIGA', qtd: 11400, recAntes: 35340, cmvAntes: 17670, mgAntes: 17670, pmgAntes: 50.0, recDepois: 35340, cmvDepois: 13111, mgDepois: 22229, pmgDepois: 62.9 },
-];
+// DADOS_AJUSTES carregado do Airtable via carregarAjustes()
 
 // =============================================
 // RENDER: VISAO GERAL
 // =============================================
 function renderVisaoGeral() {
+    // Camada 1: Status Compliance
+    const compCards = [
+        { label: 'Status Fiscal', value: '100% Regularizado', sub: 'Bloco H / Bloco K (SPED)', type: 'card-success', icon: 'fa-shield-halved', cls: 'stat-fiscal' },
+        { label: 'Recuperacao Total', value: 'R$ 1.167.100', sub: 'Margem de Lucro Bruto Resgatada', type: '', icon: 'fa-dollar-sign', cls: 'stat-recovery' },
+        { label: 'SKUs Auditados', value: '190 Itens', sub: 'Portfolio Analisado e Corrigido', type: '', icon: 'fa-boxes-stacked', cls: 'stat-skus' },
+    ];
+    document.getElementById('cardsCompliance').innerHTML = compCards.map(c => `
+        <div class="summary-card ${c.type} compliance-stat ${c.cls}">
+            <div class="card-label"><i class="fas ${c.icon}" style="margin-right:4px"></i> ${c.label}</div>
+            <div class="card-value">${c.value}</div>
+            <div style="font-size:var(--fs-xs);color:var(--text-muted);margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;">${c.sub}</div>
+        </div>
+    `).join('');
+
     const totRec = MOCK_PRODUTOS.reduce((s, p) => s + p.rec, 0);
     const totCMV = MOCK_PRODUTOS.reduce((s, p) => s + p.cmv, 0);
     const totMg = MOCK_PRODUTOS.reduce((s, p) => s + p.mg, 0);
@@ -1553,10 +2162,270 @@ function renderProdutos() {
     const container = document.getElementById('containerProdutos');
     container.innerHTML = '';
 
-    MOCK_PRODUTOS.forEach((prod, idx) => {
+    // Grid de cards compactos (2 colunas)
+    const grid = document.createElement('div');
+    grid.style.cssText = 'display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-bottom:20px;';
+    grid.id = 'gridProdutos';
+
+    const sorted = [...MOCK_PRODUTOS].sort((a, b) => b.rec - a.rec);
+    sorted.forEach((prod, i) => {
+        const idx = MOCK_PRODUTOS.indexOf(prod);
+        const mgCor = prod.pmg >= 50 ? '#0d9e5f' : prod.pmg >= 30 ? '#e67e22' : '#dc3545';
+        const mgBg = prod.pmg >= 50 ? 'rgba(13,158,95,0.08)' : prod.pmg >= 30 ? 'rgba(230,126,34,0.08)' : 'rgba(220,53,69,0.08)';
+        const devCor = prod.pdrs > 10 ? '#dc3545' : prod.pdrs > 5 ? '#e67e22' : '#5f6780';
+        const rank = i + 1;
+
+        // Mini sparkline SVG (margem por mês se tiver dados)
+        let sparkline = '';
+        if (prod.meses && prod.meses.length > 0 && prod.meses.some(m => m.rec > 0)) {
+            const vals = prod.meses.map(m => m.pmg);
+            const max = Math.max(...vals.map(v => Math.abs(v)), 1);
+            const h = 28, w = 80;
+            const points = vals.map((v, mi) => {
+                const x = (mi / 11) * w;
+                const y = h - ((v + max) / (2 * max)) * h;
+                return x.toFixed(1) + ',' + y.toFixed(1);
+            }).join(' ');
+            sparkline = '<svg width="' + w + '" height="' + h + '" style="display:block;"><polyline points="' + points + '" fill="none" stroke="' + mgCor + '" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        }
+
+        const tile = document.createElement('div');
+        tile.className = 'produto-card';
+        tile.dataset.nome = prod.nome.toLowerCase();
+        tile.dataset.nomeFull = prod.nome;
+        tile.dataset.pdrs = prod.pdrs || 0;
+        tile.dataset.pmg = prod.pmg || 0;
+        tile.dataset.rec = prod.rec || 0;
+        tile.dataset.pp = prod.pp || 0;
+        tile.dataset.cu = prod.cu || 0;
+        tile.dataset.qtd = prod.qtd || 0;
+        tile.dataset.pcmv = prod.pcmv || 0;
+        tile.dataset.pdf = prod.pdf || 0;
+        tile.dataset.pcom = prod.pcom || 0;
+        tile.dataset.idx = idx;
+        tile.style.cssText = 'background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:16px 18px;cursor:pointer;transition:all 0.2s;position:relative;border-left:4px solid ' + mgCor + ';';
+        tile.onmouseenter = function() { this.style.boxShadow = 'var(--shadow-lg)'; this.style.transform = 'translateY(-2px)'; };
+        tile.onmouseleave = function() { this.style.boxShadow = 'none'; this.style.transform = 'none'; };
+        tile.onclick = function() { abrirProdutoDetalhe(idx); };
+
+        tile.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:10px;">
+                <div style="flex:1;min-width:0;">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">
+                        <span style="font-family:JetBrains Mono;font-size:var(--fs-xs);font-weight:var(--fw-black);color:var(--text-muted);background:var(--bg);padding:2px 6px;border-radius:4px;">#${rank}</span>
+                        <span style="font-family:Outfit;font-size:var(--fs-md);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;letter-spacing:0.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${prod.nome}</span>
+                    </div>
+                    <div style="font-family:Outfit;font-size:var(--fs-xs);font-weight:var(--fw-black);color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;">Receita</div>
+                    <div style="font-family:JetBrains Mono;font-size:var(--fs-xl);font-weight:var(--fw-black);color:var(--text);letter-spacing:-0.5px;">${fmtBRL(prod.rec)}</div>
+                </div>
+                <div style="text-align:right;flex-shrink:0;">
+                    ${sparkline}
+                </div>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <div style="background:${mgBg};padding:4px 10px;border-radius:8px;display:flex;align-items:center;gap:4px;">
+                    <span style="font-family:Outfit;font-size:var(--fs-xs);font-weight:var(--fw-black);color:${mgCor};text-transform:uppercase;">Margem</span>
+                    <span style="font-family:JetBrains Mono;font-size:var(--fs-sm);font-weight:var(--fw-black);color:${mgCor};">${fmtPct(prod.pmg)}</span>
+                </div>
+                <div style="background:var(--bg);padding:4px 10px;border-radius:8px;display:flex;align-items:center;gap:4px;">
+                    <span style="font-family:Outfit;font-size:var(--fs-xs);font-weight:var(--fw-black);color:var(--text-muted);text-transform:uppercase;">CMV</span>
+                    <span style="font-family:JetBrains Mono;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text-secondary);">${fmtPct(prod.pcmv)}</span>
+                </div>
+                <div style="background:var(--bg);padding:4px 10px;border-radius:8px;display:flex;align-items:center;gap:4px;">
+                    <span style="font-family:Outfit;font-size:var(--fs-xs);font-weight:var(--fw-black);color:${devCor};text-transform:uppercase;">Devol</span>
+                    <span style="font-family:JetBrains Mono;font-size:var(--fs-sm);font-weight:var(--fw-black);color:${devCor};">${fmtPct(prod.pdrs)}</span>
+                </div>
+                <div style="background:var(--bg);padding:4px 10px;border-radius:8px;display:flex;align-items:center;gap:4px;">
+                    <span style="font-family:Outfit;font-size:var(--fs-xs);font-weight:var(--fw-black);color:var(--text-muted);text-transform:uppercase;">Qtd</span>
+                    <span style="font-family:JetBrains Mono;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text-secondary);">${fmtNum(prod.qtd)}</span>
+                </div>
+            </div>
+        `;
+        grid.appendChild(tile);
+    });
+
+    // Container para o detalhe expandido (ACIMA do grid)
+    const detalheContainer = document.createElement('div');
+    detalheContainer.id = 'produtoDetalheContainer';
+    container.appendChild(detalheContainer);
+
+    container.appendChild(grid);
+
+    document.getElementById('countProdutos').textContent = MOCK_PRODUTOS.length + ' de ' + MOCK_PRODUTOS.length + ' produtos';
+}
+
+// Abrir detalhe de produto (clique no card grid)
+function abrirProdutoDetalhe(idx) {
+    const prod = MOCK_PRODUTOS[idx];
+    const container = document.getElementById('produtoDetalheContainer');
+
+    // Se já está aberto para este produto, fechar
+    if (container.dataset.currentIdx == idx && container.innerHTML !== '') {
+        container.innerHTML = '';
+        container.dataset.currentIdx = '';
+        return;
+    }
+
+    container.dataset.currentIdx = idx;
+
+    // Mostrar loading
+    container.innerHTML = `
+        <div class="card" style="margin-top:20px;border:2px solid var(--accent);border-radius:var(--radius);">
+            <div style="background:linear-gradient(135deg,#1e40af,#3b82f6);color:white;padding:14px 24px;font-weight:var(--fw-black);font-size:var(--fs-lg);text-transform:uppercase;letter-spacing:0.8px;display:flex;justify-content:space-between;align-items:center;border-radius:var(--radius) var(--radius) 0 0;">
+                <span><i class="fas fa-leaf" style="margin-right:8px"></i> ${prod.nome}</span>
+                <span style="cursor:pointer;padding:4px 12px;background:rgba(255,255,255,0.2);border-radius:8px;font-size:var(--fs-sm);" onclick="document.getElementById('produtoDetalheContainer').innerHTML='';document.getElementById('produtoDetalheContainer').dataset.currentIdx='';">
+                    <i class="fas fa-times"></i> Fechar
+                </span>
+            </div>
+            <div style="padding:40px;text-align:center;">
+                <div style="display:flex;flex-direction:column;align-items:center;gap:12px;">
+                    <div style="width:48px;height:48px;border:4px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 1s linear infinite;"></div>
+                    <div style="font-family:Outfit;font-size:var(--fs-lg);font-weight:var(--fw-black);color:var(--accent);">Carregando dados do Airtable</div>
+                    <div style="font-family:Outfit;font-size:var(--fs-sm);color:var(--text-muted);">DRE mensal + Devoluções + Análise Histórica</div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Scroll para o detalhe
+    container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    // Lazy load dados do Airtable
+    lazyLoadAndRender(idx, prod, container);
+}
+
+async function lazyLoadAndRender(idx, prod, container) {
+    try {
+        // Buscar detalhe + painel do Airtable em paralelo
+        const [detalheRecords, painelRecords] = await Promise.all([
+            airtableFetchAll(AIRTABLE.tables.detalhe, { filterByFormula: '{Produto}="' + prod.nome + '"' }),
+            airtableFetchAll(AIRTABLE.tables.painel, { filterByFormula: '{Produto}="' + prod.nome + '"' }),
+        ]);
+
+        // Agregar detalhe por mês
+        if (detalheRecords.length > 0) {
+            const mesesMap = {};
+            detalheRecords.forEach(r => {
+                const f = r.fields;
+                const m = f['Mês'] || f['Mes'];
+                if (!m) return;
+                if (!mesesMap[m]) mesesMap[m] = { qtd:0, rec:0, cmv:0, dq:0, drs:0, df:0, com:0 };
+                mesesMap[m].qtd += f.Qtd || 0;
+                mesesMap[m].rec += f.Receita || 0;
+                mesesMap[m].cmv += f.CMV || 0;
+                mesesMap[m].dq += f['Qtd Devolvida'] || 0;
+                mesesMap[m].drs += f['Valor Devolvido'] || 0;
+                mesesMap[m].df += f['Desc Financeiro'] || 0;
+                mesesMap[m].com += (f['Comissão'] || f['Comissao'] || 0);
+            });
+            const meses = [];
+            for (let i = 1; i <= 12; i++) {
+                const m = mesesMap[i] || { qtd:0, rec:0, cmv:0, dq:0, drs:0, df:0, com:0 };
+                const pp = m.qtd > 0 ? m.rec / m.qtd : 0;
+                const cu = m.qtd > 0 ? m.cmv / m.qtd : 0;
+                const mg = m.rec - m.drs - m.df - m.com - m.cmv;
+                meses.push({
+                    qtd: Math.round(m.qtd), pp: Math.round(pp*100)/100, rec: Math.round(m.rec),
+                    dq: Math.round(m.dq), pdq: m.qtd > 0 ? Math.round(m.dq/m.qtd*1000)/10 : 0,
+                    drs: Math.round(m.drs), pdrs: m.rec > 0 ? Math.round(m.drs/m.rec*1000)/10 : 0,
+                    df: Math.round(m.df), pdf: m.rec > 0 ? Math.round(m.df/m.rec*1000)/10 : 0,
+                    com: Math.round(m.com), pcom: m.rec > 0 ? Math.round(m.com/m.rec*1000)/10 : 0,
+                    cu: Math.round(cu*100)/100, pcu: pp > 0 ? Math.round(cu/pp*1000)/10 : 0,
+                    cmv: Math.round(m.cmv), pcmv: m.rec > 0 ? Math.round(m.cmv/m.rec*1000)/10 : 0,
+                    mg: Math.round(mg), pmg: m.rec > 0 ? Math.round(mg/m.rec*1000)/10 : 0,
+                });
+            }
+            prod.meses = meses;
+
+            // Devoluções
+            prod.devolucoes = { meses: meses.map(m => ({
+                qtdVenda: m.qtd, recVenda: m.rec, qtdDev: m.dq, rsDev: m.drs,
+                pctQtd: m.pdq, pctRec: m.pdrs, nCli: 0, topCli: '',
+            }))};
+
+            // Top clientes devolução
+            const cliDevMap = {};
+            detalheRecords.forEach(r => {
+                const f = r.fields;
+                const cli = f.Cliente;
+                const dv = f['Valor Devolvido'] || 0;
+                const dq = f['Qtd Devolvida'] || 0;
+                if (dv > 0) {
+                    if (!cliDevMap[cli]) cliDevMap[cli] = { nome: cli, valor: 0, qtd: 0 };
+                    cliDevMap[cli].valor += dv;
+                    cliDevMap[cli].qtd += dq;
+                }
+            });
+            prod.topClientesDevol = Object.values(cliDevMap).sort((a,b) => b.valor - a.valor).slice(0,10);
+        }
+
+        // Painel semanal
+        if (painelRecords.length > 0 && painelRecords[0].fields.DadosPainel) {
+            prod.painel = JSON.parse(painelRecords[0].fields.DadosPainel);
+        }
+
+        // Atualizar MOCK_PRODUTOS
+        MOCK_PRODUTOS[idx] = prod;
+
+        // Renderizar card completo
+        const fullCard = renderSingleProduto(prod, idx);
+        const body = fullCard.querySelector('.card-collapsible');
+        if (body) { body.style.maxHeight = 'none'; body.style.opacity = '1'; }
+
+        // Substituir loading pelo card completo
+        container.innerHTML = '';
+        container.dataset.currentIdx = idx;
+
+        // Wrap com header de fechar
+        const wrapper = document.createElement('div');
+        wrapper.style.cssText = 'margin-top:20px;border:2px solid var(--accent);border-radius:var(--radius);overflow:visible;';
+        wrapper.appendChild(fullCard);
+        container.appendChild(wrapper);
+
+        // Remover o card-header original (já temos o wrapper)
+        // Adicionar botão fechar ao header existente
+        const header = fullCard.querySelector('.card-header');
+        if (header) {
+            const closeBtn = document.createElement('span');
+            closeBtn.style.cssText = 'cursor:pointer;padding:4px 12px;background:rgba(255,255,255,0.2);border-radius:8px;font-size:var(--fs-sm);margin-left:8px;';
+            closeBtn.innerHTML = '<i class="fas fa-times"></i> Fechar';
+            closeBtn.onclick = function(e) { e.stopPropagation(); container.innerHTML = ''; container.dataset.currentIdx = ''; };
+            header.querySelector('div').appendChild(closeBtn);
+            // Garantir que está aberto
+            header.nextElementSibling.style.maxHeight = 'none';
+            header.nextElementSibling.style.opacity = '1';
+            header.querySelector('.card-toggle').style.transform = 'rotate(0deg)';
+        }
+
+        // Lucide icons
+        if (typeof lucide !== 'undefined') setTimeout(() => lucide.createIcons(), 100);
+
+        // Reajustar após gráficos renderizarem
+        setTimeout(() => { if (body) body.style.maxHeight = body.scrollHeight + 'px'; }, 1500);
+
+    } catch (err) {
+        console.warn('Lazy load falhou:', err);
+        container.innerHTML = '<div style="padding:40px;text-align:center;color:var(--danger);"><i class="fas fa-exclamation-triangle" style="margin-right:8px;"></i>Erro ao carregar dados. Tente novamente.</div>';
+    }
+}
+
+// =============================================
+// RENDER: SINGLE PRODUTO CARD (reutilizado pelo lazy load)
+// =============================================
+function renderSingleProduto(prod, idx) {
         const card = document.createElement('div');
         card.className = 'card produto-card';
         card.dataset.nome = prod.nome.toLowerCase();
+        card.dataset.pdrs = prod.pdrs || 0;
+        card.dataset.pmg = prod.pmg || 0;
+        card.dataset.rec = prod.rec || 0;
+        card.dataset.pp = prod.pp || 0;
+        card.dataset.cu = prod.cu || 0;
+        card.dataset.qtd = prod.qtd || 0;
+        card.dataset.pcmv = prod.pcmv || 0;
+        card.dataset.pdf = prod.pdf || 0;
+        card.dataset.pcom = prod.pcom || 0;
+        card.dataset.nomeFull = prod.nome;
 
         let headerHTML = `
             <div class="card-header" onclick="toggleCard(this)">
@@ -1756,82 +2625,262 @@ function renderProdutos() {
             tableHTML = '<div style="padding:24px;text-align:center;color:var(--text-muted);font-size:var(--fs-lg);"><i class="fas fa-database" style="margin-right:8px;"></i>DRE mensal disponivel apos conexao com Airtable</div>';
         }
 
-        // Container: Análise de Devoluções
+        // Container: Dashboard de Eficiência — Devoluções (design multinível)
         let devolHTML = '';
-        const devolChartId = 'chart-devol-' + idx;
-        if (prod.nome === 'ALFACE AMERICANA 150G' && typeof DEVOLUCOES_ALFACE !== 'undefined') {
-            const D = DEVOLUCOES_ALFACE;
+        // Devoluções: usa prod.devolucoes (do JS gerado) ou fallback DEVOLUCOES_ALFACE
+        const D_devol = prod.devolucoes || (prod.nome === 'ALFACE AMERICANA 150G' && typeof DEVOLUCOES_ALFACE !== 'undefined' ? DEVOLUCOES_ALFACE : null);
+        const T10_devol = prod.topClientesDevol || (prod.nome === 'ALFACE AMERICANA 150G' && typeof TOP_CLIENTES_DEVOL !== 'undefined' ? TOP_CLIENTES_DEVOL : []);
+        if (D_devol && D_devol.meses) {
+            const D = D_devol;
+            const radarId = 'chart-devol-radar-' + idx;
+            const composedId = 'chart-devol-composed-' + idx;
+            const totRec = D.meses.reduce((s,m) => s + m.recVenda, 0);
+            const totDevR = D.meses.reduce((s,m) => s + m.rsDev, 0);
+            const totDevQ = D.meses.reduce((s,m) => s + m.qtdDev, 0);
+            const T10 = T10_devol.slice(0,10);
+            const topTotal = T10.reduce((s,c) => s + c.valor, 0);
+            const topPct = totDevR > 0 ? (topTotal / totDevR * 100).toFixed(1) : '0';
+            const worstIdx = D.meses.reduce((w, m, i) => m.pctRec > D.meses[w].pctRec ? i : w, 0);
+            const worstLabel = MESES_LABEL[worstIdx];
+            const worstPctVal = D.meses[worstIdx].pctRec;
+            const skuTax = totRec > 0 ? (totDevR / totRec * 100).toFixed(1) : '0';
 
-            // Header
-            devolHTML += `<div class="section-header border-danger" style="border-left-color:var(--danger);"><h3>Análise de Devoluções</h3><p>Vendas vs devoluções por mês — Jan a Dez 2025</p></div>`;
+            devolHTML += `<div class="text-slate-900" style="font-family:'Outfit',sans-serif;max-width:1300px;margin:0 auto;">
 
-            // Gráfico barras
-            devolHTML += `<div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:16px;"><canvas id="${devolChartId}" height="60"></canvas></div>`;
+        <!-- Cabeçalho -->
+        <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <h2 class="text-xl font-black tracking-tighter text-slate-800 flex items-center gap-2 uppercase">
+                    <i data-lucide="pie-chart" class="w-5 h-5 text-red-500"></i>
+                    Análise de Devoluções
+                </h2>
+                <p class="text-slate-500 font-medium tracking-tight flex items-center gap-2 mt-1 text-xs">
+                    <i data-lucide="layers" class="w-4 h-4 text-indigo-500"></i>
+                    Análise Multinível: Operação Geral vs. Estratégia Top 10
+                </p>
+            </div>
+            <div class="bg-red-600 text-white px-4 py-2 rounded-xl shadow-lg flex items-center gap-2 border-2 border-red-400">
+                <i data-lucide="shield-alert" class="w-4 h-4"></i>
+                <span class="text-xs font-bold uppercase tracking-tight font-mono text-white">Alerta ${worstLabel}: ${worstPctVal}%</span>
+            </div>
+        </div>
 
-            // Tabela
-            devolHTML += `<div style="border:1px solid var(--border);border-radius:var(--radius-sm);overflow-x:auto;">`;
-            devolHTML += `<table style="width:100%;border-collapse:collapse;">`;
-            devolHTML += `<thead><tr style="background:var(--bg);border-bottom:2px solid var(--border);">`;
-            devolHTML += `<th style="padding:10px 8px;text-align:left;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);">Mês</th>`;
-            devolHTML += `<th style="padding:10px 6px;text-align:right;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);">Qtd Venda</th>`;
-            devolHTML += `<th style="padding:10px 6px;text-align:right;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--danger);">Qtd Dev</th>`;
-            devolHTML += `<th style="padding:10px 6px;text-align:right;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--danger);">% Qtd</th>`;
-            devolHTML += `<th style="padding:10px 6px;text-align:right;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);">R$ Venda</th>`;
-            devolHTML += `<th style="padding:10px 6px;text-align:right;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--danger);">R$ Dev</th>`;
-            devolHTML += `<th style="padding:10px 6px;text-align:right;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--danger);">% Rec</th>`;
-            devolHTML += `<th style="padding:10px 6px;text-align:right;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);">Clientes</th>`;
-            devolHTML += `<th style="padding:10px 6px;text-align:left;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);">Top Cliente</th>`;
-            devolHTML += `</tr></thead><tbody>`;
+        <!-- KPIs -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+            <div class="bg-white p-5 rounded-xl border border-slate-300 shadow-sm">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Faturamento Bruto</p>
+                <p class="text-xl font-black text-slate-800 tracking-tighter" style="font-family:'JetBrains Mono',monospace;">R$ ${totRec.toLocaleString('pt-BR')}</p>
+            </div>
+            <div class="bg-white p-5 rounded-xl border border-slate-300 shadow-sm border-l-4 border-l-indigo-600">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total Devolvido</p>
+                <p class="text-xl font-black text-indigo-600 tracking-tighter" style="font-family:'JetBrains Mono',monospace;">R$ ${totDevR.toLocaleString('pt-BR')}</p>
+            </div>
+            <div class="bg-white p-5 rounded-xl border border-slate-300 shadow-sm border-l-4 border-l-red-500">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Volume (Qtd)</p>
+                <p class="text-xl font-black text-red-600 tracking-tighter" style="font-family:'JetBrains Mono',monospace;">${totDevQ.toLocaleString('pt-BR')} un.</p>
+            </div>
+            <div class="bg-white p-5 rounded-xl border border-slate-300 shadow-sm border-l-4 border-l-amber-500">
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Impacto Top 10 Clientes</p>
+                <p class="text-xl font-black text-amber-600 tracking-tighter" style="font-family:'JetBrains Mono',monospace;">${topPct}%</p>
+            </div>
+        </div>
 
-            let totQtdV = 0, totQtdD = 0, totRsV = 0, totRsD = 0;
-            D.meses.forEach((dm, mi) => {
-                totQtdV += dm.qtdVenda; totQtdD += dm.qtdDev; totRsV += dm.recVenda; totRsD += dm.rsDev;
-                const bgRow = dm.pctQtd > 10 ? 'background:rgba(220,53,69,0.04);' : '';
-                devolHTML += `<tr style="border-bottom:1px solid var(--border);${bgRow}">`;
-                devolHTML += `<td style="padding:8px;font-weight:var(--fw-black);color:var(--text);font-size:var(--fs-md);">${MESES_LABEL[mi]}</td>`;
-                devolHTML += `<td style="padding:8px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:var(--text);">${dm.qtdVenda.toLocaleString('pt-BR')}</td>`;
-                devolHTML += `<td style="padding:8px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:var(--danger);">${dm.qtdDev.toLocaleString('pt-BR')}</td>`;
-                devolHTML += `<td style="padding:8px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:${dm.pctQtd > 10 ? 'var(--danger)' : 'var(--text-secondary)'};">${dm.pctQtd}%</td>`;
-                devolHTML += `<td style="padding:8px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:var(--text);">R$ ${dm.recVenda.toLocaleString('pt-BR')}</td>`;
-                devolHTML += `<td style="padding:8px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:var(--danger);">R$ ${dm.rsDev.toLocaleString('pt-BR')}</td>`;
-                devolHTML += `<td style="padding:8px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:${dm.pctRec > 10 ? 'var(--danger)' : 'var(--text-secondary)'};">${dm.pctRec}%</td>`;
-                devolHTML += `<td style="padding:8px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:var(--text);">${dm.nCli}</td>`;
-                devolHTML += `<td style="padding:8px 6px;text-align:left;font-size:var(--fs-xs);font-weight:var(--fw-black);color:var(--text-secondary);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${dm.topCli}</td>`;
-                devolHTML += `</tr>`;
-            });
+        <!-- NÍVEL 1: VISÃO GERAL E SAZONALIDADE -->
+        <div class="mb-12">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="h-6 w-1 bg-indigo-600 rounded-full"></div>
+                <h2 class="text-sm font-black text-slate-700 uppercase tracking-widest">Nível 1: Visão Geral e Sazonalidade</h2>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Radar -->
+                <div class="lg:col-span-4 bg-white p-6 rounded-xl border border-slate-300 shadow-sm flex flex-col items-center">
+                    <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 self-start flex items-center gap-2">
+                        <i data-lucide="activity" class="w-4 h-4 text-red-500"></i>
+                        Volume Físico (Quantidade)
+                    </h3>
+                    <div class="h-[400px] w-full relative"><canvas id="${radarId}"></canvas></div>
+                </div>
+                <!-- Gráfico Composto -->
+                <div class="lg:col-span-8 bg-white p-6 rounded-xl border border-slate-300 shadow-sm">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+                        <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                            <i data-lucide="bar-chart-3" class="w-4 h-4 text-indigo-500"></i>
+                            Eficiência Financeira (% Devolução)
+                        </h3>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <div class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 transition-colors px-2.5 py-1.5 rounded-lg border border-slate-200 cursor-default">
+                                <div class="w-2.5 h-2.5 rounded-[3px] bg-slate-300"></div>
+                                <span class="text-[9px] font-bold text-slate-600 uppercase tracking-wider">R$ Venda</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 bg-red-50 hover:bg-red-100 transition-colors px-2.5 py-1.5 rounded-lg border border-red-100 cursor-default">
+                                <div class="w-2 h-2 rounded-full bg-red-500 ring-2 ring-red-200"></div>
+                                <span class="text-[9px] font-bold text-red-600 uppercase tracking-wider">% Dev.</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 transition-colors px-2.5 py-1.5 rounded-lg border border-emerald-100 cursor-default">
+                                <div class="w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-emerald-100"></div>
+                                <span class="text-[9px] font-bold text-emerald-700 uppercase tracking-wider">Preço Médio</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 bg-amber-50 hover:bg-amber-100 transition-colors px-2.5 py-1.5 rounded-lg border border-amber-200 border-dashed cursor-default">
+                                <div class="w-3 h-0 border-t-[2px] border-dashed border-amber-500"></div>
+                                <span class="text-[9px] font-bold text-amber-600 uppercase tracking-wider">Meta (5%)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="h-[400px] w-full relative"><canvas id="${composedId}"></canvas></div>
+                </div>
+            </div>
+        </div>
 
-            // Total
-            const pctTotQ = totQtdV > 0 ? (totQtdD / totQtdV * 100).toFixed(1) : 0;
-            const pctTotR = totRsV > 0 ? (totRsD / totRsV * 100).toFixed(1) : 0;
-            devolHTML += `<tr style="border-top:2px solid var(--border);background:var(--bg);font-weight:var(--fw-black);">`;
-            devolHTML += `<td style="padding:10px 8px;font-size:var(--fs-md);color:var(--text);">TOTAL</td>`;
-            devolHTML += `<td style="padding:10px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);color:var(--text);">${totQtdV.toLocaleString('pt-BR')}</td>`;
-            devolHTML += `<td style="padding:10px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);color:var(--danger);">${totQtdD.toLocaleString('pt-BR')}</td>`;
-            devolHTML += `<td style="padding:10px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);color:var(--danger);">${pctTotQ}%</td>`;
-            devolHTML += `<td style="padding:10px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);color:var(--text);">R$ ${totRsV.toLocaleString('pt-BR')}</td>`;
-            devolHTML += `<td style="padding:10px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);color:var(--danger);">R$ ${totRsD.toLocaleString('pt-BR')}</td>`;
-            devolHTML += `<td style="padding:10px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);color:var(--danger);">${pctTotR}%</td>`;
-            devolHTML += `<td colspan="2" style="padding:10px 6px;"></td>`;
-            devolHTML += `</tr>`;
+        <!-- NÍVEL 2: ESTRATÉGIA TOP 10 -->
+        ${T10.length > 0 ? `
+        <div class="mb-12">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="h-6 w-1 bg-amber-500 rounded-full"></div>
+                <h2 class="text-sm font-black text-slate-700 uppercase tracking-widest">Nível 2: Estratégia de Contenção (Top 10)</h2>
+            </div>
+            <div class="bg-white p-6 rounded-xl border border-slate-300 shadow-sm">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+                    <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                        <i data-lucide="target" class="w-4 h-4 text-indigo-600"></i>
+                        Impacto Financeiro por Cliente (R$)
+                    </h3>
+                    <div class="text-[10px] font-black bg-amber-50 text-amber-600 px-4 py-1.5 rounded-full border border-amber-100 flex items-center gap-2">
+                        Concentração Top 10: R$ ${topTotal.toLocaleString('pt-BR')} (${topPct}% do total)
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-5 md:grid-cols-10 gap-3">
+                    ${(() => {
+                        const maxVal = T10[0].valor;
+                        const cores = ['#ef4444','#f87171','#f97316','#fb923c','#facc15','#3b82f6','#60a5fa','#10b981','#34d399','#64748b'];
+                        return T10.map((c, i) => {
+                            const hPct = (c.valor / maxVal) * 100;
+                            const shortName = c.nome.replace('MUFFATO','M.').substring(0,18);
+                            return '<div class="flex flex-col items-center group pt-2">' +
+                                '<div class="flex flex-col items-center w-full transition-all duration-300 group-hover:-translate-y-1">' +
+                                '<span class="text-[9px] sm:text-[10px] font-black text-slate-800 tracking-tighter mb-2 drop-shadow-sm" style="font-family:JetBrains Mono,monospace;">R$ ' + c.valor.toLocaleString('pt-BR') + '</span>' +
+                                '<div class="w-full relative bg-white rounded-[20px] p-1.5 h-44 flex flex-col justify-end overflow-hidden border border-slate-300 shadow-[0_4px_15px_-3px_rgba(0,0,0,0.05)] group-hover:shadow-md group-hover:border-[var(--accent)]">' +
+                                '<div class="w-full rounded-xl transition-all duration-1000 group-hover:brightness-110" style="height:' + hPct + '%;background-color:' + cores[i] + ';"></div>' +
+                                '</div></div>' +
+                                '<p class="text-[9px] font-bold text-slate-500 mt-3 text-center uppercase leading-tight px-1">' + shortName + '</p></div>';
+                        }).join('');
+                    })()}
+                </div>
+            </div>
+        </div>
+        ` : ''}
 
-            devolHTML += `</tbody></table></div>`;
+        <!-- NÍVEL 3: DEEP DIVE -->
+        <div class="mb-12">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="h-6 w-1 bg-emerald-500 rounded-full"></div>
+                <h2 class="text-sm font-black text-slate-700 uppercase tracking-widest">Nível 3: Deep Dive — ${prod.nome}</h2>
+            </div>
+            <div class="bg-white p-8 rounded-xl border border-slate-300 shadow-sm flex flex-col md:flex-row gap-8 items-center relative overflow-hidden">
+                <div class="absolute -right-6 -top-6 text-slate-50 opacity-50">
+                    <i data-lucide="leaf" class="w-32 h-32"></i>
+                </div>
+                <div class="flex-1 relative z-10 w-full">
+                    <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-8 flex items-center gap-2">
+                        <i data-lucide="search" class="w-4 h-4 text-emerald-500"></i>
+                        Classificação de Risco e Representatividade
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <div class="flex justify-between items-end mb-2">
+                                <p class="text-xs font-bold text-slate-600 uppercase">Share de Vendas</p>
+                                <p class="text-lg font-black text-emerald-600">${(prod.rec / 19874695 * 100).toFixed(1).replace('.',',')}%</p>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-3">
+                                <div class="bg-emerald-500 h-3 rounded-full" style="width:${Math.min(prod.rec / 19874695 * 100, 100).toFixed(1)}%"></div>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-2 font-medium" style="font-family:'JetBrains Mono',monospace;">Faturamento: R$ ${prod.rec.toLocaleString('pt-BR')} de R$ 19.874.695 total</p>
+                        </div>
+                        <div>
+                            <div class="flex justify-between items-end mb-2">
+                                <p class="text-xs font-bold text-slate-600 uppercase">Share de Devoluções</p>
+                                <p class="text-lg font-black text-red-500">${(totDevR / 761088 * 100).toFixed(1).replace('.',',')}%</p>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-3">
+                                <div class="bg-red-500 h-3 rounded-full" style="width:${Math.min(totDevR / 761088 * 100, 100).toFixed(1)}%"></div>
+                            </div>
+                            <p class="text-[10px] text-slate-400 mt-2 font-medium" style="font-family:'JetBrains Mono',monospace;">Devoluções: R$ ${totDevR.toLocaleString('pt-BR')} de R$ 761.088 total</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/3 relative z-10 bg-red-50 border border-red-100 rounded-2xl p-5">
+                    <p class="text-xs font-bold text-red-700 leading-relaxed">
+                        <strong class="uppercase font-black text-red-800 block mb-2 text-[10px]">Alerta de Desproporção:</strong>
+                        ${prod.nome} representa menos de 1/5 das vendas, mas absorve mais de um terço de todas as devoluções financeiras.
+                        <span class="block mt-2 text-red-600" style="font-family:'JetBrains Mono',monospace;">Taxa de devolução SKU: ${skuTax}%</span>
+                    </p>
+                </div>
+            </div>
 
-            // Radar + Top clientes lado a lado
-            const radarChartId = 'chart-radar-devol-' + idx;
-            const radialChartId = 'chart-radial-devol-' + idx;
-            if (typeof TOP_CLIENTES_DEVOL !== 'undefined') {
-                devolHTML += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;">`;
-                devolHTML += `<div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;"><div style="font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;margin-bottom:8px;">Qtd Devolvida por Mês</div><canvas id="${radarChartId}"></canvas></div>`;
-                devolHTML += `<div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;"><div style="font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;margin-bottom:8px;">Top 10 Clientes — Devoluções R$</div><canvas id="${radialChartId}"></canvas></div>`;
-                devolHTML += `</div>`;
-            }
+            <!-- Representatividade Mensal -->
+            <div class="bg-white p-6 rounded-xl border border-slate-300 shadow-sm mt-6">
+                <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
+                    <h3 class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                        <i data-lucide="trending-up" class="w-4 h-4 text-emerald-500"></i>
+                        Representatividade no Faturamento Total — Mês a Mês
+                    </h3>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <div class="flex items-center gap-1.5 bg-emerald-50 px-2.5 py-1.5 rounded-lg border border-emerald-100">
+                            <div class="w-2.5 h-2.5 rounded-[3px] bg-emerald-500"></div>
+                            <span class="text-[9px] font-bold text-emerald-700 uppercase tracking-wider">Receita Produto</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 bg-red-50 px-2.5 py-1.5 rounded-lg border border-red-100">
+                            <div class="w-2 h-2 rounded-full bg-red-500 ring-2 ring-red-200"></div>
+                            <span class="text-[9px] font-bold text-red-600 uppercase tracking-wider">% Devolução</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 bg-indigo-50 px-2.5 py-1.5 rounded-lg border border-indigo-100">
+                            <div class="w-2 h-2 rounded-full bg-indigo-500 ring-2 ring-indigo-100"></div>
+                            <span class="text-[9px] font-bold text-indigo-600 uppercase tracking-wider">% do Faturamento Total</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="h-[320px] w-full relative"><canvas id="chart-devol-share-${idx}"></canvas></div>
+            </div>
+        </div>
+
+        <!-- Diagnóstico + Ação -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white p-6 rounded-xl border border-slate-300 shadow-sm text-slate-700">
+                <h4 class="text-[10px] font-black uppercase tracking-widest mb-3 text-slate-400 flex items-center gap-2">
+                    <i data-lucide="clipboard-list" class="w-4 h-4 text-indigo-500"></i> Diagnóstico Geral
+                </h4>
+                <p class="text-xs font-medium leading-relaxed">
+                    Operação total: <strong class="text-slate-900" style="font-family:'JetBrains Mono',monospace;">R$ ${totRec.toLocaleString('pt-BR')}</strong>.
+                    A queda do <strong class="text-emerald-600">Preço Médio</strong> em Jun/Out gera fortes picos de devolução. Isto indica <strong class="text-red-500 underline decoration-red-200 underline-offset-4">excesso de oferta (Push)</strong>: clientes compram promoções além da capacidade de giro e devolvem o encalhe massivamente.
+                </p>
+            </div>
+            <div class="bg-white p-6 rounded-xl border border-slate-300 shadow-sm text-slate-700">
+                <h4 class="text-[10px] font-black uppercase tracking-widest mb-3 text-slate-400 flex items-center gap-2">
+                    <i data-lucide="target" class="w-4 h-4 text-amber-500"></i> Ação Estratégica
+                </h4>
+                <p class="text-xs font-medium leading-relaxed">
+                    Priorizar o <strong class="text-amber-600 underline decoration-amber-200 underline-offset-4">Top 10 Clientes</strong>, que concentra ${topPct}% do prejuízo (R$ ${topTotal.toLocaleString('pt-BR')}).
+                    Uma auditoria física no líder isolado de devoluções (<strong class="text-slate-900">${T10.length > 0 ? T10[0].nome : '-'}</strong>) com foco específico no SKU <strong class="text-emerald-600">${prod.nome}</strong> trará o impacto corretivo mais rápido.
+                </p>
+            </div>
+        </div>
+
+        <!-- Botão Fechar -->
+        <div style="display:flex;justify-content:flex-end;margin-top:20px;">
+            <button onclick="document.getElementById('produtoDetalheContainer').innerHTML='';document.getElementById('produtoDetalheContainer').dataset.currentIdx='';" style="padding:10px 32px;background:var(--primary);color:#fff;border:none;border-radius:10px;font-family:Outfit;font-size:var(--fs-sm);font-weight:var(--fw-black);cursor:pointer;text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:8px;transition:opacity 0.2s;" onmouseenter="this.style.opacity='0.85'" onmouseleave="this.style.opacity='1'">
+                <i class="fas fa-times"></i> Fechar Análise
+            </button>
+        </div>
+
+    </div>`;
         }
 
         // Container: Análise Histórica de Vendas (Painel Operacional)
         let analiseHTML = '';
         const painelId = 'painel-' + idx;
-        if (prod.nome === 'ALFACE AMERICANA 150G' && typeof PAINEL_ALFACE !== 'undefined') {
-            const P = PAINEL_ALFACE;
+        // Painel: usa prod.painel (do JS gerado) ou fallback PAINEL_ALFACE
+        const P_painel = prod.painel || (prod.nome === 'ALFACE AMERICANA 150G' && typeof PAINEL_ALFACE !== 'undefined' ? PAINEL_ALFACE : null);
+        if (P_painel) {
+            const P = P_painel;
             const DIAS_LABEL = ['SEG','TER','QUA','QUI','SEX','SÁB'];
             const MESES_FULL = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
@@ -1863,12 +2912,13 @@ function renderProdutos() {
                 analiseHTML += `<th style="width:90px;padding:14px 8px;text-align:center;background:rgba(67,56,202,0.04);border-left:2px solid var(--border);font-size:var(--fs-xs);font-weight:var(--fw-black);color:#4338ca;text-transform:uppercase;letter-spacing:1px;">Total Sem.</th>`;
                 analiseHTML += `</tr></thead><tbody>`;
 
-                const datas = typeof DATAS_SEMANA !== 'undefined' ? DATAS_SEMANA[m] : null;
+                const datas = P.datasSemanais ? P.datasSemanais[m] : (typeof DATAS_SEMANA !== 'undefined' ? DATAS_SEMANA[m] : null);
                 const MESES_SHORT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
 
                 weeks.forEach((wk, wi) => {
                     const totalSales = wk.sales.reduce((a,b) => a+b, 0);
-                    const totalClientsUnicos = (typeof CLIENTES_UNICOS_SEMANA !== 'undefined' && CLIENTES_UNICOS_SEMANA[m] && CLIENTES_UNICOS_SEMANA[m][wi] !== undefined) ? CLIENTES_UNICOS_SEMANA[m][wi] : wk.clients.reduce((a,b) => a+b, 0);
+                    const _cuSem = P.clientesUnicosSemana || (typeof CLIENTES_UNICOS_SEMANA !== 'undefined' ? CLIENTES_UNICOS_SEMANA : null);
+                    const totalClientsUnicos = (_cuSem && _cuSem[m] && _cuSem[m][wi] !== undefined) ? _cuSem[m][wi] : wk.clients.reduce((a,b) => a+b, 0);
                     const totalNfs = wk.nfs.reduce((a,b) => a+b, 0);
                     const totalDel = wk.deliveries.reduce((a,b) => a+b, 0);
                     const semDatas = datas && datas[wi] ? datas[wi] : [0,0,0,0,0,0];
@@ -1918,7 +2968,7 @@ function renderProdutos() {
                     analiseHTML += `</tr>`;
 
                     // Linha 2b: Δ Mediana Mês (com faixas)
-                    const medMes = (typeof MEDIANA_MES !== 'undefined') ? MEDIANA_MES[m] : null;
+                    const medMes = P.medianasMes ? P.medianasMes[m] : (typeof MEDIANA_MES !== 'undefined' ? MEDIANA_MES[m] : null);
                     if (medMes) {
                         function faixaMediana(valor, med) {
                             if (valor === 0 || med === 0) return {label:'-', cor:'var(--text-muted)', bg:'transparent', badge:''};
@@ -2002,8 +3052,8 @@ function renderProdutos() {
                 });
 
                 // Bloco de Referência (Benchmarks)
-                const medMesRef = (typeof MEDIANA_MES !== 'undefined') ? MEDIANA_MES[m] : null;
-                const medAnoRef = (typeof MEDIANA_ANO !== 'undefined') ? MEDIANA_ANO : null;
+                const medMesRef = P.medianasMes ? P.medianasMes[m] : (typeof MEDIANA_MES !== 'undefined' ? MEDIANA_MES[m] : null);
+                const medAnoRef = P.medianaAno ? P.medianaAno : (typeof MEDIANA_ANO !== 'undefined' ? MEDIANA_ANO : null);
                 const avgMesRef = weeks.length > 0 ? weeks[0].histDayAvg : [0,0,0,0,0,0];
                 const avgAnoRef = P.avgAnualPorDia;
 
@@ -2064,7 +3114,7 @@ function renderProdutos() {
                     deliveries: weeks.reduce((s, w) => s + w.deliveries[di], 0)
                 }));
                 const grandSales = totalsByDay.reduce((s, d) => s + d.sales, 0);
-                const cliUnicosMes = (typeof CLIENTES_UNICOS_MES !== 'undefined') ? CLIENTES_UNICOS_MES[m] : null;
+                const cliUnicosMes = P.clientesUnicosMes ? P.clientesUnicosMes[m] : (typeof CLIENTES_UNICOS_MES !== 'undefined' ? CLIENTES_UNICOS_MES[m] : null);
                 const grandClients = cliUnicosMes ? cliUnicosMes.total : totalsByDay.reduce((s, d) => s + d.clients, 0);
                 const grandNfs = totalsByDay.reduce((s, d) => s + d.nfs, 0);
                 const grandDel = totalsByDay.reduce((s, d) => s + d.deliveries, 0);
@@ -2279,18 +3329,17 @@ function renderProdutos() {
             diasHTML += `</div>`;
         }
 
-        const sec = (id, content) => `<div class="sec-${id}" style="margin:12px 16px;padding:16px;background:var(--white);border-left:1px solid var(--border);border-right:1px solid var(--border);border-top:2px solid var(--border);border-bottom:2px solid var(--border);border-radius:var(--radius);overflow:hidden;">${content}</div>`;
+        const sec = (id, content) => `<div class="sec-${id}" style="margin:12px 16px;padding:16px;background:${id === 'devolucoes' ? 'var(--bg)' : 'var(--white)'};border-left:1px solid var(--border);border-right:1px solid var(--border);border-top:2px solid var(--border);border-bottom:2px solid var(--border);border-radius:var(--radius);overflow:visible;">${content}</div>`;
 
         card.innerHTML = headerHTML + `<div class="card-body card-collapsible">${exportBarHTML}
             ${sec('estrutura', cardsHTML)}
             ${sec('spread', chartHTML)}
             ${sec('dre', tableHTML)}
-            ${sec('devolucoes', devolHTML)}
             ${sec('analise', analiseHTML)}
+            ${sec('devolucoes', devolHTML)}
         </div>`;
-        container.appendChild(card);
 
-        // Renderizar gráficos após inserir no DOM
+        // Renderizar gráficos após inserir no DOM (setTimeout para esperar DOM)
         if (prod.meses && prod.meses.length > 0) {
             const chartIdQtd = 'chart-qtd-' + idx;
             const chartIdPreco = 'chart-preco-' + idx;
@@ -2406,197 +3455,527 @@ function renderProdutos() {
             }, 100);
         }
 
-        // Gráfico devoluções
-        if (prod.nome === 'ALFACE AMERICANA 150G' && typeof DEVOLUCOES_ALFACE !== 'undefined') {
-            const devolChartId = 'chart-devol-' + idx;
-            setTimeout(() => {
-                const ctx = document.getElementById(devolChartId);
-                if (!ctx) return;
-                const D = DEVOLUCOES_ALFACE;
-                new Chart(ctx, {
-                    type: 'bar',
-                    plugins: [ChartDataLabels],
-                    data: {
-                        labels: MESES_LABEL,
-                        datasets: [
-                            {
-                                label: 'Qtd Vendida',
-                                data: D.meses.map(m => m.qtdVenda),
-                                backgroundColor: 'rgba(67,56,202,0.15)',
-                                borderColor: '#4338ca',
-                                borderWidth: 1,
-                                borderRadius: 4,
-                                datalabels: { display: false }
-                            },
-                            {
-                                label: 'Qtd Devolvida',
-                                data: D.meses.map(m => m.qtdDev),
-                                backgroundColor: 'rgba(220,53,69,0.7)',
-                                borderColor: '#dc3545',
-                                borderWidth: 1,
-                                borderRadius: 4,
-                                datalabels: {
-                                    anchor: 'end', align: 'top',
-                                    font: { family: 'JetBrains Mono', size: 9, weight: 700 },
-                                    color: '#dc3545',
-                                    formatter: (v, ctx) => {
-                                        const pct = D.meses[ctx.dataIndex].pctQtd;
-                                        return pct + '%';
-                                    }
-                                }
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: true,
-                        aspectRatio: 4,
-                        layout: { padding: { top: 20 } },
-                        plugins: {
-                            legend: {
-                                display: true, position: 'top', align: 'end',
-                                labels: { font: { family: 'Outfit', size: 10, weight: 700 }, color: '#5f6780', usePointStyle: true, boxWidth: 8, padding: 16 }
-                            },
-                            datalabels: {},
-                            tooltip: {
-                                callbacks: {
-                                    label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y.toLocaleString('pt-BR') + ' un'
-                                }
-                            }
-                        },
-                        scales: {
-                            x: { grid: { display: false }, ticks: { font: { family: 'Outfit', size: 11, weight: 700 }, color: '#5f6780' } },
-                            y: { display: false }
-                        }
-                    }
-                });
-            }, 150);
+        // Charts: Dashboard de Eficiência — Devoluções
+        const D_chart = prod.devolucoes || (prod.nome === 'ALFACE AMERICANA 150G' && typeof DEVOLUCOES_ALFACE !== 'undefined' ? DEVOLUCOES_ALFACE : null);
+        if (D_chart && D_chart.meses) {
+            const D = D_chart;
+            const radarId = 'chart-devol-radar-' + idx;
+            const composedId = 'chart-devol-composed-' + idx;
 
-            // Radar devoluções (qtd)
-            const radarChartId = 'chart-radar-devol-' + idx;
+            // Lucide icons
+            if (typeof lucide !== 'undefined') setTimeout(() => lucide.createIcons(), 50);
+
+            // Radar chart (Quantidade Devolvida)
             setTimeout(() => {
-                const ctx = document.getElementById(radarChartId);
+                const ctx = document.getElementById(radarId);
                 if (!ctx) return;
-                const D = DEVOLUCOES_ALFACE;
+                const devQtds = D.meses.map(m => m.qtdDev);
+                const maxDevQ = Math.max(...devQtds);
                 new Chart(ctx, {
                     type: 'radar',
                     plugins: [ChartDataLabels],
                     data: {
                         labels: MESES_LABEL,
                         datasets: [{
-                            label: 'Qtd Devolvida',
-                            data: D.meses.map(m => m.qtdDev),
-                            borderColor: '#dc3545',
-                            backgroundColor: 'rgba(220,53,69,0.12)',
-                            borderWidth: 2,
-                            pointRadius: 4,
-                            pointBackgroundColor: '#dc3545',
+                            label: 'Quantidade Devolvida',
+                            data: devQtds,
+                            backgroundColor: 'rgba(239, 68, 68, 0.15)',
+                            borderColor: '#ef4444',
+                            borderWidth: 2.5,
+                            pointBackgroundColor: '#ef4444',
                             pointBorderColor: '#fff',
-                            pointBorderWidth: 1,
-                            datalabels: {
-                                font: { family: 'JetBrains Mono', size: 9, weight: 700 },
-                                color: '#dc3545',
-                                formatter: v => v.toLocaleString('pt-BR'),
-                                anchor: 'end',
-                                align: function(ctx) {
-                                    const i = ctx.dataIndex;
-                                    // Meses à esquerda (OUT=9, NOV=10, SET=8) → alinhar à direita
-                                    if (i >= 7 && i <= 10) return 'right';
-                                    return 'end';
-                                },
-                                offset: 8
-                            }
+                            pointBorderWidth: 2,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
                         }]
                     },
                     options: {
                         responsive: true,
-                        layout: { padding: { left: 30, right: 30 } },
-                        plugins: { legend: { display: false }, datalabels: {} },
+                        maintainAspectRatio: false,
+                        layout: { padding: 10 },
                         scales: {
                             r: {
                                 beginAtZero: true,
-                                grid: { color: 'rgba(228,231,236,0.6)' },
-                                angleLines: { color: 'rgba(228,231,236,0.4)' },
-                                pointLabels: { font: { family: 'Outfit', size: 11, weight: 700 }, color: '#1b1f2a' },
-                                ticks: { font: { family: 'JetBrains Mono', size: 8 }, color: '#9ba3b8', backdropColor: 'transparent' }
+                                suggestedMax: Math.ceil(maxDevQ / 500) * 500,
+                                ticks: { display: false },
+                                grid: { color: '#e2e8f0', lineWidth: 1 },
+                                angleLines: { color: '#e2e8f0' },
+                                pointLabels: { font: { size: 11, weight: '900', family: 'Outfit' }, color: '#334155', padding: 14 }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            datalabels: {
+                                color: '#dc2626',
+                                font: { size: 10, weight: '900', family: 'JetBrains Mono' },
+                                align: 'end', anchor: 'end', offset: 6,
+                                formatter: v => v.toLocaleString('pt-BR'),
+                                backgroundColor: 'rgba(255,255,255,0.85)',
+                                borderRadius: 4,
+                                padding: { top: 2, bottom: 2, left: 4, right: 4 }
                             }
                         }
                     }
                 });
             }, 200);
 
-            // Barras verticais top 10 clientes devoluções
-            const radialChartId = 'chart-radial-devol-' + idx;
-            if (typeof TOP_CLIENTES_DEVOL !== 'undefined') {
-                setTimeout(() => {
-                    const ctx = document.getElementById(radialChartId);
-                    if (!ctx) return;
-                    const T = TOP_CLIENTES_DEVOL.slice(0, 10);
-                    const cores = ['#dc3545','#e85d6a','#e67e22','#f59e0b','#eab308','#4338ca','#6366f1','#0d9e5f','#10b981','#5f6780'];
-                    new Chart(ctx, {
-                        type: 'bar',
-                        plugins: [ChartDataLabels],
-                        data: {
-                            labels: T.map(c => c.nome),
-                            datasets: [{
-                                data: T.map(c => c.valor),
-                                backgroundColor: cores,
-                                borderColor: cores,
-                                borderWidth: 1,
-                                borderRadius: 4,
+            // Composed chart (Barras Venda + Linha %Dev + Linha Preço + Meta)
+            setTimeout(() => {
+                const ctx = document.getElementById(composedId);
+                if (!ctx) return;
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: MESES_LABEL,
+                        datasets: [
+                            {
+                                type: 'line',
+                                label: 'Preço de Venda Médio Ponderado',
+                                data: prod.meses.map(m => m.pp),
+                                borderColor: '#10b981',
+                                backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                                borderWidth: 2,
+                                pointBackgroundColor: '#10b981',
+                                fill: true,
+                                yAxisID: 'y2',
+                                order: 0,
                                 datalabels: {
-                                    anchor: 'end', align: 'top',
-                                    font: { family: 'JetBrains Mono', size: 9, weight: 700 },
-                                    color: cores,
-                                    formatter: v => 'R$ ' + (v/1000).toFixed(1) + 'k'
+                                    color: '#10b981', font: { size: 9, weight: 'bold', family: 'Outfit' }, align: 'top', anchor: 'top',
+                                    formatter: function(value) { return 'R$ ' + value.toFixed(2).replace('.', ','); }
                                 }
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: true,
-                            aspectRatio: 1.8,
-                            layout: { padding: { top: 20, bottom: 5 } },
-                            plugins: { legend: { display: false }, datalabels: {} },
-                            scales: {
-                                x: {
-                                    grid: { display: false },
-                                    ticks: { font: { family: 'Outfit', size: 9, weight: 700 }, color: '#1b1f2a', maxRotation: 35, minRotation: 35 }
-                                },
-                                y: { display: false }
+                            },
+                            {
+                                type: 'line',
+                                label: '% Devolução',
+                                data: D.meses.map(m => m.pctRec),
+                                borderColor: '#ef4444',
+                                borderWidth: 3,
+                                pointBackgroundColor: '#ef4444',
+                                pointRadius: 4,
+                                tension: 0.3,
+                                yAxisID: 'y1',
+                                order: 1,
+                                datalabels: { display: false }
+                            },
+                            {
+                                type: 'line',
+                                label: 'Meta Aceitável (5%)',
+                                data: MESES_LABEL.map(() => 5),
+                                borderColor: '#f59e0b',
+                                borderWidth: 2,
+                                borderDash: [6, 4],
+                                pointRadius: 0,
+                                pointHoverRadius: 0,
+                                fill: false,
+                                yAxisID: 'y1',
+                                order: 3,
+                                datalabels: { display: false }
+                            },
+                            {
+                                type: 'bar',
+                                label: 'R$ Venda',
+                                data: D.meses.map(m => m.recVenda),
+                                backgroundColor: '#cbd5e1',
+                                borderRadius: { topLeft: 4, topRight: 4 },
+                                barPercentage: 0.5,
+                                yAxisID: 'y',
+                                order: 2,
+                                datalabels: {
+                                    color: '#64748b', font: { size: 9, weight: 'bold', family: 'Outfit' }, anchor: 'end', align: 'top',
+                                    formatter: function(value) { return 'R$ ' + value.toLocaleString('pt-BR'); }
+                                }
                             }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        layout: { padding: { top: 35 } },
+                        interaction: { mode: 'index', intersect: false },
+                        scales: {
+                            x: { grid: { display: false }, ticks: { font: { size: 10, weight: 'bold', family: 'Outfit' } } },
+                            y: {
+                                type: 'linear', display: true, position: 'right',
+                                grid: { display: false },
+                                ticks: { font: { size: 10, family: 'Outfit' }, callback: function(value) { return 'R$ ' + value.toLocaleString('pt-BR'); } }
+                            },
+                            y1: {
+                                type: 'linear', display: true, position: 'left',
+                                grid: { borderDash: [3, 3], color: '#f1f5f9' },
+                                ticks: { color: '#ef4444', font: { size: 10, family: 'Outfit' }, callback: function(value) { return value + '%'; } }
+                            },
+                            y2: {
+                                type: 'linear', display: false, position: 'left',
+                                min: 0,
+                                max: Math.ceil(Math.max(...prod.meses.map(m => m.pp)) * 2.2)
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { backgroundColor: 'rgba(255,255,255,0.9)', titleColor: '#0f172a', bodyColor: '#0f172a', borderColor: '#e2e8f0', borderWidth: 1, padding: 10, boxPadding: 4, usePointStyle: true }
                         }
-                    });
-                }, 250);
-            }
+                    }
+                });
+            }, 250);
+
+            // Chart: Representatividade Mensal (receita produto + % devolução + % faturamento total)
+            setTimeout(() => {
+                const ctx = document.getElementById('chart-devol-share-' + idx);
+                if (!ctx) return;
+                // % do faturamento total por mês (ALFACE / total empresa)
+                // Mock: total empresa ~R$ 6.4M → share médio ~18.5%
+                const totalEmpresaMes = [540000,380000,510000,620000,530000,440000,420000,490000,640000,560000,580000,650000];
+                const shareMes = D.meses.map((m, i) => totalEmpresaMes[i] > 0 ? (m.recVenda / totalEmpresaMes[i] * 100) : 0);
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: MESES_LABEL,
+                        datasets: [
+                            {
+                                type: 'bar',
+                                label: 'Receita Produto',
+                                data: D.meses.map(m => m.recVenda),
+                                backgroundColor: 'rgba(16, 185, 129, 0.25)',
+                                borderColor: '#10b981',
+                                borderWidth: 1,
+                                borderRadius: { topLeft: 4, topRight: 4 },
+                                barPercentage: 0.5,
+                                yAxisID: 'y',
+                                order: 2,
+                                datalabels: {
+                                    color: '#047857', font: { size: 9, weight: 'bold', family: 'Outfit' }, anchor: 'end', align: 'top',
+                                    formatter: function(value) { return 'R$ ' + (value/1000).toFixed(0) + 'k'; }
+                                }
+                            },
+                            {
+                                type: 'line',
+                                label: '% Devolução',
+                                data: D.meses.map(m => m.pctRec),
+                                borderColor: '#ef4444',
+                                borderWidth: 2.5,
+                                pointBackgroundColor: '#ef4444',
+                                pointRadius: 4,
+                                tension: 0.3,
+                                yAxisID: 'y1',
+                                order: 0,
+                                datalabels: {
+                                    color: '#ef4444', font: { size: 9, weight: '900', family: 'Outfit' }, align: 'top', anchor: 'end',
+                                    formatter: function(value) { return value.toFixed(1) + '%'; }
+                                }
+                            },
+                            {
+                                type: 'line',
+                                label: '% do Faturamento Total',
+                                data: shareMes,
+                                borderColor: '#6366f1',
+                                borderWidth: 2,
+                                pointBackgroundColor: '#6366f1',
+                                pointRadius: 3,
+                                borderDash: [4, 3],
+                                tension: 0.3,
+                                yAxisID: 'y1',
+                                order: 1,
+                                datalabels: {
+                                    color: '#4f46e5', font: { size: 9, weight: 'bold', family: 'Outfit' }, align: 'bottom', anchor: 'start',
+                                    formatter: function(value) { return value.toFixed(1) + '%'; }
+                                }
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        layout: { padding: { top: 30 } },
+                        interaction: { mode: 'index', intersect: false },
+                        scales: {
+                            x: { grid: { display: false }, ticks: { font: { size: 10, weight: 'bold', family: 'Outfit' } } },
+                            y: {
+                                type: 'linear', display: true, position: 'left',
+                                grid: { borderDash: [3, 3], color: '#f1f5f9' },
+                                ticks: { font: { size: 10, family: 'Outfit' }, callback: function(value) { return 'R$ ' + (value/1000).toFixed(0) + 'k'; } }
+                            },
+                            y1: {
+                                type: 'linear', display: true, position: 'right', grid: { display: false },
+                                ticks: { color: '#6366f1', font: { size: 10, family: 'Outfit' }, callback: function(value) { return value + '%'; } }
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { backgroundColor: 'rgba(255,255,255,0.9)', titleColor: '#0f172a', bodyColor: '#0f172a', borderColor: '#e2e8f0', borderWidth: 1, padding: 10, boxPadding: 4, usePointStyle: true }
+                        }
+                    }
+                });
+            }, 300);
         }
-    });
 
-    document.getElementById('countProdutos').textContent = MOCK_PRODUTOS.length + ' de 184 produtos';
-
-    // Initialize closed
-    setTimeout(() => {
-        document.querySelectorAll('.produto-card .card-collapsible').forEach(el => {
-            el.style.maxHeight = '0';
-            el.style.opacity = '0';
-        });
-        document.querySelectorAll('.produto-card .card-toggle').forEach(el => {
-            el.style.transform = 'rotate(180deg)';
-        });
-    }, 50);
+        return card;
 }
 
-function filtrarProdutos() {
+// =============================================
+// FILTROS AVANÇADOS — 21 VARIÁVEIS
+// =============================================
+const FILTER_STATE = {
+    meses: [], produtos: [], clientes: [], vendedor: '', categoria: '', diasSemana: [],
+    taxaDevolucao: null, margem: null, receita: null, precoMedio: null, custoUnit: null,
+    volume: null, cmvPct: null, descFinanceiro: null, comissao: null,
+    faixaMargem: [], scoreVariancia: [], faixaVsNormal: [], statusDevolucao: [], tendenciaPreco: []
+};
+
+const METRIC_DEFS = [
+    { key:'taxaDevolucao', field:'pdrs', label:'Taxa Devolução', unit:'%', step:1, fmt: v=>v.toFixed(1)+'%' },
+    { key:'margem', field:'pmg', label:'Margem', unit:'%', step:1, fmt: v=>v.toFixed(1)+'%' },
+    { key:'receita', field:'rec', label:'Receita', unit:'R$', step:1000, fmt: v=>'R$ '+(v/1000).toFixed(0)+'k' },
+    { key:'precoMedio', field:'pp', label:'Preço Médio', unit:'R$', step:0.1, fmt: v=>'R$ '+v.toFixed(2).replace('.',',') },
+    { key:'custoUnit', field:'cu', label:'Custo Unit.', unit:'R$', step:0.1, fmt: v=>'R$ '+v.toFixed(2).replace('.',',') },
+    { key:'volume', field:'qtd', label:'Volume', unit:'un', step:1000, fmt: v=>v.toLocaleString('pt-BR') },
+    { key:'cmvPct', field:'pcmv', label:'CMV', unit:'%', step:1, fmt: v=>v.toFixed(1)+'%' },
+    { key:'descFinanceiro', field:'pdf', label:'Desc. Fin.', unit:'%', step:0.5, fmt: v=>v.toFixed(1)+'%' },
+    { key:'comissao', field:'pcom', label:'Comissão', unit:'%', step:0.1, fmt: v=>v.toFixed(1)+'%' },
+];
+
+function toggleFilterPanel() {
+    const panel = document.getElementById('filterPanelBody');
+    if (panel.classList.contains('collapsed')) {
+        panel.classList.remove('collapsed');
+        panel.style.maxHeight = panel.scrollHeight + 'px';
+        panel.style.opacity = '1';
+    } else {
+        panel.style.maxHeight = '0';
+        panel.style.opacity = '0';
+        setTimeout(() => panel.classList.add('collapsed'), 400);
+    }
+}
+
+function toggleMultiSelect(name) {
+    const dd = document.getElementById('multi' + name);
+    dd.classList.toggle('open');
+    // Close on outside click
+    if (dd.classList.contains('open')) {
+        setTimeout(() => {
+            const handler = (e) => { if (!dd.closest('.adv-multi-wrap').contains(e.target)) { dd.classList.remove('open'); document.removeEventListener('click', handler); } };
+            document.addEventListener('click', handler);
+        }, 10);
+    }
+}
+
+function filterMultiOptions(input, dropdownId) {
+    const q = input.value.toLowerCase();
+    const labels = document.getElementById(dropdownId).querySelectorAll('label');
+    labels.forEach(l => { l.style.display = l.textContent.toLowerCase().includes(q) ? '' : 'none'; });
+}
+
+function updateMultiLabel(name, data) {
+    const checks = document.querySelectorAll('#multi' + name + 'Opts input[type=checkbox]:checked');
+    const label = document.getElementById('multi' + name + 'Label');
+    if (checks.length === 0) { label.textContent = 'Todos'; }
+    else if (checks.length <= 2) { label.textContent = Array.from(checks).map(c => c.value).join(', '); }
+    else { label.textContent = checks.length + ' selecionados'; }
+}
+
+function togglePill(el, group) {
+    el.classList.toggle('active');
+}
+
+function initFilterPanel() {
+    const MESES_S = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+    const DIAS_S = ['SEG','TER','QUA','QUI','SEX','SÁB'];
+
+    // Meses pills
+    const mesesEl = document.getElementById('filterMeses');
+    mesesEl.innerHTML = MESES_S.map((m, i) => `<div class="adv-pill" data-val="${i}" onclick="togglePill(this,'meses')">${m}</div>`).join('');
+
+    // Dias pills
+    const diasEl = document.getElementById('filterDias');
+    diasEl.innerHTML = DIAS_S.map((d, i) => `<div class="adv-pill" data-val="${i}" onclick="togglePill(this,'dias')">${d}</div>`).join('');
+
+    // Produtos multi-select
+    const prodOpts = document.getElementById('multiProdutosOpts');
+    prodOpts.innerHTML = MOCK_PRODUTOS.map(p => `<label><input type="checkbox" value="${p.nome}" onchange="updateMultiLabel('Produtos')"> ${p.nome}</label>`).join('');
+
+    // Clientes multi-select
+    const cliOpts = document.getElementById('multiClientesOpts');
+    cliOpts.innerHTML = MOCK_CLIENTES.map(c => `<label><input type="checkbox" value="${c.nome}" onchange="updateMultiLabel('Clientes')"> ${c.nome}</label>`).join('');
+
+    // Metrics range sliders
+    const metricsGrid = document.getElementById('filterMetricsGrid');
+    metricsGrid.innerHTML = '';
+    METRIC_DEFS.forEach(md => {
+        const vals = MOCK_PRODUTOS.map(p => p[md.field] || 0);
+        const mn = Math.floor(Math.min(...vals));
+        const mx = Math.ceil(Math.max(...vals));
+        const rangeMin = md.unit === 'R$' && mx > 100 ? 0 : mn;
+        const rangeMax = md.unit === 'R$' && mx > 100 ? Math.ceil(mx / 1000) * 1000 : mx;
+        const step = md.step;
+
+        metricsGrid.innerHTML += `<div>
+            <span class="adv-field-label">${md.label} <span style="color:var(--text-muted);font-weight:500;">(${md.unit})</span></span>
+            <div class="adv-range-wrap">
+                <div class="adv-range-track"></div>
+                <div class="adv-range-active" id="rangeActive_${md.key}"></div>
+                <input type="range" min="${rangeMin}" max="${rangeMax}" value="${rangeMin}" step="${step}" id="rangeMin_${md.key}" oninput="updateRange('${md.key}')">
+                <input type="range" min="${rangeMin}" max="${rangeMax}" value="${rangeMax}" step="${step}" id="rangeMax_${md.key}" oninput="updateRange('${md.key}')">
+            </div>
+            <div class="adv-range-vals"><span id="rangeValMin_${md.key}">${md.fmt(rangeMin)}</span><span id="rangeValMax_${md.key}">${md.fmt(rangeMax)}</span></div>
+        </div>`;
+    });
+    // Init range active bars
+    METRIC_DEFS.forEach(md => updateRange(md.key));
+
+    // Classification pills
+    const classGroups = [
+        { el:'filterFaixaMargem', items:[{v:'excelente',l:'Excelente >50%'},{v:'boa',l:'Boa 40-50%'},{v:'regular',l:'Regular 30-40%'},{v:'critica',l:'Crítica <30%'}] },
+        { el:'filterStatusDevol', items:[{v:'normal',l:'Normal <5%'},{v:'atencao',l:'Atenção 5-10%'},{v:'critico',l:'Crítico >10%'}] },
+        { el:'filterTendencia', items:[{v:'alta',l:'↑ Alta'},{v:'estavel',l:'● Estável'},{v:'queda',l:'↓ Queda'}] },
+        { el:'filterScoreVar', items:[{v:'3',l:'3/3 Excelente'},{v:'2',l:'2/3 Bom'},{v:'1',l:'1/3 Regular'},{v:'0',l:'0/3 Crítico'}] },
+        { el:'filterFaixaNormal', items:[{v:'acima',l:'Acima'},{v:'normal',l:'Normal'},{v:'abaixo',l:'Abaixo'}] },
+    ];
+    classGroups.forEach(g => {
+        document.getElementById(g.el).innerHTML = g.items.map(it => `<div class="adv-pill" data-val="${it.v}" onclick="togglePill(this,'${g.el}')">${it.l}</div>`).join('');
+    });
+}
+
+function updateRange(key) {
+    const md = METRIC_DEFS.find(m => m.key === key);
+    const minInput = document.getElementById('rangeMin_' + key);
+    const maxInput = document.getElementById('rangeMax_' + key);
+    let minV = parseFloat(minInput.value);
+    let maxV = parseFloat(maxInput.value);
+    if (minV > maxV) { const tmp = minV; minV = maxV; maxV = tmp; }
+    document.getElementById('rangeValMin_' + key).textContent = md.fmt(minV);
+    document.getElementById('rangeValMax_' + key).textContent = md.fmt(maxV);
+    // Update active bar
+    const pctMin = ((minV - parseFloat(minInput.min)) / (parseFloat(minInput.max) - parseFloat(minInput.min))) * 100;
+    const pctMax = ((maxV - parseFloat(minInput.min)) / (parseFloat(minInput.max) - parseFloat(minInput.min))) * 100;
+    const bar = document.getElementById('rangeActive_' + key);
+    if (bar) { bar.style.left = pctMin + '%'; bar.style.width = (pctMax - pctMin) + '%'; }
+}
+
+function readFilterState() {
+    // Meses
+    FILTER_STATE.meses = Array.from(document.querySelectorAll('#filterMeses .adv-pill.active')).map(p => parseInt(p.dataset.val));
+    // Dias
+    FILTER_STATE.diasSemana = Array.from(document.querySelectorAll('#filterDias .adv-pill.active')).map(p => parseInt(p.dataset.val));
+    // Produtos
+    FILTER_STATE.produtos = Array.from(document.querySelectorAll('#multiProdutosOpts input:checked')).map(c => c.value);
+    // Clientes
+    FILTER_STATE.clientes = Array.from(document.querySelectorAll('#multiClientesOpts input:checked')).map(c => c.value);
+    // Vendedor / Categoria
+    FILTER_STATE.vendedor = document.getElementById('filterVendedor').value;
+    FILTER_STATE.categoria = document.getElementById('filterCategoria').value;
+    // Metrics
+    METRIC_DEFS.forEach(md => {
+        const minInput = document.getElementById('rangeMin_' + md.key);
+        const maxInput = document.getElementById('rangeMax_' + md.key);
+        const minV = Math.min(parseFloat(minInput.value), parseFloat(maxInput.value));
+        const maxV = Math.max(parseFloat(minInput.value), parseFloat(maxInput.value));
+        const isDefault = minV <= parseFloat(minInput.min) && maxV >= parseFloat(minInput.max);
+        FILTER_STATE[md.key] = isDefault ? null : { min: minV, max: maxV };
+    });
+    // Classifications
+    FILTER_STATE.faixaMargem = Array.from(document.querySelectorAll('#filterFaixaMargem .adv-pill.active')).map(p => p.dataset.val);
+    FILTER_STATE.statusDevolucao = Array.from(document.querySelectorAll('#filterStatusDevol .adv-pill.active')).map(p => p.dataset.val);
+    FILTER_STATE.tendenciaPreco = Array.from(document.querySelectorAll('#filterTendencia .adv-pill.active')).map(p => p.dataset.val);
+    FILTER_STATE.scoreVariancia = Array.from(document.querySelectorAll('#filterScoreVar .adv-pill.active')).map(p => p.dataset.val);
+    FILTER_STATE.faixaVsNormal = Array.from(document.querySelectorAll('#filterFaixaNormal .adv-pill.active')).map(p => p.dataset.val);
+}
+
+function classifyProduct(card) {
+    const pmg = parseFloat(card.dataset.pmg);
+    const pdrs = parseFloat(card.dataset.pdrs);
+    const pp = parseFloat(card.dataset.pp);
+    return {
+        faixaMargem: pmg >= 50 ? 'excelente' : pmg >= 40 ? 'boa' : pmg >= 30 ? 'regular' : 'critica',
+        statusDevolucao: pdrs < 5 ? 'normal' : pdrs <= 10 ? 'atencao' : 'critico',
+        tendenciaPreco: 'estavel', // mock: sem dados mensais suficientes para todos
+    };
+}
+
+function getActiveFilterCount() {
+    let count = 0;
+    if (FILTER_STATE.meses.length > 0) count++;
+    if (FILTER_STATE.produtos.length > 0) count++;
+    if (FILTER_STATE.clientes.length > 0) count++;
+    if (FILTER_STATE.vendedor) count++;
+    if (FILTER_STATE.categoria) count++;
+    if (FILTER_STATE.diasSemana.length > 0) count++;
+    METRIC_DEFS.forEach(md => { if (FILTER_STATE[md.key]) count++; });
+    if (FILTER_STATE.faixaMargem.length > 0) count++;
+    if (FILTER_STATE.statusDevolucao.length > 0) count++;
+    if (FILTER_STATE.tendenciaPreco.length > 0) count++;
+    if (FILTER_STATE.scoreVariancia.length > 0) count++;
+    if (FILTER_STATE.faixaVsNormal.length > 0) count++;
+    return count;
+}
+
+function aplicarFiltros() {
+    readFilterState();
     const q = document.getElementById('filtroProduto').value.toLowerCase();
     const cards = document.querySelectorAll('.produto-card');
     let vis = 0;
+    const total = MOCK_PRODUTOS.length;
+
     cards.forEach(c => {
-        const match = c.dataset.nome.includes(q);
-        c.style.display = match ? '' : 'none';
-        if (match) vis++;
+        let show = true;
+
+        // 1. Texto livre
+        if (q && !c.dataset.nome.includes(q)) show = false;
+
+        // 2. Produto multi-select
+        if (show && FILTER_STATE.produtos.length > 0 && !FILTER_STATE.produtos.includes(c.dataset.nomeFull)) show = false;
+
+        // 3. Métricas (range)
+        if (show) {
+            for (const md of METRIC_DEFS) {
+                const range = FILTER_STATE[md.key];
+                if (range) {
+                    const val = parseFloat(c.dataset[md.field]);
+                    if (val < range.min || val > range.max) { show = false; break; }
+                }
+            }
+        }
+
+        // 4. Classificações
+        if (show) {
+            const cls = classifyProduct(c);
+            if (FILTER_STATE.faixaMargem.length > 0 && !FILTER_STATE.faixaMargem.includes(cls.faixaMargem)) show = false;
+            if (FILTER_STATE.statusDevolucao.length > 0 && !FILTER_STATE.statusDevolucao.includes(cls.statusDevolucao)) show = false;
+            if (FILTER_STATE.tendenciaPreco.length > 0 && !FILTER_STATE.tendenciaPreco.includes(cls.tendenciaPreco)) show = false;
+        }
+
+        c.style.display = show ? '' : 'none';
+        if (show) vis++;
     });
-    document.getElementById('countProdutos').textContent = vis + ' de 184 produtos';
+
+    document.getElementById('countProdutos').textContent = vis + ' de ' + total + ' produtos';
+    const badge = document.getElementById('filterBadge');
+    const count = getActiveFilterCount();
+    badge.textContent = count > 0 ? count : '';
 }
+
+function limparFiltros() {
+    // Text
+    document.getElementById('filtroProduto').value = '';
+    // Pills
+    document.querySelectorAll('#filterPanelBody .adv-pill.active').forEach(p => p.classList.remove('active'));
+    // Multi-selects
+    document.querySelectorAll('#filterPanelBody input[type=checkbox]').forEach(c => c.checked = false);
+    updateMultiLabel('Produtos'); updateMultiLabel('Clientes');
+    // Selects
+    document.getElementById('filterVendedor').value = '';
+    document.getElementById('filterCategoria').value = '';
+    // Ranges
+    METRIC_DEFS.forEach(md => {
+        const minInput = document.getElementById('rangeMin_' + md.key);
+        const maxInput = document.getElementById('rangeMax_' + md.key);
+        minInput.value = minInput.min;
+        maxInput.value = maxInput.max;
+        updateRange(md.key);
+    });
+    aplicarFiltros();
+}
+
+function filtrarProdutos() { aplicarFiltros(); }
 
 // =============================================
 // RENDER: POR CLIENTE
@@ -2635,132 +4014,291 @@ function filtrarClientes() {
 // RENDER: AJUSTES ESTOQUE (DRE Comparativa)
 // =============================================
 function renderAjustes() {
-    const container = document.getElementById('containerAjustes');
-    container.innerHTML = '';
+    // Ordenar por maior impacto positivo na margem (p.p.)
+    const sorted = [...DADOS_AJUSTES].sort((a, b) => (b.pmgDepois - b.pmgAntes) - (a.pmgDepois - a.pmgAntes));
 
-    MOCK_AJUSTES.forEach(aj => {
-        const diffMg = aj.pmgDepois - aj.pmgAntes;
-        const varCls = diffMg > 0 ? 'up' : diffMg < 0 ? 'down' : 'neutral';
-        const varLabel = diffMg > 0 ? '+' + diffMg.toFixed(1) + ' p.p.' : diffMg.toFixed(1) + ' p.p.';
+    // --- Intro stats ---
+    const totCmvAntes = sorted.reduce((s, a) => s + a.cmvAntes, 0);
+    const totCmvDepois = sorted.reduce((s, a) => s + a.cmvDepois, 0);
+    const totRecAntes = sorted.reduce((s, a) => s + a.recAntes, 0);
+    const totMgAntes = sorted.reduce((s, a) => s + a.mgAntes, 0);
+    const totMgDepois = sorted.reduce((s, a) => s + a.mgDepois, 0);
+    const pctMgAntes = totRecAntes > 0 ? (totMgAntes / totRecAntes * 100) : 0;
+    const pctMgDepois = totRecAntes > 0 ? (totMgDepois / totRecAntes * 100) : 0;
+    const melhoraram = sorted.filter(a => a.pmgDepois > a.pmgAntes).length;
+    const pioraram = sorted.filter(a => a.pmgDepois < a.pmgAntes).length;
+    const neutros = sorted.length - melhoraram - pioraram;
+    const economiaCMV = totCmvAntes - totCmvDepois;
 
-        const card = document.createElement('div');
-        card.className = 'card ajuste-card';
-        card.dataset.nome = aj.nome.toLowerCase();
+    document.getElementById('ajIntroStats').innerHTML = `
+        <div class="aj-intro-stat"><div class="aj-stat-value">${sorted.length}</div><div class="aj-stat-label">Produtos auditados</div></div>
+        <div class="aj-intro-stat"><div class="aj-stat-value">${fmtPct(pctMgAntes)}</div><div class="aj-stat-label">Margem Bruta antes</div></div>
+        <div class="aj-intro-stat"><div class="aj-stat-value">${fmtPct(pctMgDepois)}</div><div class="aj-stat-label">Margem Bruta depois</div></div>
+        <div class="aj-intro-stat"><div class="aj-stat-value" style="color:#4ade80;">+${(pctMgDepois - pctMgAntes).toFixed(1)} p.p.</div><div class="aj-stat-label">Ganho margem bruta</div></div>
+    `;
 
-        card.innerHTML = `
-            <div class="card-header card-header-dark" onclick="toggleCard(this)">
-                <span><i class="fas fa-scale-balanced" style="margin-right:8px"></i> ${aj.nome}</span>
-                <div style="display:flex;align-items:center;gap:12px;">
-                    <span class="var-tag ${varCls}">${varLabel}</span>
-                    <i class="fas fa-chevron-up card-toggle" style="transition:transform 0.3s"></i>
+    // --- Summary Cards ---
+    const summaryCards = [
+        { label: 'CMV Antes', value: fmtBRL(totCmvAntes), type: 'card-danger', icon: 'fa-arrow-down' },
+        { label: 'CMV Depois', value: fmtBRL(totCmvDepois), type: 'card-success', icon: 'fa-arrow-up' },
+        { label: 'Economia CMV', value: fmtBRL(economiaCMV), type: 'card-success', icon: 'fa-piggy-bank' },
+        { label: 'Margem Bruta Antes', value: fmtPct(pctMgAntes), type: 'card-warning', icon: 'fa-chart-line' },
+        { label: 'Margem Bruta Depois', value: fmtPct(pctMgDepois), type: 'card-success', icon: 'fa-chart-line' },
+        { label: 'Melhoraram', value: melhoraram.toString(), type: 'card-success', icon: 'fa-arrow-trend-up' },
+        { label: 'Pioraram', value: pioraram.toString(), type: 'card-danger', icon: 'fa-arrow-trend-down' },
+        { label: 'Neutros', value: neutros.toString(), type: '', icon: 'fa-minus' },
+    ];
+
+    document.getElementById('cardsAjusteSummary').innerHTML = summaryCards.map(c => `
+        <div class="summary-card ${c.type}">
+            <div class="card-label"><i class="fas ${c.icon}" style="margin-right:4px"></i> ${c.label}</div>
+            <div class="card-value">${c.value}</div>
+        </div>
+    `).join('');
+
+    // --- Tabela Ranking ---
+    const tbody = document.getElementById('tbodyAjustes');
+    tbody.innerHTML = sorted.map((aj, i) => {
+        const deltaCMV = aj.cmvDepois - aj.cmvAntes;
+        const deltaMg = aj.pmgDepois - aj.pmgAntes;
+        const deltaCls = deltaMg > 0.05 ? 'aj-delta-pos' : deltaMg < -0.05 ? 'aj-delta-neg' : 'aj-delta-zero';
+        const cmvCls = deltaCMV < 0 ? 'aj-delta-pos' : deltaCMV > 0 ? 'aj-delta-neg' : 'aj-delta-zero';
+        const sinal = deltaMg > 0 ? '+' : '';
+        const sinalCMV = deltaCMV > 0 ? '+' : '';
+        return `
+        <tr class="aj-row" data-idx="${i}" data-nome="${aj.nome.toLowerCase()}" onclick="expandirAjuste(${i})">
+            <td><span class="rank-badge ${i < 3 ? 'top3' : ''}">${i + 1}</span></td>
+            <td style="font-weight:var(--fw-bold);">${aj.nome}</td>
+            <td class="mono">${fmtBRL(aj.recAntes)}</td>
+            <td class="mono" style="color:var(--danger);">${fmtBRL(aj.cmvAntes)}</td>
+            <td class="mono">${fmtBRL(aj.cmvDepois)}</td>
+            <td class="mono ${cmvCls}">${sinalCMV}${fmtBRL(deltaCMV)}</td>
+            <td class="mono">${fmtPct(aj.pmgAntes)}</td>
+            <td class="mono">${fmtPct(aj.pmgDepois)}</td>
+            <td class="mono"><span class="var-tag ${deltaMg > 0.05 ? 'up' : deltaMg < -0.05 ? 'down' : 'neutral'}">${sinal}${deltaMg.toFixed(1)} p.p.</span></td>
+        </tr>`;
+    }).join('');
+
+    document.getElementById('countAjustes').textContent = sorted.length + ' de ' + DADOS_AJUSTES.length + ' produtos';
+
+    // Guardar referência global para expandir
+    window._ajSorted = sorted;
+}
+
+function expandirAjuste(idx) {
+    const aj = window._ajSorted[idx];
+    if (!aj) return;
+
+    document.querySelectorAll('.aj-row').forEach(r => r.classList.remove('aj-selected'));
+    const row = document.querySelector(`.aj-row[data-idx="${idx}"]`);
+    if (row) row.classList.add('aj-selected');
+
+    const diffMg = aj.pmgDepois - aj.pmgAntes;
+    const varLabel = diffMg > 0 ? '+' + diffMg.toFixed(1) + ' p.p.' : diffMg.toFixed(1) + ' p.p.';
+    const impactoLucro = aj.mgDepois - aj.mgAntes;
+    const lucroBrutoAntes = aj.recAntes - aj.cmvAntes;
+    const lucroBrutoDepois = aj.recDepois - aj.cmvDepois;
+    const varLucro = lucroBrutoAntes > 0 ? ((lucroBrutoDepois - lucroBrutoAntes) / lucroBrutoAntes * 100) : 0;
+    const varCMV = aj.cmvAntes > 0 ? ((aj.cmvDepois - aj.cmvAntes) / aj.cmvAntes * 100) : 0;
+    const cmcMedioDepois = aj.cmcMesDepois && aj.cmcMesDepois.length ? (aj.cmcMesDepois.filter(v=>v>0).reduce((s,v,_,a) => s+v/a.length, 0)) : 0;
+    const chartId = 'ajChartCmc-' + idx;
+    const hasMensal = aj.cmcMesAntes && aj.cmcMesAntes.length === 12 && aj.cmcMesAntes.some(v => v > 0);
+    const status = aj.pmgDepois >= 50 ? 'SAUDAVEL' : aj.pmgDepois >= 20 ? 'ATENCAO' : 'CRITICA';
+    const statusCor = status === 'SAUDAVEL' ? '#0d9e5f' : status === 'ATENCAO' ? '#e67e22' : '#dc3545';
+    const statusIcon = status === 'SAUDAVEL' ? 'fa-circle-check' : status === 'ATENCAO' ? 'fa-triangle-exclamation' : 'fa-circle-xmark';
+    const pctNegReduzido = aj.diasNegativo > 0 ? ((aj.diasNegativo - (aj.diasNegativoDepois||0)) / aj.diasNegativo * 100).toFixed(0) : 0;
+
+    const container = document.getElementById('containerAjusteDetalhe');
+    container.innerHTML = `
+    <div style="margin-top:20px;">
+        <!-- HEADER PRODUTO -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div style="background:var(--accent);color:#fff;width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(67,56,202,0.2);">
+                    <i class="fas fa-chart-bar" style="font-size:16px;"></i>
+                </div>
+                <div>
+                    <div style="font-family:'Outfit',sans-serif;font-size:1.2rem;font-weight:800;color:var(--text);letter-spacing:-0.5px;">${aj.nome}</div>
+                    <div style="font-size:var(--fs-xs);color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Ciclo de ${aj.diasTotal || 0} dias analisados</div>
                 </div>
             </div>
-            <div class="card-body card-collapsible" style="padding:20px 24px;">
-                <!-- KPIs -->
-                <div class="kpi-grid">
-                    <div class="kpi-card">
-                        <div class="kpi-label">Qtd Vendida</div>
-                        <div class="kpi-value">${fmtNum(aj.qtd)} un</div>
-                    </div>
-                    <div class="kpi-card kpi-danger">
-                        <div class="kpi-label">CMV Antes</div>
-                        <div class="kpi-value">${fmtBRL(aj.cmvAntes)}</div>
-                    </div>
-                    <div class="kpi-card highlight">
-                        <div class="kpi-label">CMV Depois</div>
-                        <div class="kpi-value">${fmtBRL(aj.cmvDepois)}</div>
-                    </div>
-                    <div class="kpi-card kpi-danger">
-                        <div class="kpi-label">Margem Antes</div>
-                        <div class="kpi-value">${fmtPct(aj.pmgAntes)}</div>
-                    </div>
-                    <div class="kpi-card kpi-success">
-                        <div class="kpi-label">Margem Depois</div>
-                        <div class="kpi-value">${fmtPct(aj.pmgDepois)}</div>
-                    </div>
-                </div>
+            <div style="display:flex;gap:8px;align-items:center;">
+                <span style="background:rgba(13,158,95,0.08);color:var(--success);padding:6px 14px;border-radius:14px;font-size:var(--fs-sm);font-weight:800;border:1px solid rgba(13,158,95,0.15);">${varLabel}</span>
+                <span style="background:var(--success);color:#fff;padding:6px 14px;border-radius:14px;font-size:var(--fs-sm);font-weight:800;box-shadow:0 2px 8px rgba(13,158,95,0.25);">+ ${fmtBRL(impactoLucro)}</span>
+            </div>
+        </div>
 
-                <!-- Compare boxes -->
-                <div class="compare-grid">
-                    <div class="compare-box antes">
-                        <div class="compare-header-box">Antes do Ajuste</div>
-                        <div class="compare-content">
-                            <div class="compare-item">
-                                <span class="compare-item-label">Receita</span>
-                                <span class="compare-item-value">${fmtBRL(aj.recAntes)}</span>
+        <!-- SUMMARY CARDS (4) -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;">
+            <div style="background:linear-gradient(135deg,rgba(220,53,69,0.03),#fff);border:2px solid var(--border);border-radius:20px;padding:20px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                    <div style="background:#fff;border:1px solid var(--border);border-radius:14px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);"><i class="fas fa-calendar-xmark" style="color:var(--danger);font-size:14px;"></i></div>
+                    <span style="font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:0.1em;background:#fff;border:2px solid var(--border);padding:3px 8px;border-radius:8px;color:var(--success);">${pctNegReduzido}% Reducao</span>
+                </div>
+                <div style="font-size:9px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:6px;">Dias Saldo Negativo</div>
+                <div style="display:flex;align-items:end;justify-content:space-between;">
+                    <div><div style="font-size:8px;font-weight:800;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">Resultado Atual</div><div style="display:flex;align-items:center;gap:6px;"><span class="mono" style="font-size:1.5rem;font-weight:900;color:var(--text);letter-spacing:-1px;">${aj.diasNegativoDepois || 0}</span><i class="fas fa-circle-check" style="color:var(--success);font-size:12px;"></i></div></div>
+                    <div style="text-align:right;"><div style="font-size:8px;font-weight:800;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">Anterior</div><span class="mono" style="font-size:var(--fs-sm);font-weight:800;color:var(--danger);text-decoration:line-through;">${aj.diasNegativo || 0} (${aj.diasTotal > 0 ? ((aj.diasNegativo/aj.diasTotal)*100).toFixed(0) : 0}%)</span></div>
+                </div>
+            </div>
+            <div style="background:linear-gradient(135deg,rgba(67,56,202,0.03),#fff);border:2px solid var(--border);border-radius:20px;padding:20px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                    <div style="background:#fff;border:1px solid var(--border);border-radius:14px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);"><i class="fas fa-bullseye" style="color:var(--accent);font-size:14px;"></i></div>
+                    <span style="font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:0.1em;background:#fff;border:2px solid var(--border);padding:3px 8px;border-radius:8px;color:var(--accent);">Recuperado</span>
+                </div>
+                <div style="font-size:9px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:6px;">Pior Saldo Registrado</div>
+                <div style="display:flex;align-items:end;justify-content:space-between;">
+                    <div><div style="font-size:8px;font-weight:800;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">Resultado Atual</div><span class="mono" style="font-size:1.5rem;font-weight:900;color:var(--text);letter-spacing:-1px;">${fmtNum(aj.saldoDepois)} un</span></div>
+                    <div style="text-align:right;"><div style="font-size:8px;font-weight:800;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">Anterior</div><span class="mono" style="font-size:var(--fs-sm);font-weight:800;color:var(--danger);text-decoration:line-through;">${fmtNum(aj.piorSaldo || aj.saldoAntes)} un</span></div>
+                </div>
+            </div>
+            <div style="background:linear-gradient(135deg,rgba(99,102,241,0.03),#fff);border:2px solid var(--border);border-radius:20px;padding:20px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                    <div style="background:#fff;border:1px solid var(--border);border-radius:14px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);"><i class="fas fa-calculator" style="color:#6366f1;font-size:14px;"></i></div>
+                    <span style="font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:0.1em;background:#fff;border:2px solid var(--border);padding:3px 8px;border-radius:8px;color:#6366f1;">Estabilizado</span>
+                </div>
+                <div style="font-size:9px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:6px;">Custo Medio (CMC)</div>
+                <div style="display:flex;align-items:end;justify-content:space-between;">
+                    <div><div style="font-size:8px;font-weight:800;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">Resultado Atual</div><span class="mono" style="font-size:1.5rem;font-weight:900;color:var(--text);letter-spacing:-1px;">${fmtBRL2(cmcMedioDepois)}</span></div>
+                    <div style="text-align:right;"><div style="font-size:8px;font-weight:800;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">Max Anterior</div><span class="mono" style="font-size:var(--fs-sm);font-weight:800;color:var(--danger);text-decoration:line-through;">${fmtBRL2(aj.cmcMax || aj.cmcFinalAntes)}</span></div>
+                </div>
+            </div>
+            <div style="background:linear-gradient(135deg,rgba(13,158,95,0.03),#fff);border:2px solid var(--border);border-radius:20px;padding:20px;">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                    <div style="background:#fff;border:1px solid var(--border);border-radius:14px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);"><i class="fas fa-shield-halved" style="color:var(--success);font-size:14px;"></i></div>
+                    <span style="font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:0.1em;background:#fff;border:2px solid var(--border);padding:3px 8px;border-radius:8px;color:var(--success);">+${(aj.diasOkDepois||0) - (aj.diasOk||0) > 0 ? (aj.diasOkDepois - aj.diasOk) : 0} Dias</span>
+                </div>
+                <div style="font-size:9px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.15em;margin-bottom:6px;">Confiabilidade de Dados</div>
+                <div style="display:flex;align-items:end;justify-content:space-between;">
+                    <div><div style="font-size:8px;font-weight:800;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">Resultado Atual</div><span class="mono" style="font-size:1.5rem;font-weight:900;color:var(--text);letter-spacing:-1px;">${aj.diasOkDepois || 0} OK</span></div>
+                    <div style="text-align:right;"><div style="font-size:8px;font-weight:800;color:var(--text-muted);text-transform:uppercase;margin-bottom:2px;">Anterior</div><span class="mono" style="font-size:var(--fs-sm);font-weight:800;color:var(--text-muted);">${aj.diasOk || 0} Dias</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DIAGNOSTICO: ANTES (1/3) + DEPOIS (2/3) -->
+        <div style="display:grid;grid-template-columns:1fr 2fr;gap:20px;margin-bottom:24px;">
+            <div style="background:#fff;border:2px solid var(--border);border-radius:24px;padding:28px;">
+                <div style="font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:0.25em;color:var(--danger);margin-bottom:24px;display:flex;align-items:center;gap:6px;"><span style="width:6px;height:6px;border-radius:50%;background:var(--danger);"></span>Status Critico (Antes)</div>
+                <div style="display:flex;flex-direction:column;gap:16px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;">Dias Saldo Negativo</span><span class="mono" style="font-size:var(--fs-md);font-weight:900;color:var(--danger);background:rgba(220,53,69,0.06);padding:2px 8px;border-radius:8px;">${aj.diasNegativo || 0} de ${aj.diasTotal || 0}</span></div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;">Dias Saldo Excessivo</span><span class="mono" style="font-size:var(--fs-md);font-weight:900;color:var(--text);">${aj.diasExcessivo || 0}</span></div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;">Dias em Estado OK</span><span class="mono" style="font-size:var(--fs-md);font-weight:900;color:var(--text);">${aj.diasOk || 0}</span></div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;">CMC > 3x Mediana</span><span class="mono" style="font-size:var(--fs-md);font-weight:900;color:${(aj.diasCmcAlto||0)>0?'var(--danger)':'var(--text)'};${(aj.diasCmcAlto||0)>0?'background:rgba(220,53,69,0.06);padding:2px 8px;border-radius:8px;':''}">${aj.diasCmcAlto||0} dia${(aj.diasCmcAlto||0)!==1?'s':''}</span></div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;">CMC Mediana</span><span class="mono" style="font-size:var(--fs-md);font-weight:900;color:var(--text);">${fmtBRL2(aj.cmcMediana||0)}</span></div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:10px;font-weight:800;color:var(--text-muted);text-transform:uppercase;">CMC Maximo</span><span class="mono" style="font-size:var(--fs-md);font-weight:900;color:${(aj.cmcMax||0)>(aj.cmcMediana||1)*3?'var(--danger)':'var(--text)'};${(aj.cmcMax||0)>(aj.cmcMediana||1)*3?'background:rgba(220,53,69,0.06);padding:2px 8px;border-radius:8px;':''}">${fmtBRL2(aj.cmcMax||0)}</span></div>
+                </div>
+            </div>
+            <div style="background:linear-gradient(135deg,#059669,#0d9e5f);border-radius:24px;padding:32px;color:#fff;position:relative;overflow:hidden;box-shadow:0 8px 32px rgba(13,158,95,0.15);">
+                <div style="position:absolute;top:-20px;right:-20px;opacity:0.08;font-size:180px;line-height:1;pointer-events:none;"><i class="fas fa-bolt"></i></div>
+                <div style="position:relative;z-index:1;">
+                    <div style="font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:0.3em;color:rgba(255,255,255,0.7);margin-bottom:28px;display:flex;align-items:center;gap:6px;"><i class="fas fa-bolt" style="font-size:12px;"></i>Performance Operacional (Depois)</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:28px;">
+                        <div style="display:flex;flex-direction:column;gap:20px;">
+                            <div style="background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);padding:20px;border-radius:20px;border:2px solid rgba(255,255,255,0.15);">
+                                <div style="font-size:9px;font-weight:900;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:6px;">Dias Negativos Eliminados</div>
+                                <div class="mono" style="font-size:2.8rem;font-weight:900;color:#fff;letter-spacing:-2px;line-height:1;">${pctNegReduzido}%</div>
                             </div>
-                            <div class="compare-item">
-                                <span class="compare-item-label">CMV</span>
-                                <span class="compare-item-value">${fmtBRL(aj.cmvAntes)}</span>
-                            </div>
-                            <div class="compare-item">
-                                <span class="compare-item-label">Margem R$</span>
-                                <span class="compare-item-value">${fmtBRL(aj.mgAntes)}</span>
-                            </div>
-                            <div class="compare-item">
-                                <span class="compare-item-label">Margem %</span>
-                                <span class="compare-item-value">${fmtPct(aj.pmgAntes)}</span>
+                            <div>
+                                <div style="font-size:9px;font-weight:900;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:6px;">Novo Custo de Equilibrio</div>
+                                <div class="mono" style="font-size:2rem;font-weight:900;color:#fff;letter-spacing:-1px;">${fmtBRL2(cmcMedioDepois)}</div>
                             </div>
                         </div>
-                    </div>
-                    <div class="compare-box depois">
-                        <div class="compare-header-box">Depois do Ajuste</div>
-                        <div class="compare-content">
-                            <div class="compare-item">
-                                <span class="compare-item-label">Receita</span>
-                                <span class="compare-item-value">${fmtBRL(aj.recDepois)}</span>
-                            </div>
-                            <div class="compare-item">
-                                <span class="compare-item-label">CMV</span>
-                                <span class="compare-item-value">${fmtBRL(aj.cmvDepois)}</span>
-                            </div>
-                            <div class="compare-item">
-                                <span class="compare-item-label">Margem R$</span>
-                                <span class="compare-item-value">${fmtBRL(aj.mgDepois)}</span>
-                            </div>
-                            <div class="compare-item">
-                                <span class="compare-item-label">Margem %</span>
-                                <span class="compare-item-value">${fmtPct(aj.pmgDepois)}</span>
-                            </div>
+                        <div style="display:flex;flex-direction:column;gap:12px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:10px;"><span style="font-size:10px;font-weight:800;text-transform:uppercase;color:#fff;">Dias em Estado OK</span><span class="mono" style="font-size:var(--fs-md);font-weight:900;color:#fff;">${aj.diasOkDepois||0}</span></div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:10px;"><span style="font-size:10px;font-weight:800;text-transform:uppercase;color:rgba(255,255,255,0.5);">Dias Excessivos</span><span class="mono" style="font-size:var(--fs-md);font-weight:900;color:rgba(255,255,255,0.7);">${aj.diasExcessivoDepois||0}</span></div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:10px;"><span style="font-size:10px;font-weight:800;text-transform:uppercase;color:rgba(255,255,255,0.5);">Saldo Atual</span><span class="mono" style="font-size:var(--fs-md);font-weight:900;color:rgba(255,255,255,0.7);">${fmtNum(aj.saldoDepois)} un</span></div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:10px;"><span style="font-size:10px;font-weight:800;text-transform:uppercase;color:#fff;">Status CMC</span><span class="mono" style="font-size:var(--fs-md);font-weight:900;color:#fff;">Estabilizado</span></div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:10px;font-weight:800;text-transform:uppercase;color:#fff;">Eficiencia OPs</span><span class="mono" style="font-size:var(--fs-md);font-weight:900;color:#fff;">${aj.opsAntes||0} -> ${aj.opsDepois||0}</span></div>
                         </div>
                     </div>
                 </div>
             </div>
-        `;
+        </div>
 
-        container.appendChild(card);
-    });
+        <!-- DRE FINANCEIRA -->
+        <div style="background:#fff;border:2px solid var(--border);border-radius:28px;overflow:hidden;margin-bottom:24px;box-shadow:var(--shadow-sm);">
+            <div style="padding:16px 28px;border-bottom:2px solid var(--border-light);display:flex;align-items:center;gap:10px;background:rgba(245,246,248,0.5);">
+                <div style="background:rgba(67,56,202,0.08);border:1px solid var(--border);border-radius:12px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-chart-line" style="color:var(--accent);font-size:13px;"></i></div>
+                <span style="font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.2em;color:var(--text);">Impacto Financeiro Consolidado</span>
+            </div>
+            <table class="ranking-table" style="font-size:var(--fs-sm);">
+                <thead><tr><th style="padding:14px 28px;font-size:10px;letter-spacing:0.15em;">Descricao</th><th class="text-right" style="padding:14px 28px;font-size:10px;letter-spacing:0.15em;">Anterior</th><th class="text-right" style="padding:14px 28px;font-size:10px;letter-spacing:0.15em;">Atual</th><th class="text-right" style="padding:14px 28px;font-size:10px;letter-spacing:0.15em;">Variacao</th></tr></thead>
+                <tbody>
+                    <tr><td style="padding:18px 28px;font-weight:700;">Receita Liquida</td><td class="mono text-right" style="padding:18px 28px;color:var(--text-muted);">${fmtBRL(aj.recAntes)}</td><td class="mono text-right" style="padding:18px 28px;font-weight:900;">${fmtBRL(aj.recDepois)}</td><td class="text-right" style="padding:18px 28px;"><span style="background:var(--border-light);color:var(--text-muted);padding:4px 14px;border-radius:14px;font-size:10px;font-weight:900;border:2px solid var(--border);">-</span></td></tr>
+                    <tr><td style="padding:18px 28px;font-weight:700;">CMV (Custo Mercadoria)</td><td class="mono text-right" style="padding:18px 28px;color:var(--text-muted);">${fmtBRL(aj.cmvAntes)}</td><td class="mono text-right" style="padding:18px 28px;font-weight:900;color:var(--success);">${fmtBRL(aj.cmvDepois)}</td><td class="text-right" style="padding:18px 28px;"><span style="background:var(--success);color:#fff;padding:4px 14px;border-radius:14px;font-size:10px;font-weight:900;box-shadow:0 2px 6px rgba(13,158,95,0.2);">&#9660; ${Math.abs(varCMV).toFixed(1)}%</span></td></tr>
+                    <tr style="background:var(--bg);"><td style="padding:18px 28px;font-weight:900;text-transform:uppercase;">Lucro Bruto</td><td class="mono text-right" style="padding:18px 28px;color:var(--text-muted);">${fmtBRL(lucroBrutoAntes)}</td><td class="mono text-right" style="padding:18px 28px;font-weight:900;">${fmtBRL(lucroBrutoDepois)}</td><td class="text-right" style="padding:18px 28px;"><span style="background:var(--success);color:#fff;padding:4px 14px;border-radius:14px;font-size:10px;font-weight:900;">&#9650; ${varLucro.toFixed(1)}%</span></td></tr>
+                    <tr><td style="padding:18px 28px;font-weight:700;">Margem Bruta %</td><td class="mono text-right" style="padding:18px 28px;color:var(--text-muted);">${fmtPct(aj.pmgAntes)}</td><td class="mono text-right" style="padding:18px 28px;font-weight:900;">${fmtPct(aj.pmgDepois)}</td><td class="text-right" style="padding:18px 28px;"><span style="background:var(--success);color:#fff;padding:4px 14px;border-radius:14px;font-size:10px;font-weight:900;">+ ${diffMg.toFixed(1)}%</span></td></tr>
+                </tbody>
+            </table>
+        </div>
 
-    document.getElementById('countAjustes').textContent = MOCK_AJUSTES.length + ' de 190 produtos';
+        <!-- GRAFICO CMC MENSAL -->
+        ${hasMensal ? `<div style="background:#fff;border:2px solid var(--border);border-radius:28px;padding:28px;margin-bottom:24px;box-shadow:var(--shadow-sm);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                <div style="display:flex;align-items:center;gap:10px;"><div style="background:rgba(67,56,202,0.08);border:1px solid var(--border);border-radius:12px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-chart-area" style="color:var(--accent);font-size:13px;"></i></div><span style="font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:0.15em;color:var(--text);">Evolucao Mensal do CMC</span></div>
+                <div style="display:flex;gap:16px;font-size:10px;font-weight:900;text-transform:uppercase;"><span style="display:flex;align-items:center;gap:4px;color:var(--danger);"><span style="width:14px;height:3px;background:var(--danger);border-radius:2px;display:inline-block;opacity:0.6;"></span>Antes</span><span style="display:flex;align-items:center;gap:4px;color:var(--success);"><span style="width:14px;height:4px;background:var(--success);border-radius:2px;display:inline-block;"></span>Depois</span></div>
+            </div>
+            <div style="height:280px;"><canvas id="${chartId}"></canvas></div>
+        </div>` : ''}
 
-    setTimeout(() => {
-        document.querySelectorAll('.card-collapsible').forEach(el => {
-            el.style.maxHeight = el.scrollHeight + 'px';
-            el.style.opacity = '1';
-        });
-    }, 50);
+        <!-- VEREDITO FINAL -->
+        <div style="background:linear-gradient(135deg,#1e293b,#0f172a);border-radius:32px;padding:40px;color:#fff;position:relative;overflow:hidden;display:flex;align-items:center;gap:32px;box-shadow:0 16px 48px rgba(15,23,42,0.12);">
+            <div style="position:absolute;right:-40px;bottom:-40px;opacity:0.06;pointer-events:none;"><i class="fas fa-calculator" style="font-size:240px;"></i></div>
+            <div style="flex:1;position:relative;z-index:1;">
+                <div style="display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.08);padding:6px 14px;border-radius:14px;border:2px solid rgba(255,255,255,0.08);margin-bottom:20px;"><i class="fas fa-shield-halved" style="color:#4ade80;font-size:13px;"></i><span style="font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:0.2em;color:rgba(255,255,255,0.7);">Certificacao de Auditoria</span></div>
+                <div style="font-size:1.8rem;font-weight:900;letter-spacing:-1px;line-height:1.2;">O lucro real de <span style="color:#4ade80;background:rgba(74,222,128,0.1);padding:2px 12px;border-radius:16px;border:1px solid rgba(74,222,128,0.2);">${fmtBRL(lucroBrutoDepois)}</span> confirma o sucesso.</div>
+                <div style="font-size:var(--fs-sm);color:rgba(255,255,255,0.4);margin-top:8px;">A contabilidade de estoque mascarava o resultado. Com o ajuste, a margem real aparece.</div>
+            </div>
+            <div style="background:#fff;padding:28px 32px;border-radius:24px;text-align:center;min-width:200px;position:relative;z-index:1;box-shadow:0 8px 24px rgba(0,0,0,0.15);border:2px solid var(--border);">
+                <div style="font-size:10px;font-weight:900;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:12px;">Status SKU</div>
+                <div style="width:48px;height:48px;border-radius:50%;background:${statusCor};display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:0 0 20px ${statusCor}40;"><i class="fas ${statusIcon}" style="color:#fff;font-size:20px;"></i></div>
+                <div style="font-size:1.6rem;font-weight:900;color:${statusCor};letter-spacing:-1px;text-transform:uppercase;font-style:italic;">${status}</div>
+                <div class="mono" style="font-size:var(--fs-sm);color:var(--text-muted);margin-top:4px;">MARGEM ${fmtPct(aj.pmgDepois)}</div>
+            </div>
+        </div>
+    </div>
+    `;
+
+    if (hasMensal) {
+        setTimeout(() => {
+            const MESES_SHORT = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+            const cvs = document.getElementById(chartId);
+            if (!cvs) return;
+            new Chart(cvs.getContext('2d'), {
+                type: 'line', data: { labels: MESES_SHORT, datasets: [
+                    { label: 'CMC Antes', data: aj.cmcMesAntes, borderColor: '#fca5a5', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 4, borderDash: [5,5], tension: 0.3 },
+                    { label: 'CMC Depois', data: aj.cmcMesDepois, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.08)', fill: true, borderWidth: 3, pointRadius: 5, pointBackgroundColor: '#10b981', tension: 0.3 }
+                ]}, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { borderDash: [3,3], color: '#f1f5f9' }, ticks: { font: { size: 10, weight: 'bold', family: 'JetBrains Mono' }, callback: v => 'R$ ' + v.toFixed(2) } }, x: { grid: { display: false }, ticks: { font: { size: 10, weight: '900', family: 'Outfit' } } } } }
+            });
+        }, 100);
+    }
+
+    container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function filtrarAjustes() {
     const q = document.getElementById('filtroAjuste').value.toLowerCase();
-    const cards = document.querySelectorAll('.ajuste-card');
+    const rows = document.querySelectorAll('.aj-row');
     let vis = 0;
-    cards.forEach(c => {
-        const match = c.dataset.nome.includes(q);
-        c.style.display = match ? '' : 'none';
+    rows.forEach(r => {
+        const match = r.dataset.nome.includes(q);
+        r.style.display = match ? '' : 'none';
         if (match) vis++;
     });
-    document.getElementById('countAjustes').textContent = vis + ' de 190 produtos';
+    document.getElementById('countAjustes').textContent = vis + ' de ' + DADOS_AJUSTES.length + ' produtos';
 }
 
 // =============================================
 // RENDER TUDO (chamado após decidir fonte)
 // =============================================
-function renderTudo() {
+async function renderTudo() {
     renderVisaoGeral();
     renderProdutos();
     renderClientes();
+    await carregarAjustes();
     renderAjustes();
+    initFilterPanel();
 
     // Init collapsibles (exceto produto-cards que iniciam fechados)
     setTimeout(() => {
