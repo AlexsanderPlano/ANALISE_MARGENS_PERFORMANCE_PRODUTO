@@ -1,0 +1,50 @@
+name: CI - Esteira Básica
+
+on:
+  push:
+    branches: [master, claude/*]
+  pull_request:
+    branches: [master]
+
+jobs:
+  lint-e-validacao:
+    name: Lint & Validação
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Instalar dependências
+        run: |
+          pip install -r requirements.txt
+          pip install flake8
+
+      - name: Verificar sintaxe Python
+        run: make check
+
+      - name: Lint Python (flake8)
+        run: make lint
+
+      - name: Verificar sintaxe JS
+        run: make check-js
+
+      - name: Validar HTML (básico)
+        run: |
+          for f in *.html; do
+            python -c "
+          from html.parser import HTMLParser
+          class V(HTMLParser):
+              def __init__(self):
+                  super().__init__()
+                  self.errors = 0
+          v = V()
+          v.feed(open('$f', encoding='utf-8').read())
+          print('$f: OK')
+          "
+          done
