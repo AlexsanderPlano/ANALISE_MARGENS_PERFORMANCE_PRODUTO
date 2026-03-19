@@ -1,0 +1,11 @@
+# Dados Excel (pesados, não versionar)
+dados/
+*.xlsx
+
+# Python
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+Thumbs.db

@@ -1,0 +1,2501 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rentabilidade Vendas 2025</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
+    <style>
+        canvas { image-rendering: -webkit-optimize-contrast; }
+    </style>
+    <style>
+/* ============================================
+   CSS VARIABLES (Design canônico v14)
+   ============================================ */
+:root {
+    --bg: #f5f6f8;
+    --primary: #1e293b;
+    --primary-light: #334155;
+    --success: #0d9e5f;
+    --success-light: rgba(13,158,95,0.07);
+    --warning: #e67e22;
+    --warning-light: rgba(230,126,34,0.07);
+    --danger: #dc3545;
+    --danger-light: rgba(220,53,69,0.06);
+    --white: #ffffff;
+    --text: #1b1f2a;
+    --text-secondary: #5f6780;
+    --text-muted: #9ba3b8;
+    --border: #e4e7ec;
+    --border-light: #f0f2f5;
+    --accent: #4338ca;
+    --accent-dim: rgba(67,56,202,0.06);
+    --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+    --shadow: 0 2px 8px rgba(0,0,0,0.06);
+    --shadow-lg: 0 8px 24px rgba(0,0,0,0.08);
+    --radius: 12px;
+    --radius-sm: 8px;
+    /* Escala tipográfica */
+    --fs-xs: 0.55rem;
+    --fs-sm: 0.65rem;
+    --fs-md: 0.78rem;
+    --fs-lg: 0.88rem;
+    --fs-xl: 1.1rem;
+    --fs-2xl: 1.5rem;
+    --fw-normal: 500;
+    --fw-bold: 600;
+    --fw-black: 700;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+.section-header:first-child {
+    margin-top: 0;
+}
+.section-header {
+    margin-top: 28px;
+    margin-bottom: 16px;
+    padding: 10px 16px;
+    border-left: 4px solid var(--accent);
+}
+.section-header h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 20px;
+    font-weight: var(--fw-black);
+    color: var(--text);
+    letter-spacing: -0.3px;
+}
+.section-header p {
+    font-family: 'Outfit', sans-serif;
+    font-size: var(--fs-xs);
+    font-weight: var(--fw-normal);
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+}
+.section-header.border-success { border-left-color: var(--success); }
+.section-header.border-warning { border-left-color: var(--warning); }
+.section-header.border-primary { border-left-color: var(--primary); }
+.section-header.border-danger { border-left-color: var(--danger); }
+.section-header.border-accent { border-left-color: var(--accent); }
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+}
+
+/* ============================================
+   APP HEADER
+   ============================================ */
+.app-header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+.app-header-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.app-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.app-header-hamburger {
+    background: none;
+    border: none;
+    font-size:var(--fs-2xl);
+    cursor: pointer;
+    color: var(--text);
+    padding: 6px;
+    border-radius: 6px;
+    transition: background 0.15s;
+    display: flex;
+    align-items: center;
+}
+.app-header-hamburger:hover { background: var(--border-light); }
+.app-header-title {
+    font-size:var(--fs-lg);
+    font-weight:var(--fw-black);
+    color: var(--text);
+    letter-spacing: -0.3px;
+}
+.app-header-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size:var(--fs-md);
+    color: var(--text-muted);
+    margin-right: 120px;
+}
+.status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4ade80;
+    display: inline-block;
+}
+
+/* ============================================
+   TABS BAR
+   ============================================ */
+.tabs-bar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+}
+.tabs-bar-inner {
+    max-width: 1440px;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-end;
+    gap: 0;
+}
+.tab-item {
+    padding: 12px 20px;
+    font-size:var(--fs-md);
+    font-weight:var(--fw-bold);
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    user-select: none;
+}
+.tab-item:hover { color: var(--text); }
+.tab-item.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+}
+
+/* ============================================
+   SIDEBAR
+   ============================================ */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.3);
+    z-index: 200;
+}
+.sidebar-overlay.active { display: block; }
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100vh;
+    background: var(--white);
+    box-shadow: var(--shadow-lg);
+    z-index: 201;
+    transition: left 0.25s ease;
+    display: flex;
+    flex-direction: column;
+}
+.sidebar.open { left: 0; }
+
+.sidebar-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 52px;
+}
+.sidebar-header h2 {
+    font-size:var(--fs-lg);
+    font-weight:var(--fw-black);
+    color: var(--text);
+}
+.sidebar-close {
+    background: none;
+    border: none;
+    font-size:var(--fs-xl);
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+.sidebar-close:hover { background: var(--border-light); }
+
+.sidebar-actions {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.sidebar-btn {
+    width: 100%;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size:var(--fs-md);
+    font-weight:var(--fw-bold);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #fff;
+    transition: opacity 0.2s;
+}
+.sidebar-btn:hover { opacity: 0.9; }
+
+/* ============================================
+   MAIN CONTENT
+   ============================================ */
+.main-content {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 28px 32px;
+}
+
+.section { display: none; }
+.section.active { display: block; }
+
+.page-header {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.page-header h2 {
+    font-size:var(--fs-2xl);
+    font-weight:var(--fw-black);
+    color: var(--text);
+    letter-spacing: -0.5px;
+}
+.page-header p {
+    color: var(--text-muted);
+    font-size:var(--fs-lg);
+}
+
+/* ============================================
+   SUMMARY CARDS (v14 design)
+   ============================================ */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    margin-bottom: 28px;
+}
+.produto-card .cards-grid {
+    grid-template-columns: 1fr 24px 1fr 24px 1fr 24px 1fr 24px 1fr 24px 1fr 24px 1fr;
+    gap: 4px;
+}
+.produto-card .summary-card {
+    padding: 8px 8px;
+}
+.produto-card .card-label {
+    font-size:var(--fs-xs);
+    color: var(--text-secondary);
+}
+.produto-card .card-value {
+    font-size:var(--fs-md);
+}
+.produto-card .card-delta {
+    font-size:var(--fs-xs);
+    padding: 4px 10px;
+    margin-top: auto;
+    float: right;
+    letter-spacing: 0.5px;
+}
+.card-operator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size:var(--fs-xl);
+    font-weight:var(--fw-black);
+    color: var(--text-muted);
+    padding: 0;
+    min-width: 0;
+}
+.produto-card .cards-grid-row2 {
+    grid-template-columns: 1fr 24px 1fr 24px 1fr 24px 1fr 24px 1fr 24px 1fr 24px 1fr;
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+.summary-card {
+    background: var(--white);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--border);
+    padding: 12px 14px;
+    position: relative;
+    overflow: hidden;
+}
+.summary-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #1e40af, #3b82f6);
+}
+.summary-card.card-success::before { background: linear-gradient(90deg, #059669, #10b981); }
+.summary-card.card-danger::before { background: linear-gradient(90deg, #dc2626, #ef4444); }
+.summary-card.card-warning::before { background: linear-gradient(90deg, #d97706, #f59e0b); }
+
+.card-label {
+    font-size:var(--fs-sm);
+    font-weight:var(--fw-bold);
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    white-space: nowrap;
+}
+.card-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size:var(--fs-lg);
+    font-weight:var(--fw-black);
+    color: var(--text);
+    white-space: nowrap;
+}
+.card-delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size:var(--fs-sm);
+    font-weight:var(--fw-bold);
+    padding: 4px 10px;
+    border-radius: 12px;
+    margin-top: 4px;
+}
+.delta-up { background: var(--success-light); color: var(--success); }
+.delta-down { background: var(--danger-light); color: var(--danger); }
+.delta-neutral { background: var(--accent); color: #fff; }
+
+/* ============================================
+   PRODUCT / CLIENT CARDS (v14 design)
+   ============================================ */
+.card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+}
+.card-header {
+    background: linear-gradient(135deg, #1e40af, #3b82f6);
+    color: rgb(250, 250, 250);
+    padding: 14px 24px;
+    font-weight:var(--fw-black);
+    font-size:var(--fs-lg);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    cursor: pointer;
+    user-select: none;
+}
+.card-header .badge {
+    font-size:var(--fs-md);
+    background: rgba(255,255,255,0.2);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight:var(--fw-normal);
+    text-transform: none;
+    letter-spacing: 0;
+}
+.card-header-green {
+    background: linear-gradient(135deg, #059669, #10b981);
+}
+.card-header-dark {
+    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+}
+.card-body { padding: 0; }
+.card-body-padded { padding: 20px 24px; }
+.card-collapsible {
+    transition: max-height 0.4s ease, opacity 0.3s ease;
+    overflow: hidden;
+}
+
+/* ============================================
+   DRE TABLE (v14 design)
+   ============================================ */
+.table-wrap { overflow-x: auto; }
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size:var(--fs-md);
+}
+tr.col-head td {
+    background: var(--bg);
+    color: var(--text-secondary);
+    font-weight:var(--fw-bold);
+    font-size:var(--fs-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 4px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    width: 62px;
+}
+tr.col-head td:first-child {
+    text-align: left;
+    width: 130px;
+    color: var(--text);
+    font-weight:var(--fw-black);
+}
+tr.col-head td:last-child {
+    width: 66px;
+    color: var(--text);
+    font-weight:var(--fw-black);
+}
+tbody td {
+    padding: 6px 4px;
+    text-align: right;
+    border-bottom: 1px solid var(--border-light);
+    white-space: nowrap;
+    color: var(--text-secondary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size:var(--fs-md);
+    font-weight:var(--fw-black);
+    font-variant-numeric: tabular-nums;
+}
+tbody td:first-child {
+    text-align: left;
+    font-family: 'Outfit', sans-serif;
+    font-weight:var(--fw-bold);
+    color: var(--text-secondary);
+    font-size:var(--fs-md);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+tbody td.total-col {
+    font-weight:var(--fw-black);
+    color: var(--text);
+    background: rgba(67,56,202,0.03);
+}
+
+/* DRE icon badges */
+.dre-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    font-size:var(--fs-sm);
+    font-weight:var(--fw-black);
+    margin-right: 8px;
+    flex-shrink: 0;
+    font-family: 'Outfit', sans-serif;
+}
+.dre-icon-result { background: var(--success); color: #fff; }
+.dre-icon-info { background: #5f6780; color: #fff; font-weight:var(--fw-bold); font-style: italic; }
+.dre-icon-deduct { background: #AD0524; color: #fff; font-weight:var(--fw-normal); }
+.dre-icon-cost { background: #AD0524; color: #fff; font-weight:var(--fw-normal); }
+.dre-icon-pct { background: #5f6780; color: #fff; font-weight:var(--fw-normal); }
+.dre-icon-pct-final { background: #5f6780; color: #fff; font-weight:var(--fw-bold); }
+.dre-icon-num { background: #AD0524; color: #fff; font-weight:var(--fw-normal); }
+.dre-icon-final { background: var(--accent); color: #fff; }
+
+/* Row styles */
+tr.m-receita td { background: var(--success) !important; color: #fff !important; font-weight:var(--fw-black); }
+tr.m-margem td { font-weight:var(--fw-black); border-top: 2px solid var(--accent); padding-top: 12px; background: #f4f7fc !important; color: var(--accent) !important; }
+tr.m-margem td:first-child { color: var(--accent) !important; }
+tr.m-margem-pct td { font-weight:var(--fw-black); padding-bottom: 12px; background: #f4f7fc !important; }
+tr.m-cost-first td { border-top: 3px solid var(--primary) !important; padding-top: 12px; }
+tr.m-info td { color: #5f6780; font-weight:var(--fw-normal); }
+tr.m-devol-num td { color: #AD0524; font-weight:var(--fw-normal); }
+tr.m-deduct-rs td { color: #AD0524; font-weight:var(--fw-normal); }
+tr.m-cost-rs td { color: #AD0524; font-weight:var(--fw-normal); }
+tr.m-devol-pct td,
+tr.m-desc-pct td,
+tr.m-com-pct td,
+tr.m-cu-pct td,
+tr.m-cmv-pct td { font-size:var(--fs-md); color: #5f6780; font-weight:var(--fw-normal); }
+
+.mg-alta { color: var(--success); }
+.mg-media { color: var(--warning); }
+.mg-baixa { color: var(--danger); }
+.empty { color: var(--border) !important; text-align: center !important; }
+tbody tr:hover td { background: var(--accent-dim); }
+
+/* ============================================
+   DRE COMPARATIVA (Ajustes Estoque)
+   ============================================ */
+.compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.compare-box { border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; }
+.compare-box.antes { border-color: #fecaca; }
+.compare-box.depois { border-color: #bfdbfe; }
+.compare-header-box { padding: 10px 16px; font-size:var(--fs-md); font-weight:var(--fw-black); text-transform: uppercase; letter-spacing: 0.5px; }
+.compare-box.antes .compare-header-box { background: linear-gradient(90deg, #fee2e2, #fecaca); color: #991b1b; }
+.compare-box.depois .compare-header-box { background: linear-gradient(90deg, #dbeafe, #bfdbfe); color: #1e40af; }
+.compare-content { padding: 16px; }
+.compare-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; }
+.compare-item:last-child { border-bottom: none; }
+.compare-item-label { font-size:var(--fs-lg); color: var(--text-muted); }
+.compare-item-value { font-size:var(--fs-lg); font-weight:var(--fw-bold); font-family: 'JetBrains Mono', monospace; }
+.compare-box.antes .compare-item-value { color: var(--danger); }
+.compare-box.depois .compare-item-value { color: var(--accent); }
+
+.var-tag { padding: 2px 8px; border-radius: 4px; font-size:var(--fs-md); font-weight:var(--fw-bold); white-space: nowrap; }
+.var-tag.up { background: #dcfce7; color: #166534; }
+.var-tag.down { background: #fee2e2; color: #991b1b; }
+.var-tag.neutral { background: #f1f5f9; color: #5f6780; }
+
+/* KPI cards (DRE comparativa) */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 8px; margin-bottom: 24px; }
+.kpi-card { background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 10px 8px; text-align: center; }
+.kpi-card.highlight { background: linear-gradient(135deg, #eff6ff, #dbeafe); border-color: var(--accent); }
+.kpi-card.kpi-success { background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-color: var(--success); }
+.kpi-card.kpi-danger { background: linear-gradient(135deg, #fef2f2, #fee2e2); border-color: var(--danger); }
+.kpi-label { font-size:var(--fs-xs); font-weight:var(--fw-bold); text-transform: uppercase; letter-spacing: 0.2px; color: var(--text-muted); margin-bottom: 4px; }
+.kpi-value { font-size:var(--fs-lg); font-weight:var(--fw-black); color: var(--text); font-family: 'JetBrains Mono', monospace; }
+.kpi-card.highlight .kpi-value { color: var(--accent); }
+.kpi-card.kpi-success .kpi-value { color: var(--success); }
+.kpi-card.kpi-danger .kpi-value { color: var(--danger); }
+
+/* ============================================
+   RANKING TABLE
+   ============================================ */
+.ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size:var(--fs-md);
+}
+.ranking-table thead th {
+    background: #d5dae3;
+    color: var(--primary);
+    font-weight:var(--fw-black);
+    font-size:var(--fs-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 10px 14px;
+    text-align: left;
+    border-top: 2px solid var(--primary);
+    border-bottom: 2px solid var(--primary);
+}
+.ranking-table thead th.text-right { text-align: right; }
+.ranking-table tbody td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border-light);
+    font-family: 'Outfit', sans-serif;
+    font-size:var(--fs-md);
+}
+.ranking-table tbody td.mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-size:var(--fs-md);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+.ranking-table tbody tr:hover td { background: var(--accent-dim); }
+
+.rank-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    font-size:var(--fs-md);
+    font-weight:var(--fw-black);
+    background: var(--accent-dim);
+    color: var(--accent);
+}
+.rank-badge.top3 { background: var(--success-light); color: var(--success); }
+
+/* ============================================
+   SEARCH / FILTER
+   ============================================ */
+.filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 auto 20px;
+    max-width: 800px;
+    flex-wrap: wrap;
+}
+.filter-input {
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'Outfit', sans-serif;
+    font-size:var(--fs-md);
+    outline: none;
+    transition: border-color 0.15s;
+    min-width: 240px;
+}
+.filter-input:focus { border-color: var(--accent); }
+.filter-count {
+    font-size:var(--fs-md);
+    color: var(--text-muted);
+    font-weight:var(--fw-normal);
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+.footer {
+    padding: 20px 32px;
+    text-align: center;
+    font-size:var(--fs-md);
+    color: var(--text-muted);
+    font-weight:var(--fw-normal);
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .main-content { padding: 16px; }
+    .cards-grid { grid-template-columns: repeat(2, 1fr); }
+    .compare-grid { grid-template-columns: 1fr; }
+    .kpi-grid { grid-template-columns: repeat(3, 1fr); }
+    .page-header h2 { font-size:var(--fs-xl); }
+    .tab-item { padding: 10px 14px; font-size:var(--fs-md); }
+    tr.col-head td { font-size:var(--fs-sm); padding: 8px 6px; width: auto; }
+    tbody td { padding: 6px 6px; font-size:var(--fs-sm); }
+}
+    </style>
+</head>
+<body>
+
+<!-- ============================================
+     APP HEADER
+     ============================================ -->
+<div class="app-header">
+    <div class="app-header-inner">
+        <div class="app-header-left">
+            <button class="app-header-hamburger" onclick="toggleSidebar()" title="Menu">
+                <i class="fas fa-bars"></i>
+            </button>
+            <span class="app-header-title">Rentabilidade Vendas 2025</span>
+        </div>
+        <div class="app-header-right">
+            <span class="status-dot"></span>
+            <span id="statusText">Dados mockados</span>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================
+     TABS BAR
+     ============================================ -->
+<div class="tabs-bar">
+    <div class="tabs-bar-inner">
+        <div class="tab-item active" data-tab="visao-geral" onclick="navegarTab(this)">
+            <i class="fas fa-chart-pie" style="margin-right:6px;font-size:var(--fs-md);"></i>Visao Geral
+        </div>
+        <div class="tab-item" data-tab="por-produto" onclick="navegarTab(this)">
+            <i class="fas fa-leaf" style="margin-right:6px;font-size:var(--fs-md);"></i>Por Produto
+        </div>
+        <div class="tab-item" data-tab="por-cliente" onclick="navegarTab(this)">
+            <i class="fas fa-store" style="margin-right:6px;font-size:var(--fs-md);"></i>Por Cliente
+        </div>
+        <div class="tab-item" data-tab="ajustes" onclick="navegarTab(this)">
+            <i class="fas fa-scale-balanced" style="margin-right:6px;font-size:var(--fs-md);"></i>Ajustes Estoque
+        </div>
+    </div>
+</div>
+
+<!-- ============================================
+     SIDEBAR
+     ============================================ -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <h2>Menu</h2>
+        <button class="sidebar-close" onclick="toggleSidebar()">&#10005;</button>
+    </div>
+    <div class="sidebar-actions">
+        <button class="sidebar-btn" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);" onclick="navegarTab(document.querySelector('[data-tab=visao-geral]')); toggleSidebar();">
+            <i class="fas fa-chart-pie"></i> Visao Geral
+        </button>
+        <button class="sidebar-btn" style="background:linear-gradient(135deg,#16a34a,#15803d);" onclick="navegarTab(document.querySelector('[data-tab=por-produto]')); toggleSidebar();">
+            <i class="fas fa-leaf"></i> Por Produto
+        </button>
+        <button class="sidebar-btn" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);" onclick="navegarTab(document.querySelector('[data-tab=por-cliente]')); toggleSidebar();">
+            <i class="fas fa-store"></i> Por Cliente
+        </button>
+        <button class="sidebar-btn" style="background:linear-gradient(135deg,#d97706,#b45309);" onclick="navegarTab(document.querySelector('[data-tab=ajustes]')); toggleSidebar();">
+            <i class="fas fa-scale-balanced"></i> Ajustes Estoque
+        </button>
+        <div style="border-top:1px solid var(--border);margin:4px 0;"></div>
+        <button class="sidebar-btn" style="background:linear-gradient(135deg,#5f6780,#475569);" onclick="exportarPDF();">
+            <i class="fas fa-file-pdf"></i> Exportar PDF
+        </button>
+    </div>
+    <div style="padding:16px;margin-top:auto;">
+        <div style="font-size:var(--fs-sm);color:var(--text-muted);display:flex;align-items:center;gap:6px;">
+            <span class="status-dot"></span>
+            <span>184 produtos | 174 clientes</span>
+        </div>
+    </div>
+</aside>
+
+<!-- ============================================
+     MAIN CONTENT
+     ============================================ -->
+<div class="main-content">
+
+    <!-- ==========================================
+         TAB 1: VISAO GERAL
+         ========================================== -->
+    <section id="visao-geral" class="section active">
+        <div class="page-header">
+            <div>
+                <h2>Visao Geral</h2>
+                <p>Resumo consolidado — Jan a Dez 2025</p>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="cards-grid" id="cardsVisaoGeral"></div>
+
+        <!-- Top 10 Produtos por Receita -->
+        <div class="card">
+            <div class="card-header card-header-green" onclick="toggleCard(this)">
+                <span><i class="fas fa-trophy" style="margin-right:8px"></i> Top 10 Produtos — Receita</span>
+                <i class="fas fa-chevron-up card-toggle" style="transition:transform 0.3s"></i>
+            </div>
+            <div class="card-body card-collapsible">
+                <div class="table-wrap">
+                    <table class="ranking-table">
+                        <thead><tr>
+                            <th style="width:40px">#</th>
+                            <th>Produto</th>
+                            <th class="text-right">Receita</th>
+                            <th class="text-right">CMV</th>
+                            <th class="text-right">Margem</th>
+                            <th class="text-right">Mg %</th>
+                        </tr></thead>
+                        <tbody id="tbodyTopProdutos"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top 10 Clientes por Receita -->
+        <div class="card">
+            <div class="card-header card-header-dark" onclick="toggleCard(this)">
+                <span><i class="fas fa-ranking-star" style="margin-right:8px"></i> Top 10 Clientes — Receita</span>
+                <i class="fas fa-chevron-up card-toggle" style="transition:transform 0.3s"></i>
+            </div>
+            <div class="card-body card-collapsible">
+                <div class="table-wrap">
+                    <table class="ranking-table">
+                        <thead><tr>
+                            <th style="width:40px">#</th>
+                            <th>Cliente</th>
+                            <th class="text-right">Receita</th>
+                            <th class="text-right">Devol. %</th>
+                            <th class="text-right">Margem</th>
+                            <th class="text-right">Mg %</th>
+                        </tr></thead>
+                        <tbody id="tbodyTopClientes"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 2: POR PRODUTO
+         ========================================== -->
+    <section id="por-produto" class="section">
+        <div class="page-header">
+            <div>
+                <h2>Rentabilidade por Produto</h2>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <input type="text" class="filter-input" id="filtroProduto" placeholder="Buscar produto..." oninput="filtrarProdutos()">
+            <span class="filter-count" id="countProdutos"></span>
+        </div>
+
+        <div id="containerProdutos" style="max-width:1300px;margin:0 auto;"></div>
+    </section>
+
+    <!-- ==========================================
+         TAB 3: POR CLIENTE
+         ========================================== -->
+    <section id="por-cliente" class="section">
+        <div class="page-header">
+            <div>
+                <h2>Rentabilidade por Cliente</h2>
+                <p>174 clientes — Jan a Dez 2025</p>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <input type="text" class="filter-input" id="filtroCliente" placeholder="Buscar cliente..." oninput="filtrarClientes()">
+            <span class="filter-count" id="countClientes"></span>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="table-wrap">
+                    <table class="ranking-table">
+                        <thead><tr>
+                            <th style="width:40px">#</th>
+                            <th>Cliente</th>
+                            <th class="text-right">Receita</th>
+                            <th class="text-right">Devol. R$</th>
+                            <th class="text-right">Devol. %</th>
+                            <th class="text-right">Comissao</th>
+                            <th class="text-right">CMV</th>
+                            <th class="text-right">Margem</th>
+                            <th class="text-right">Mg %</th>
+                        </tr></thead>
+                        <tbody id="tbodyClientes"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==========================================
+         TAB 4: AJUSTES ESTOQUE (DRE Comparativa)
+         ========================================== -->
+    <section id="ajustes" class="section">
+        <div class="page-header">
+            <div>
+                <h2>Ajustes de Estoque</h2>
+                <p>DRE Comparativa — Antes vs Depois do ajuste</p>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <input type="text" class="filter-input" id="filtroAjuste" placeholder="Buscar produto..." oninput="filtrarAjustes()">
+            <span class="filter-count" id="countAjustes"></span>
+        </div>
+
+        <div id="containerAjustes"></div>
+    </section>
+
+</div>
+
+<div class="footer">Adm. Alexsander Machado — CRA 20-22229</div>
+
+<!-- ============================================
+     SCRIPTS
+     ============================================ -->
+<script>
+// =============================================
+// NAVEGAÇÃO
+// =============================================
+function navegarTab(el) {
+    document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    const tab = el.dataset.tab;
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(tab).classList.add('active');
+}
+
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebarOverlay').classList.toggle('active');
+}
+
+function toggleCard(header) {
+    const body = header.nextElementSibling;
+    const icon = header.querySelector('.card-toggle');
+    if (body.style.maxHeight && body.style.maxHeight !== '0px') {
+        body.style.maxHeight = '0px';
+        body.style.opacity = '0';
+        if (icon) icon.style.transform = 'rotate(180deg)';
+    } else {
+        body.style.maxHeight = body.scrollHeight + 'px';
+        body.style.opacity = '1';
+        if (icon) icon.style.transform = 'rotate(0deg)';
+    }
+}
+
+function trocarMesPainel(painelId, mesIdx) {
+    mesIdx = parseInt(mesIdx);
+    for (let i = 0; i < 12; i++) {
+        const el = document.getElementById(painelId + '-mes-' + i);
+        if (el) el.style.display = i === mesIdx ? 'block' : 'none';
+    }
+}
+
+function trocarMesDias(diasId, mesIdx) {
+    const MESES_FULL = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    const MESES_SHORT = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+    // Esconder todos os meses, mostrar o selecionado
+    for (let i = 0; i < 12; i++) {
+        const el = document.getElementById(diasId + '-mes-' + i);
+        if (el) el.style.display = i === mesIdx ? 'block' : 'none';
+    }
+    // Atualizar tabs
+    const tabs = document.getElementById(diasId + '-tabs');
+    if (tabs) {
+        tabs.querySelectorAll('button').forEach((btn, i) => {
+            if (i === mesIdx) {
+                btn.style.background = '#4338ca';
+                btn.style.color = '#fff';
+                btn.style.boxShadow = '0 2px 8px rgba(67,56,202,0.2)';
+            } else {
+                btn.style.background = 'transparent';
+                btn.style.color = '#9ba3b8';
+                btn.style.boxShadow = 'none';
+            }
+        });
+    }
+    // Atualizar avatar e título
+    const avatar = document.getElementById(diasId + '-avatar');
+    if (avatar) avatar.textContent = MESES_SHORT[mesIdx];
+    const titulo = document.getElementById(diasId + '-titulo');
+    if (titulo) titulo.innerHTML = MESES_FULL[mesIdx] + ' <span style="color:var(--text-muted);font-weight:var(--fw-normal);">2025</span>';
+}
+
+function toggleDiaSemana(id) {
+    const el = document.getElementById(id);
+    const icon = document.getElementById(id + '-icon');
+    if (el.style.display === 'none') {
+        el.style.display = 'block';
+        if (icon) icon.style.transform = 'rotate(180deg)';
+    } else {
+        el.style.display = 'none';
+        if (icon) icon.style.transform = 'rotate(0deg)';
+    }
+}
+
+function exportarPDF() { alert('Exportar PDF — em breve'); }
+
+// =============================================
+// AIRTABLE API
+// =============================================
+const AIRTABLE = {
+    token: 'pat0KFWb7Vc0aevY1.9511b6c89f912e5c581d17fbd06427e55ca13d5cd2cc0631b4a6d810152b463f',
+    baseId: 'appC95CSdCeBrKQ83',
+    tables: {
+        produtos:  'tblvS4zY6EofPsYCr',
+        clientes:  'tblB6qHTf7MGqjs5K',
+        detalhe:   'tbluXAa4patQHyxmc'
+    }
+};
+
+// Fonte de dados: 'mock' ou 'airtable'
+let FONTE_DADOS = 'mock';
+
+async function airtableFetch(tableId, params = {}) {
+    const url = new URL(`https://api.airtable.com/v0/${AIRTABLE.baseId}/${tableId}`);
+    Object.entries(params).forEach(([k, v]) => url.searchParams.append(k, v));
+
+    const resp = await fetch(url, {
+        headers: { 'Authorization': `Bearer ${AIRTABLE.token}` }
+    });
+    if (!resp.ok) throw new Error(`Airtable ${resp.status}: ${resp.statusText}`);
+    return resp.json();
+}
+
+// Busca todos os registros (paginação automática)
+async function airtableFetchAll(tableId) {
+    let allRecords = [];
+    let offset = null;
+    do {
+        const params = { pageSize: '100' };
+        if (offset) params.offset = offset;
+        const data = await airtableFetch(tableId, params);
+        allRecords = allRecords.concat(data.records || []);
+        offset = data.offset || null;
+    } while (offset);
+    return allRecords;
+}
+
+// Tenta carregar do Airtable; se vazio, usa mock
+async function carregarDados() {
+    const statusEl = document.getElementById('statusText');
+    try {
+        statusEl.textContent = 'Conectando Airtable...';
+
+        const [produtos, clientes] = await Promise.all([
+            airtableFetchAll(AIRTABLE.tables.produtos),
+            airtableFetchAll(AIRTABLE.tables.clientes)
+        ]);
+
+        if (produtos.length > 0 && clientes.length > 0) {
+            FONTE_DADOS = 'airtable';
+            DADOS_PRODUTOS = produtos.map(r => r.fields);
+            DADOS_CLIENTES = clientes.map(r => r.fields);
+            statusEl.textContent = `Airtable: ${produtos.length} produtos, ${clientes.length} clientes`;
+            document.querySelectorAll('.status-dot').forEach(d => d.style.background = '#4ade80');
+        } else {
+            FONTE_DADOS = 'mock';
+            statusEl.textContent = `Airtable vazio — usando dados mock`;
+            document.querySelectorAll('.status-dot').forEach(d => d.style.background = '#fbbf24');
+        }
+    } catch (err) {
+        console.warn('Airtable indisponivel:', err.message);
+        FONTE_DADOS = 'mock';
+        statusEl.textContent = 'Offline — dados mock';
+        document.querySelectorAll('.status-dot').forEach(d => d.style.background = '#f87171');
+    }
+
+    renderTudo();
+}
+
+// Carrega detalhe mensal de um produto (sob demanda)
+async function carregarDetalheProduto(nomeProduto) {
+    if (FONTE_DADOS !== 'airtable') return null;
+    try {
+        const records = await airtableFetchAll(AIRTABLE.tables.detalhe);
+        return records
+            .map(r => r.fields)
+            .filter(r => r.Produto === nomeProduto)
+            .sort((a, b) => (a['Mês'] || 0) - (b['Mês'] || 0));
+    } catch { return null; }
+}
+
+// Arrays que serão populados (mock ou Airtable)
+let DADOS_PRODUTOS = [];
+let DADOS_CLIENTES = [];
+
+// =============================================
+// FORMATAÇÃO
+// =============================================
+function fmtBRL(v) { return v === 0 ? '-' : 'R$ ' + v.toLocaleString('pt-BR', {maximumFractionDigits: 0}); }
+function fmtBRL2(v) { return 'R$ ' + v.toFixed(2).replace('.', ','); }
+function fmtNum(v) { return v === 0 ? '-' : v.toLocaleString('pt-BR'); }
+function fmtPct(v) { return v === 0 ? '-' : v.toFixed(1).replace('.', ',') + '%'; }
+function mgClass(p) { return p >= 50 ? 'mg-alta' : p >= 30 ? 'mg-media' : 'mg-baixa'; }
+
+// =============================================
+// DADOS MOCKADOS
+// =============================================
+const MOCK_PRODUTOS = [
+    { nome: 'ALFACE AMERICANA 150G', qtd: 333660, pp: 3.56, rec: 1186457, dq: 19218, pdq: 5.8, drs: 66755, pdrs: 5.6, df: 77345, pdf: 6.5, com: 8340, pcom: 0.7, cu: 1.36, pcu: 38.2, cmv: 455065, pcmv: 38.4, mg: 578950, pmg: 48.8,
+      meses: [
+        {qtd:26639,pp:4.19,rec:111731,dq:1813,pdq:6.8,drs:6936,pdrs:6.2,df:6940,pdf:6.2,com:783,pcom:0.7,cu:1.31,pcu:31.3,cmv:34801,pcmv:31.1,mg:62270,pmg:55.7},
+        {qtd:9077,pp:4.28,rec:38833,dq:1829,pdq:20.1,drs:6841,pdrs:17.6,df:2248,pdf:5.8,com:238,pcom:0.6,cu:1.46,pcu:34.1,cmv:13228,pcmv:34.1,mg:16277,pmg:41.9},
+        {qtd:20681,pp:4.54,rec:93927,dq:518,pdq:2.5,drs:2159,pdrs:2.3,df:5672,pdf:6.0,com:689,pcom:0.7,cu:1.71,pcu:37.7,cmv:35273,pcmv:37.6,mg:50133,pmg:53.4},
+        {qtd:31975,pp:4.02,rec:128455,dq:1422,pdq:4.4,drs:5568,pdrs:4.3,df:9290,pdf:7.2,com:909,pcom:0.7,cu:1.58,pcu:39.3,cmv:50411,pcmv:39.2,mg:62278,pmg:48.5},
+        {qtd:27081,pp:3.50,rec:94694,dq:1802,pdq:6.7,drs:6906,pdrs:7.3,df:6583,pdf:7.0,com:650,pcom:0.7,cu:1.30,pcu:37.1,cmv:35097,pcmv:37.1,mg:45458,pmg:48.0},
+        {qtd:24681,pp:3.06,rec:75614,dq:2035,pdq:8.2,drs:5890,pdrs:7.8,df:4800,pdf:6.3,com:519,pcom:0.7,cu:1.25,pcu:40.8,cmv:30809,pcmv:40.7,mg:33595,pmg:44.4},
+        {qtd:19169,pp:3.67,rec:70373,dq:902,pdq:4.7,drs:3174,pdrs:4.5,df:4363,pdf:6.2,com:503,pcom:0.7,cu:1.41,pcu:38.4,cmv:27097,pcmv:38.5,mg:35237,pmg:50.1},
+        {qtd:25752,pp:3.57,rec:91829,dq:510,pdq:2.0,drs:1799,pdrs:2.0,df:6010,pdf:6.5,com:672,pcom:0.7,cu:1.66,pcu:46.5,cmv:42799,pcmv:46.6,mg:40549,pmg:44.2},
+        {qtd:42670,pp:3.22,rec:137421,dq:1847,pdq:4.3,drs:6210,pdrs:4.5,df:9353,pdf:6.8,com:975,pcom:0.7,cu:1.37,pcu:42.5,cmv:58575,pcmv:42.6,mg:62307,pmg:45.3},
+        {qtd:33495,pp:3.01,rec:100794,dq:2353,pdq:7.0,drs:6797,pdrs:6.7,df:6772,pdf:6.7,com:698,pcom:0.7,cu:1.22,pcu:40.5,cmv:40754,pcmv:40.4,mg:45774,pmg:45.4},
+        {qtd:34878,pp:3.17,rec:110717,dq:2077,pdq:6.0,drs:6771,pdrs:6.1,df:7246,pdf:6.5,com:774,pcom:0.7,cu:1.19,pcu:37.5,cmv:41580,pcmv:37.6,mg:54347,pmg:49.1},
+        {qtd:37562,pp:3.52,rec:132069,dq:2110,pdq:5.6,drs:7704,pdrs:5.8,df:8068,pdf:6.1,com:930,pcom:0.7,cu:1.19,pcu:33.8,cmv:44641,pcmv:33.8,mg:70725,pmg:53.6}
+      ],
+      diasSemana: {
+        diasNoMes: [
+          [4,4,5,5,5,4],[4,4,4,4,4,4],[5,4,4,4,4,5],[4,5,5,4,4,4],
+          [4,4,4,5,5,5],[5,4,4,4,4,4],[4,5,5,5,4,4],[4,4,4,4,5,5],
+          [5,5,4,4,4,4],[4,4,5,5,5,4],[4,4,4,4,4,5],[5,5,5,4,4,4]
+        ],
+        qtd: [
+          [3972,5337,1752,7605,5213,2760],
+          [773,4046,621,372,2549,716],
+          [3918,3667,3184,2729,4183,3000],
+          [3102,11164,6733,2240,1641,7095],
+          [2026,6925,5511,4004,3076,5539],
+          [6905,4016,3671,2012,4136,3941],
+          [2006,5075,3124,4818,1615,2531],
+          [2347,3920,4801,5731,2309,6644],
+          [10276,7945,7765,4401,5226,7057],
+          [3059,6783,7690,4816,5832,5315],
+          [5408,8989,5213,4549,6989,3730],
+          [9297,6003,7748,3960,4146,6408]
+        ],
+        entregas: [
+          [61,106,94,57,109,113],
+          [31,42,60,33,17,72],
+          [94,147,96,73,100,76],
+          [107,84,121,121,79,48],
+          [120,77,83,71,103,69],
+          [94,106,88,90,68,54],
+          [82,83,101,112,101,45],
+          [130,85,89,95,110,54],
+          [116,122,128,85,98,42],
+          [114,101,90,120,132,73],
+          [78,122,111,101,111,126],
+          [86,191,143,161,100,97]
+        ],
+        semanas: [
+          [{qtd:[0,0,0,921,663,380],entr:[13,0,0,0,25,23]},{qtd:[369,1161,420,255,535,385],entr:[13,19,23,17,10,21]},{qtd:[621,1127,431,3033,888,490],entr:[14,26,23,14,28,24]},{qtd:[1182,1013,405,603,2346,1505],entr:[21,30,25,14,20,25]},{qtd:[1800,2036,496,2793,781,0],entr:[0,31,23,12,26,20]}],
+          [{qtd:[0,0,0,0,0,350],entr:[14,0,0,0,0,0]},{qtd:[495,941,229,40,710,190],entr:[7,21,22,12,3,24]},{qtd:[132,160,118,0,346,76],entr:[6,10,7,7,0,14]},{qtd:[10,2269,88,52,560,100],entr:[4,1,12,6,2,14]},{qtd:[136,676,186,280,933,0],entr:[0,10,19,8,12,20]}],
+          [{qtd:[0,0,0,0,0,244],entr:[11,0,0,0,0,0]},{qtd:[454,644,961,682,897,616],entr:[17,20,20,21,27,21]},{qtd:[956,1315,1139,960,515,521],entr:[18,34,28,17,28,14]},{qtd:[803,717,711,582,328,839],entr:[27,32,23,17,25,13]},{qtd:[836,991,373,505,2443,780],entr:[21,31,25,18,20,28]},{qtd:[869,0,0,0,0,0],entr:[0,30,0,0,0,0]}],
+          [{qtd:[0,1630,900,621,765,2875],entr:[30,0,22,22,22,21]},{qtd:[1030,2352,325,556,495,1470],entr:[25,21,24,13,20,16]},{qtd:[746,976,3552,578,0,1110],entr:[27,24,18,30,15,0]},{qtd:[885,1017,819,485,381,1640],entr:[25,22,25,19,22,11]},{qtd:[441,5189,1137,0,0,0],entr:[0,17,32,37,0,0]}],
+          [{qtd:[0,0,0,0,699,805],entr:[25,0,0,0,0,15]},{qtd:[525,1550,860,1365,420,830],entr:[24,22,22,17,30,10]},{qtd:[480,1960,644,1150,321,757],entr:[16,17,23,12,23,8]},{qtd:[526,1706,669,653,1060,1740],entr:[27,23,16,18,26,18]},{qtd:[495,1709,3338,836,576,1407],entr:[28,15,22,24,24,18]}],
+          [{qtd:[0,0,0,0,0,0],entr:[0,0,0,0,0,0]},{qtd:[1312,1219,882,991,676,1080],entr:[21,20,21,19,23,9]},{qtd:[605,851,723,560,481,1061],entr:[26,19,23,18,21,14]},{qtd:[3869,1266,1320,0,462,1007],entr:[25,27,25,33,0,14]},{qtd:[612,680,746,461,2517,793],entr:[22,23,19,20,24,17]},{qtd:[507,0,0,0,0,0],entr:[0,17,0,0,0,0]}],
+          [{qtd:[0,699,923,733,361,1038],entr:[26,0,22,23,25,13]},{qtd:[594,910,782,514,252,412],entr:[13,23,25,20,19,11]},{qtd:[425,368,333,3203,610,915],entr:[26,17,8,18,36,9]},{qtd:[385,691,616,368,392,166],entr:[17,19,21,26,21,12]},{qtd:[602,2407,470,0,0,0],entr:[0,24,25,25,0,0]}],
+          [{qtd:[0,0,0,0,229,411],entr:[26,0,0,0,0,7]},{qtd:[827,1082,492,783,376,752],entr:[28,27,23,28,35,10]},{qtd:[461,978,661,2802,387,794],entr:[24,18,22,18,34,12]},{qtd:[350,713,704,711,540,961],entr:[21,16,18,19,22,13]},{qtd:[709,1147,2944,1435,777,3726],entr:[31,24,26,30,19,12]}],
+          [{qtd:[1724,1314,4270,1449,305,1636],entr:[29,29,22,20,26,9]},{qtd:[1097,1843,923,1422,530,1241],entr:[29,21,27,23,26,9]},{qtd:[1137,879,857,802,4026,1245],entr:[27,24,22,18,24,15]},{qtd:[496,2187,1715,728,365,2935],entr:[31,16,40,24,22,9]},{qtd:[5822,1722,0,0,0,0],entr:[0,32,17,0,0,0]}],
+          [{qtd:[0,0,1488,1294,510,1425],entr:[27,0,0,25,28,8]},{qtd:[525,1196,890,697,310,1185],entr:[27,26,22,16,25,9]},{qtd:[757,3086,1202,960,427,1410],entr:[29,27,25,25,28,8]},{qtd:[693,773,1058,696,419,1295],entr:[31,23,19,25,23,15]},{qtd:[1084,1728,3052,1169,4166,0],entr:[0,25,24,29,28,33]}],
+          [{qtd:[0,0,0,0,0,800],entr:[13,0,0,0,0,0]},{qtd:[1626,1276,1358,1036,1496,610],entr:[14,28,19,23,26,29]},{qtd:[1004,1190,1246,1125,1104,600],entr:[15,30,29,27,30,27]},{qtd:[935,4126,1132,929,1427,740],entr:[16,30,29,24,23,34]},{qtd:[1843,2397,1477,1459,2962,980],entr:[20,34,34,27,32,36]}],
+          [{qtd:[1043,1357,1601,862,1678,872],entr:[20,29,36,28,28,32]},{qtd:[899,1423,1686,1094,993,3535],entr:[25,32,34,29,33,23]},{qtd:[576,1198,941,2004,800,1315],entr:[24,26,28,23,39,23]},{qtd:[2432,1156,1833,0,675,686],entr:[17,50,25,41,0,19]},{qtd:[4347,869,1687,0,0,0],entr:[0,54,20,40,0,0]}]
+        ]
+      }
+    },
+    { nome: 'TOMATE TOMINI 500G', qtd: 18540, pp: 5.20, rec: 96408, dq: 1482, pdq: 8.0, drs: 7704, pdrs: 8.0, df: 480, pdf: 0.5, com: 680, pcom: 0.7, cu: 2.10, pcu: 40.4, cmv: 38934, pcmv: 40.4, mg: 48610, pmg: 50.4, meses: [] },
+    { nome: 'BROCOLIS JAPONES 300G', qtd: 15200, pp: 4.80, rec: 72960, dq: 2128, pdq: 14.0, drs: 10215, pdrs: 14.0, df: 0, pdf: 0, com: 510, pcom: 0.7, cu: 1.90, pcu: 39.6, cmv: 28892, pcmv: 39.6, mg: 33343, pmg: 45.7, meses: [] },
+    { nome: 'CENOURA 450G', qtd: 12800, pp: 2.90, rec: 37120, dq: 896, pdq: 7.0, drs: 2598, pdrs: 7.0, df: 185, pdf: 0.5, com: 260, pcom: 0.7, cu: 0.95, pcu: 32.8, cmv: 12176, pcmv: 32.8, mg: 21901, pmg: 59.0, meses: [] },
+    { nome: 'COUVE MANTEIGA', qtd: 11400, pp: 3.10, rec: 35340, dq: 1596, pdq: 14.0, drs: 4948, pdrs: 14.0, df: 0, pdf: 0, com: 248, pcom: 0.7, cu: 1.15, pcu: 37.1, cmv: 13111, pcmv: 37.1, mg: 17033, pmg: 48.2, meses: [] },
+    { nome: 'PEPINO JAPONES 450G', qtd: 9800, pp: 4.50, rec: 44100, dq: 490, pdq: 5.0, drs: 2205, pdrs: 5.0, df: 220, pdf: 0.5, com: 310, pcom: 0.7, cu: 1.80, pcu: 40.0, cmv: 17640, pcmv: 40.0, mg: 23725, pmg: 53.8, meses: [] },
+];
+
+const MOCK_CLIENTES = [
+    { nome: 'MUFFATO PORTAO', rec: 185400, drs: 18540, pdrs: 10.0, com: 1483, cmv: 70452, mg: 94925, pmg: 51.2 },
+    { nome: 'CONDOR CENTRO', rec: 142300, drs: 11384, pdrs: 8.0, com: 998, cmv: 54074, mg: 75844, pmg: 53.3 },
+    { nome: 'ANGELONI BATEL', rec: 128700, drs: 15444, pdrs: 12.0, com: 901, cmv: 48906, mg: 63449, pmg: 49.3 },
+    { nome: 'FESTVAL AGUA VERDE', rec: 98500, drs: 5910, pdrs: 6.0, com: 690, cmv: 38415, mg: 53485, pmg: 54.3 },
+    { nome: 'SUPER MUFFATO MARINGA', rec: 87200, drs: 10464, pdrs: 12.0, com: 610, cmv: 33136, mg: 42990, pmg: 49.3 },
+    { nome: 'CONDOR PINHEIRINHO', rec: 76300, drs: 4578, pdrs: 6.0, com: 534, cmv: 28994, mg: 42194, pmg: 55.3 },
+    { nome: 'MERCADORAMA CABRAL', rec: 65100, drs: 7812, pdrs: 12.0, com: 456, cmv: 24738, mg: 32094, pmg: 49.3 },
+    { nome: 'FESTVAL JUVEVE', rec: 54800, drs: 3288, pdrs: 6.0, com: 384, cmv: 21372, mg: 29756, pmg: 54.3 },
+    { nome: 'MUFFATO CAMPO LARGO', rec: 43200, drs: 5184, pdrs: 12.0, com: 302, cmv: 16416, mg: 21298, pmg: 49.3 },
+    { nome: 'SUPER BONI', rec: 38900, drs: 2334, pdrs: 6.0, com: 272, cmv: 15171, mg: 21123, pmg: 54.3 },
+];
+
+const MOCK_AJUSTES = [
+    { nome: 'CEBOLETE KG', qtd: 10, recAntes: 1200, cmvAntes: 890, mgAntes: 310, pmgAntes: 25.8, recDepois: 1200, cmvDepois: 540, mgDepois: 660, pmgDepois: 55.0 },
+    { nome: 'ALFACE AMERICANA 150G', qtd: 21063, recAntes: 75037, cmvAntes: 42020, mgAntes: 33017, pmgAntes: 44.0, recDepois: 75037, cmvDepois: 28526, mgDepois: 46511, pmgDepois: 62.0 },
+    { nome: 'BROCOLIS JAPONES 300G', qtd: 15200, recAntes: 72960, cmvAntes: 40128, mgAntes: 32832, pmgAntes: 45.0, recDepois: 72960, cmvDepois: 28892, mgDepois: 44068, pmgDepois: 60.4 },
+    { nome: 'CENOURA 450G', qtd: 12800, recAntes: 37120, cmvAntes: 14848, mgAntes: 22272, pmgAntes: 60.0, recDepois: 37120, cmvDepois: 12176, mgDepois: 24944, pmgDepois: 67.2 },
+    { nome: 'COUVE MANTEIGA', qtd: 11400, recAntes: 35340, cmvAntes: 17670, mgAntes: 17670, pmgAntes: 50.0, recDepois: 35340, cmvDepois: 13111, mgDepois: 22229, pmgDepois: 62.9 },
+];
+
+// =============================================
+// RENDER: VISAO GERAL
+// =============================================
+function renderVisaoGeral() {
+    const totRec = MOCK_PRODUTOS.reduce((s, p) => s + p.rec, 0);
+    const totCMV = MOCK_PRODUTOS.reduce((s, p) => s + p.cmv, 0);
+    const totMg = MOCK_PRODUTOS.reduce((s, p) => s + p.mg, 0);
+    const totDrs = MOCK_PRODUTOS.reduce((s, p) => s + p.drs, 0);
+    const totCom = MOCK_PRODUTOS.reduce((s, p) => s + p.com, 0);
+    const totQtd = MOCK_PRODUTOS.reduce((s, p) => s + p.qtd, 0);
+    const pMg = totRec > 0 ? (totMg / totRec * 100) : 0;
+
+    const cards = [
+        { label: 'Receita Bruta', value: fmtBRL(totRec), type: 'card-success', icon: 'fa-dollar-sign' },
+        { label: 'Devoluções', value: fmtBRL(totDrs), type: 'card-danger', icon: 'fa-rotate-left', pct: fmtPct(totDrs/totRec*100) },
+        { label: 'Comissões', value: fmtBRL(totCom), type: '', icon: 'fa-handshake', pct: fmtPct(totCom/totRec*100) },
+        { label: 'CMV', value: fmtBRL(totCMV), type: 'card-warning', icon: 'fa-calculator', pct: fmtPct(totCMV/totRec*100) },
+        { label: 'Margem', value: fmtBRL(totMg), type: 'card-success', icon: 'fa-chart-line', pct: fmtPct(pMg) },
+        { label: 'Qtd Total', value: fmtNum(totQtd) + ' un', type: '', icon: 'fa-boxes-stacked' },
+        { label: 'Produtos', value: '184', type: '', icon: 'fa-leaf' },
+        { label: 'Clientes', value: '174', type: '', icon: 'fa-store' },
+    ];
+
+    const el = document.getElementById('cardsVisaoGeral');
+    el.innerHTML = cards.map(c => `
+        <div class="summary-card ${c.type}">
+            <div class="card-label"><i class="fas ${c.icon}" style="margin-right:4px"></i> ${c.label}</div>
+            <div class="card-value">${c.value}</div>
+            ${c.pct ? `<div class="card-delta delta-neutral">${c.pct}</div>` : ''}
+        </div>
+    `).join('');
+
+    // Top 10 Produtos
+    const sorted = [...MOCK_PRODUTOS].sort((a, b) => b.rec - a.rec);
+    document.getElementById('tbodyTopProdutos').innerHTML = sorted.slice(0, 10).map((p, i) => `
+        <tr>
+            <td><span class="rank-badge ${i < 3 ? 'top3' : ''}">${i + 1}</span></td>
+            <td style="font-weight:var(--fw-bold);">${p.nome}</td>
+            <td class="mono">${fmtBRL(p.rec)}</td>
+            <td class="mono">${fmtBRL(p.cmv)}</td>
+            <td class="mono">${fmtBRL(p.mg)}</td>
+            <td class="mono"><span class="${mgClass(p.pmg)}">${fmtPct(p.pmg)}</span></td>
+        </tr>
+    `).join('');
+
+    // Top 10 Clientes
+    document.getElementById('tbodyTopClientes').innerHTML = MOCK_CLIENTES.slice(0, 10).map((c, i) => `
+        <tr>
+            <td><span class="rank-badge ${i < 3 ? 'top3' : ''}">${i + 1}</span></td>
+            <td style="font-weight:var(--fw-bold);">${c.nome}</td>
+            <td class="mono">${fmtBRL(c.rec)}</td>
+            <td class="mono">${fmtPct(c.pdrs)}</td>
+            <td class="mono">${fmtBRL(c.mg)}</td>
+            <td class="mono"><span class="${mgClass(c.pmg)}">${fmtPct(c.pmg)}</span></td>
+        </tr>
+    `).join('');
+}
+
+// =============================================
+// RENDER: POR PRODUTO (DRE v14)
+// =============================================
+const MESES_LABEL = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+
+const METRICAS = [
+    {key:'qtd',label:'Qtd Vendas',type:'int',cls:'m-info',icon:'info',iconChar:'i'},
+    {key:'pp',label:'R$ Unit. Pond.',type:'money',cls:'m-info',icon:'info',iconChar:'i'},
+    {key:'rec',label:'Receita',type:'reais',cls:'m-receita',icon:'result',iconChar:'='},
+    {key:'dq',label:'Devol. Qtd',type:'int',cls:'m-devol-num',icon:'num',iconChar:'#'},
+    {key:'pdq',label:'Devol. Qtd',type:'pct',cls:'m-devol-pct',icon:'pct',iconChar:'%'},
+    {key:'drs',label:'Devol. R$',type:'reais',cls:'m-deduct-rs',icon:'deduct',iconChar:'\u2212'},
+    {key:'pdrs',label:'Devol. R$',type:'pct',cls:'m-devol-pct',icon:'pct',iconChar:'%'},
+    {key:'df',label:'Desc. Financeiro',type:'reais',cls:'m-deduct-rs',icon:'deduct',iconChar:'\u2212'},
+    {key:'pdf',label:'Desc. Fin.',type:'pct',cls:'m-desc-pct',icon:'pct',iconChar:'%'},
+    {key:'com',label:'Comissao',type:'reais',cls:'m-deduct-rs',icon:'deduct',iconChar:'\u2212'},
+    {key:'pcom',label:'Comissao',type:'pct',cls:'m-com-pct',icon:'pct',iconChar:'%'},
+    {key:'cu',label:'Custo Unit. Pond.',type:'money',cls:'m-cost-first m-cost-rs',icon:'cost',iconChar:'\u2212'},
+    {key:'pcu',label:'Custo Unit.',type:'pct',cls:'m-cu-pct',icon:'pct',iconChar:'%'},
+    {key:'cmv',label:'CMV',type:'reais',cls:'m-cost-rs',icon:'cost',iconChar:'\u2212'},
+    {key:'pcmv',label:'CMV',type:'pct',cls:'m-cmv-pct',icon:'pct',iconChar:'%'},
+    {key:'mg',label:'Margem R$',type:'reais',cls:'m-margem',isMg:true,icon:'final',iconChar:'='},
+    {key:'pmg',label:'Margem',type:'pct',cls:'m-margem-pct',isMgPct:true,icon:'pct-final',iconChar:'%'},
+];
+
+const iconClsMap = {result:'dre-icon-result',deduct:'dre-icon-deduct',cost:'dre-icon-cost',final:'dre-icon-final',pct:'dre-icon-pct','pct-final':'dre-icon-pct-final',num:'dre-icon-num',info:'dre-icon-info'};
+
+function fmtVal(v, type) {
+    if (v === 0 || v === null || v === undefined) return '-';
+    if (type === 'int') return v.toLocaleString('pt-BR');
+    if (type === 'money') return 'R$ ' + v.toFixed(2).replace('.', ',');
+    if (type === 'reais') return 'R$ ' + v.toLocaleString('pt-BR', {maximumFractionDigits: 0});
+    if (type === 'pct') return v.toFixed(1).replace('.', ',') + '%';
+    return v;
+}
+
+function renderProdutos() {
+    const container = document.getElementById('containerProdutos');
+    container.innerHTML = '';
+
+    MOCK_PRODUTOS.forEach((prod, idx) => {
+        const card = document.createElement('div');
+        card.className = 'card produto-card';
+        card.dataset.nome = prod.nome.toLowerCase();
+
+        let headerHTML = `
+            <div class="card-header" onclick="toggleCard(this)">
+                <span><i class="fas fa-leaf" style="margin-right:8px"></i> ${prod.nome}</span>
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <i class="fas fa-chevron-up card-toggle" style="transition:transform 0.3s"></i>
+                </div>
+            </div>
+        `;
+
+        // Summary cards para este produto
+        let cardsHTML = `<div class="section-header border-accent"><h3>Estrutura de Resultado</h3><p>Composição da margem de contribuição — Jan a Dez 2025</p></div>`;
+        cardsHTML += `<div class="cards-grid" style="padding:8px 16px 0;">`;
+        const recLiq = prod.rec - prod.drs - prod.df - prod.com;
+        // Linha 1: Qtd × Preço = Receita − Devol − Desc.Fin − Comissão = Rec.Líquida
+        // Linha 2: Custo Unit × Qtd = CMV ... Margem
+        const linha1 = [
+            {card:{label:'Qtd Vendas', value: fmtNum(prod.qtd) + ' un', icon:'fa-boxes-stacked', type:''}},
+            {op:'×'},
+            {card:{label:'R$ Unit. Pond.', value: fmtBRL2(prod.pp), icon:'fa-tag', type:''}},
+            {op:'='},
+            {card:{label:'Receita Bruta', value: fmtBRL(prod.rec), icon:'fa-dollar-sign', type:'card-success'}},
+            {op:'−'},
+            {card:{label:'Devoluções', value: fmtBRL(prod.drs), icon:'fa-rotate-left', type:'card-danger', pct: fmtPct(prod.pdrs)}},
+            {op:'−'},
+            {card:{label:'Desc. Financeiro', value: fmtBRL(prod.df), icon:'fa-receipt', type:'card-danger', pct: fmtPct(prod.pdf)}},
+            {op:'−'},
+            {card:{label:'Comissão', value: fmtBRL(prod.com), icon:'fa-handshake', type:'card-danger', pct: fmtPct(prod.pcom)}},
+            {op:'='},
+            {card:{label:'Receita Líquida', value: fmtBRL(recLiq), icon:'fa-equals', type:'card-success', pct: fmtPct(recLiq/prod.rec*100)}},
+        ];
+        const linha2 = [
+            {card:{label:'Custo Unit. Pond.', value: fmtBRL2(prod.cu), icon:'fa-industry', type:'card-danger'}},
+            {op:'×'},
+            {card:{label:'Qtd Vendas', value: fmtNum(prod.qtd) + ' un', icon:'fa-boxes-stacked', type:''}},
+            {op:'='},
+            {card:{label:'CMV Total', value: fmtBRL(prod.cmv), icon:'fa-calculator', type:'card-warning', pct: fmtPct(prod.pcmv)}},
+            {op:'|'},
+            {card:{label:'Receita Líquida', value: fmtBRL(recLiq), icon:'fa-equals', type:'card-success'}},
+            {op:'−'},
+            {card:{label:'CMV Total', value: fmtBRL(prod.cmv), icon:'fa-calculator', type:'card-warning'}},
+            {op:'='},
+            {card:{label:'Marg. Contrib.', value: fmtBRL(prod.mg), icon:'fa-chart-line', type:'card-success', pct: fmtPct(prod.pmg)}},
+            {op:'÷'},
+            {card:{label:'Marg. Contrib. Unit.', value: fmtBRL2(prod.qtd > 0 ? prod.mg / prod.qtd : 0), icon:'fa-coins', type:'card-success', pct: fmtPct(prod.pp > 0 ? (prod.mg / prod.qtd) / prod.pp * 100 : 0)}},
+        ];
+
+        function renderLinha(items) {
+            let html = '';
+            const opColors = {'×':'#4338ca','=':'#0d9e5f','−':'#dc3545','÷':'#4338ca','|':'#e4e7ec','':'transparent'};
+            items.forEach(item => {
+                if (item.op !== undefined) {
+                    const cor = opColors[item.op] || 'var(--text-muted)';
+                    html += `<div class="card-operator" style="color:${cor}">${item.op}</div>`;
+                } else {
+                    const c = item.card;
+                    html += `<div class="summary-card ${c.type}">
+                        <div class="card-label"><i class="fas ${c.icon}" style="margin-right:4px"></i> ${c.label}</div>
+                        <div class="card-value">${c.value}</div>
+                        ${c.pct ? `<div class="card-delta delta-neutral">${c.pct}</div>` : ''}
+                    </div>`;
+                }
+            });
+            return html;
+        }
+        cardsHTML += renderLinha(linha1);
+        cardsHTML += '</div>';
+        cardsHTML += `<div class="cards-grid cards-grid-row2" style="padding:0 16px 8px;">`;
+        cardsHTML += renderLinha(linha2);
+        cardsHTML += '</div>';
+
+        // Gráfico de linha (Qtd por mês)
+        let chartHTML = '';
+        if (prod.meses && prod.meses.length > 0) {
+            chartHTML = `<div class="section-header border-success"><h3>Spread de Margem de Contribuição x Volume</h3><p>Preço, custo unitário e quantidade vendida — Jan a Dez 2025</p></div>`;
+            const chartId = 'chart-' + idx;
+            const chartIdQtd = 'chart-qtd-' + idx;
+            const chartIdPreco = 'chart-preco-' + idx;
+            // Calcular margens unitárias por mês
+            const mgUnit = prod.meses.map(m => m.pp - m.cu);
+            const mgUnitPct = prod.meses.map(m => m.pp > 0 ? ((m.pp - m.cu) / m.pp * 100) : 0);
+            const mgTotal = prod.meses.map(m => (m.pp - m.cu) * m.qtd);
+            const melhorIdx = mgUnit.reduce((best, v, i) => v > mgUnit[best] ? i : best, 0);
+            const piorIdx = mgUnit.reduce((worst, v, i) => v < mgUnit[worst] ? i : worst, 0);
+
+            let mgGridHTML = '<div style="display:grid;grid-template-columns:repeat(12,1fr);gap:0;">';
+            // Linha: Mg. Unit. R$
+            mgUnit.forEach((v, i) => {
+                const cor = 'var(--text-muted)';
+                const fw = '500';
+                const alinhamento = i < 6 ? 'left' : 'right';
+                const padR = i < 6 ? '0' : i >= 10 ? '4px' : '12px';
+                mgGridHTML += `<div style="padding:4px ${padR} 4px 0;font-family:JetBrains Mono;font-size:var(--fs-sm);font-weight:${fw};color:${cor};text-align:${alinhamento};">R$ ${v.toFixed(2).replace('.',',')}</div>`;
+            });
+            // Linha: Mg. Total R$
+            const sorted = [...mgTotal].sort((a, b) => b - a);
+            const top3 = new Set(sorted.slice(0, 3));
+            const bottom3 = new Set(sorted.slice(-3));
+            mgTotal.forEach((v, i) => {
+                const cor = top3.has(v) ? '#0d9e5f' : bottom3.has(v) ? '#dc3545' : 'var(--text-secondary)';
+                const fw = (top3.has(v) || bottom3.has(v)) ? '800' : '600';
+                const alinhamento2 = i < 6 ? 'left' : 'right';
+                const padR2 = i < 6 ? '0' : i >= 10 ? '4px' : '12px';
+                mgGridHTML += `<div style="padding:4px ${padR2} 4px 0;font-family:JetBrains Mono;font-size:var(--fs-sm);font-weight:${fw};color:${cor};text-align:${alinhamento2};">R$ ${Math.round(v).toLocaleString('pt-BR')}</div>`;
+            });
+            mgGridHTML += '</div>';
+
+            // Mini-cards Análise de Variância
+            const avgQtd = prod.meses.reduce((s, m) => s + m.qtd, 0) / 12;
+            const avgPP = prod.meses.reduce((s, m) => s + m.pp, 0) / 12;
+            const avgCU = prod.meses.reduce((s, m) => s + m.cu, 0) / 12;
+            let driversHTML = '<div class="section-header border-warning"><h3>Análise de Variância</h3><p>Qtd, Preço e Custo vs média anual — impacto na margem por mês</p></div>';
+            driversHTML += '<div style="display:grid;grid-template-columns:repeat(12,1fr);gap:6px;padding:8px 0 4px;">';
+            prod.meses.forEach((m, i) => {
+                const dQtd = m.qtd >= avgQtd;
+                const dPP = m.pp >= avgPP;
+                const dCU = m.cu <= avgCU;
+                const score = (dQtd ? 1 : 0) + (dPP ? 1 : 0) + (dCU ? 1 : 0);
+                const barColor = score === 3 ? '#0d9e5f' : score === 2 ? '#0d9e5f' : score === 1 ? '#e67e22' : '#dc3545';
+                const barBg = score === 3 ? 'rgba(13,158,95,0.12)' : score === 2 ? 'rgba(13,158,95,0.08)' : score === 1 ? 'rgba(230,126,34,0.08)' : 'rgba(220,53,69,0.08)';
+                const barW = score === 3 ? '100%' : score === 2 ? '66%' : score === 1 ? '33%' : '5%';
+                const label = score === 3 ? 'Excelente' : score === 2 ? 'Bom' : score === 1 ? 'Regular' : 'Crítico';
+                const labelColor = barColor;
+
+                const arrow = (ok) => ok ? `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#0d9e5f;vertical-align:middle;"></span>` : `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#dc3545;vertical-align:middle;"></span>`;
+
+                driversHTML += `<div style="background:var(--white);border:1px solid var(--border);border-radius:6px;padding:8px 6px;text-align:center;">
+                    <div style="font-family:Outfit;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);margin-bottom:4px;">${MESES_LABEL[i]}</div>
+                    <div style="background:${barBg};border-radius:4px;height:6px;margin-bottom:6px;overflow:hidden;">
+                        <div style="background:${barColor};height:100%;width:${barW};border-radius:4px;"></div>
+                    </div>
+                    <div style="font-family:Outfit;font-size:var(--fs-xs);font-weight:var(--fw-black);color:${labelColor};margin-bottom:6px;text-transform:uppercase;letter-spacing:0.3px;">${score}/3 ${label}</div>
+                    <div style="font-size:var(--fs-sm);font-family:Outfit;font-weight:var(--fw-black);line-height:1.7;text-align:left;padding:0 2px;">
+                        ${arrow(dQtd)} <span style="color:var(--text-secondary);">Qtd</span><br>
+                        ${arrow(dPP)} <span style="color:var(--text-secondary);">Preço</span><br>
+                        ${arrow(dCU)} <span style="color:var(--text-secondary);">Custo</span>
+                    </div>
+                    <div style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border);">
+                        <div style="font-family:JetBrains Mono;font-size:var(--fs-xs);font-weight:var(--fw-bold);color:var(--text-secondary);">R$ ${mgUnit[i].toFixed(2).replace('.',',')}</div>
+                        <div style="font-family:JetBrains Mono;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text-secondary);">R$ ${Math.round(mgTotal[i]).toLocaleString('pt-BR')}</div>
+                    </div>
+                </div>`;
+            });
+            driversHTML += '</div>';
+            driversHTML += `<div style="display:flex;align-items:center;justify-content:center;gap:20px;padding:8px 16px 4px;font-family:Outfit;font-size:var(--fs-sm);font-weight:var(--fw-bold);color:var(--text-muted);">
+                <span style="margin-right:8px;font-weight:var(--fw-black);color:var(--text-secondary);">Qtd e Preço:</span>
+                <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#0d9e5f;vertical-align:middle;margin-right:4px;"></span> Acima da média</span>
+                <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#dc3545;vertical-align:middle;margin-right:4px;"></span> Abaixo da média</span>
+                <span style="margin:0 8px;color:var(--border);">|</span>
+                <span style="margin-right:8px;font-weight:var(--fw-black);color:var(--text-secondary);">Custo:</span>
+                <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#0d9e5f;vertical-align:middle;margin-right:4px;"></span> Abaixo da média</span>
+                <span><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#dc3545;vertical-align:middle;margin-right:4px;"></span> Acima da média</span>
+            </div>`;
+
+            chartHTML += `<div class="chart-container" style="border:1px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;margin-bottom:12px;"><canvas id="${chartIdQtd}" style="padding:12px 16px 0;"></canvas><canvas id="${chartIdPreco}" style="padding:0 16px 12px;"></canvas></div>${driversHTML}`;
+        }
+
+        // DRE table (só para o primeiro produto que tem meses mockados)
+        let tableHTML = '';
+        if (prod.meses && prod.meses.length > 0) {
+            tableHTML = '<div class="section-header border-primary"><h3>DRE — Demonstrativo de Resultado</h3><p>Receita, deduções, custos e margem — Jan a Dez 2025</p></div>';
+            tableHTML += '<div class="table-wrap" style="border:1px solid var(--border);border-radius:var(--radius-sm);overflow-x:auto;"><table style="width:100%;"><tbody>';
+            // Header row
+            tableHTML += '<tr class="col-head"><td>METRICA</td>';
+            MESES_LABEL.forEach(m => { tableHTML += `<td>${m}</td>`; });
+            tableHTML += '<td>TOTAL</td></tr>';
+
+            METRICAS.forEach(mt => {
+                tableHTML += `<tr class="${mt.cls}">`;
+                tableHTML += `<td style="display:flex;align-items:center;"><span class="dre-icon ${iconClsMap[mt.icon]}">${mt.iconChar}</span>${mt.label}</td>`;
+                prod.meses.forEach((mes, i) => {
+                    const v = mes[mt.key];
+                    let txt = fmtVal(v, mt.type);
+                    let cls = txt === '-' ? 'class="empty"' : '';
+                    if (mt.isMg && v) cls = `class="${mgClass(mes.pmg)}"`;
+                    if (mt.isMgPct && v && i > 0 && prod.meses[i-1].pmg > 0) {
+                        const diff = v - prod.meses[i-1].pmg;
+                        const arrow = diff > 2 ? ' \u25B2' : diff < -2 ? ' \u25BC' : ' \u25CF';
+                        const cor = diff > 2 ? 'color:var(--success)' : diff < -2 ? 'color:#AD0524' : 'color:#5f6780';
+                        cls = `style="${cor}"`;
+                        txt += arrow;
+                    }
+                    tableHTML += `<td ${cls}>${txt}</td>`;
+                });
+                const tval = prod[mt.key];
+                tableHTML += `<td class="total-col">${fmtVal(tval, mt.type)}</td>`;
+                tableHTML += '</tr>';
+            });
+
+            tableHTML += '</tbody></table></div>';
+        } else {
+            tableHTML = '<div style="padding:24px;text-align:center;color:var(--text-muted);font-size:var(--fs-lg);"><i class="fas fa-database" style="margin-right:8px;"></i>DRE mensal disponivel apos conexao com Airtable</div>';
+        }
+
+        // Container: Análise de Devoluções
+        let devolHTML = '';
+        const devolChartId = 'chart-devol-' + idx;
+        if (prod.nome === 'ALFACE AMERICANA 150G' && typeof DEVOLUCOES_ALFACE !== 'undefined') {
+            const D = DEVOLUCOES_ALFACE;
+
+            // Header
+            devolHTML += `<div class="section-header border-danger" style="border-left-color:var(--danger);"><h3>Análise de Devoluções</h3><p>Vendas vs devoluções por mês — Jan a Dez 2025</p></div>`;
+
+            // Gráfico barras
+            devolHTML += `<div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 16px;margin-bottom:16px;"><canvas id="${devolChartId}" height="60"></canvas></div>`;
+
+            // Tabela
+            devolHTML += `<div style="border:1px solid var(--border);border-radius:var(--radius-sm);overflow-x:auto;">`;
+            devolHTML += `<table style="width:100%;border-collapse:collapse;">`;
+            devolHTML += `<thead><tr style="background:var(--bg);border-bottom:2px solid var(--border);">`;
+            devolHTML += `<th style="padding:10px 8px;text-align:left;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);">Mês</th>`;
+            devolHTML += `<th style="padding:10px 6px;text-align:right;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);">Qtd Venda</th>`;
+            devolHTML += `<th style="padding:10px 6px;text-align:right;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--danger);">Qtd Dev</th>`;
+            devolHTML += `<th style="padding:10px 6px;text-align:right;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--danger);">% Qtd</th>`;
+            devolHTML += `<th style="padding:10px 6px;text-align:right;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);">R$ Venda</th>`;
+            devolHTML += `<th style="padding:10px 6px;text-align:right;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--danger);">R$ Dev</th>`;
+            devolHTML += `<th style="padding:10px 6px;text-align:right;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--danger);">% Rec</th>`;
+            devolHTML += `<th style="padding:10px 6px;text-align:right;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);">Clientes</th>`;
+            devolHTML += `<th style="padding:10px 6px;text-align:left;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);">Top Cliente</th>`;
+            devolHTML += `</tr></thead><tbody>`;
+
+            let totQtdV = 0, totQtdD = 0, totRsV = 0, totRsD = 0;
+            D.meses.forEach((dm, mi) => {
+                totQtdV += dm.qtdVenda; totQtdD += dm.qtdDev; totRsV += dm.recVenda; totRsD += dm.rsDev;
+                const bgRow = dm.pctQtd > 10 ? 'background:rgba(220,53,69,0.04);' : '';
+                devolHTML += `<tr style="border-bottom:1px solid var(--border);${bgRow}">`;
+                devolHTML += `<td style="padding:8px;font-weight:var(--fw-black);color:var(--text);font-size:var(--fs-md);">${MESES_LABEL[mi]}</td>`;
+                devolHTML += `<td style="padding:8px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:var(--text);">${dm.qtdVenda.toLocaleString('pt-BR')}</td>`;
+                devolHTML += `<td style="padding:8px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:var(--danger);">${dm.qtdDev.toLocaleString('pt-BR')}</td>`;
+                devolHTML += `<td style="padding:8px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:${dm.pctQtd > 10 ? 'var(--danger)' : 'var(--text-secondary)'};">${dm.pctQtd}%</td>`;
+                devolHTML += `<td style="padding:8px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:var(--text);">R$ ${dm.recVenda.toLocaleString('pt-BR')}</td>`;
+                devolHTML += `<td style="padding:8px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:var(--danger);">R$ ${dm.rsDev.toLocaleString('pt-BR')}</td>`;
+                devolHTML += `<td style="padding:8px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:${dm.pctRec > 10 ? 'var(--danger)' : 'var(--text-secondary)'};">${dm.pctRec}%</td>`;
+                devolHTML += `<td style="padding:8px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:var(--text);">${dm.nCli}</td>`;
+                devolHTML += `<td style="padding:8px 6px;text-align:left;font-size:var(--fs-xs);font-weight:var(--fw-black);color:var(--text-secondary);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${dm.topCli}</td>`;
+                devolHTML += `</tr>`;
+            });
+
+            // Total
+            const pctTotQ = totQtdV > 0 ? (totQtdD / totQtdV * 100).toFixed(1) : 0;
+            const pctTotR = totRsV > 0 ? (totRsD / totRsV * 100).toFixed(1) : 0;
+            devolHTML += `<tr style="border-top:2px solid var(--border);background:var(--bg);font-weight:var(--fw-black);">`;
+            devolHTML += `<td style="padding:10px 8px;font-size:var(--fs-md);color:var(--text);">TOTAL</td>`;
+            devolHTML += `<td style="padding:10px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);color:var(--text);">${totQtdV.toLocaleString('pt-BR')}</td>`;
+            devolHTML += `<td style="padding:10px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);color:var(--danger);">${totQtdD.toLocaleString('pt-BR')}</td>`;
+            devolHTML += `<td style="padding:10px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);color:var(--danger);">${pctTotQ}%</td>`;
+            devolHTML += `<td style="padding:10px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);color:var(--text);">R$ ${totRsV.toLocaleString('pt-BR')}</td>`;
+            devolHTML += `<td style="padding:10px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);color:var(--danger);">R$ ${totRsD.toLocaleString('pt-BR')}</td>`;
+            devolHTML += `<td style="padding:10px 6px;text-align:right;font-family:JetBrains Mono;font-size:var(--fs-md);color:var(--danger);">${pctTotR}%</td>`;
+            devolHTML += `<td colspan="2" style="padding:10px 6px;"></td>`;
+            devolHTML += `</tr>`;
+
+            devolHTML += `</tbody></table></div>`;
+
+            // Radar + Top clientes lado a lado
+            const radarChartId = 'chart-radar-devol-' + idx;
+            const radialChartId = 'chart-radial-devol-' + idx;
+            if (typeof TOP_CLIENTES_DEVOL !== 'undefined') {
+                devolHTML += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;">`;
+                devolHTML += `<div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;"><div style="font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;margin-bottom:8px;">Qtd Devolvida por Mês</div><canvas id="${radarChartId}"></canvas></div>`;
+                devolHTML += `<div style="border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;"><div style="font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;margin-bottom:8px;">Top 10 Clientes — Devoluções R$</div><canvas id="${radialChartId}"></canvas></div>`;
+                devolHTML += `</div>`;
+            }
+        }
+
+        // Container: Análise Histórica de Vendas (Painel Operacional)
+        let analiseHTML = '';
+        const painelId = 'painel-' + idx;
+        if (prod.nome === 'ALFACE AMERICANA 150G' && typeof PAINEL_ALFACE !== 'undefined') {
+            const P = PAINEL_ALFACE;
+            const DIAS_LABEL = ['SEG','TER','QUA','QUI','SEX','SÁB'];
+            const MESES_FULL = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+
+            // Header
+            analiseHTML += `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">`;
+            analiseHTML += `<div class="section-header border-accent" style="margin-top:0;"><h3>Análise Histórica de Vendas</h3><p>Quantidade vendida e entregas por dia da semana — Jan a Dez 2025</p></div>`;
+            // Select mês
+            analiseHTML += `<select class="painel-select" id="${painelId}-select" onchange="trocarMesPainel('${painelId}',this.value)" style="padding:10px 36px 10px 14px;background:var(--bg);border:2px solid var(--border);border-radius:12px;font-family:Outfit;font-weight:var(--fw-black);font-size:var(--fs-md);color:#4338ca;appearance:none;background-image:url('data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 fill=%27none%27 viewBox=%270 0 24 24%27 stroke=%27%234338ca%27%3E%3Cpath stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27M19 9l-7 7-7-7%27/%3E%3C/svg%3E');background-repeat:no-repeat;background-position:right 8px center;background-size:16px;cursor:pointer;">`;
+            MESES_FULL.forEach((mf, mi) => { analiseHTML += `<option value="${mi}">${mf}</option>`; });
+            analiseHTML += `</select></div>`;
+
+            // Conteúdo por mês
+            for (let m = 0; m < 12; m++) {
+                const weeks = P.meses[m];
+                const avgYear = P.avgAnualPorDia;
+                const display = m === 0 ? 'block' : 'none';
+
+                analiseHTML += `<div class="painel-mes" id="${painelId}-mes-${m}" style="display:${display};">`;
+                analiseHTML += `<div style="overflow-x:auto;">`;
+                analiseHTML += `<table style="width:100%;border-collapse:collapse;min-width:900px;">`;
+
+                // Thead
+                analiseHTML += `<thead><tr style="background:rgba(245,246,248,0.5);border-top:2px solid var(--border);border-bottom:2px solid var(--border);">`;
+                analiseHTML += `<th style="width:60px;padding:14px 8px;text-align:center;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;letter-spacing:1.5px;">Sem.</th>`;
+                analiseHTML += `<th style="width:100px;padding:14px 8px;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;letter-spacing:1.5px;">Métrica</th>`;
+                DIAS_LABEL.forEach(d => {
+                    analiseHTML += `<th style="padding:14px 6px;text-align:center;border-left:1px solid var(--border);font-size:var(--fs-md);font-weight:var(--fw-black);color:var(--text);font-family:Outfit;text-transform:uppercase;">${d}</th>`;
+                });
+                analiseHTML += `<th style="width:90px;padding:14px 8px;text-align:center;background:rgba(67,56,202,0.04);border-left:2px solid var(--border);font-size:var(--fs-xs);font-weight:var(--fw-black);color:#4338ca;text-transform:uppercase;letter-spacing:1px;">Total Sem.</th>`;
+                analiseHTML += `</tr></thead><tbody>`;
+
+                const datas = typeof DATAS_SEMANA !== 'undefined' ? DATAS_SEMANA[m] : null;
+                const MESES_SHORT = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+                weeks.forEach((wk, wi) => {
+                    const totalSales = wk.sales.reduce((a,b) => a+b, 0);
+                    const totalClientsUnicos = (typeof CLIENTES_UNICOS_SEMANA !== 'undefined' && CLIENTES_UNICOS_SEMANA[m] && CLIENTES_UNICOS_SEMANA[m][wi] !== undefined) ? CLIENTES_UNICOS_SEMANA[m][wi] : wk.clients.reduce((a,b) => a+b, 0);
+                    const totalNfs = wk.nfs.reduce((a,b) => a+b, 0);
+                    const totalDel = wk.deliveries.reduce((a,b) => a+b, 0);
+                    const semDatas = datas && datas[wi] ? datas[wi] : [0,0,0,0,0,0];
+
+                    // Linha 0: Datas do calendário
+                    analiseHTML += `<tr style="background:#f8fafc;border-bottom:1px solid var(--border);">`;
+                    analiseHTML += `<td rowspan="8" style="padding:10px 6px;text-align:center;background:white;border-right:2px solid var(--border);vertical-align:middle;"><div style="width:44px;height:44px;background:#4338ca;color:white;border-radius:14px;display:flex;align-items:center;justify-content:center;font-family:Outfit;font-weight:var(--fw-black);font-size:var(--fs-xl);margin:0 auto;box-shadow:0 6px 10px rgba(67,56,202,0.25);border:2px solid #3730a3;">${wk.id.padStart(2,'0')}</div></td>`;
+                    analiseHTML += `<td style="padding:4px 8px;border-right:2px solid var(--border);font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;"><i class="fas fa-calendar-day" style="margin-right:3px;font-size:var(--fs-xs);"></i> Data</td>`;
+                    const ultimoDiaUtil = [31,28,31,30,30,30,31,29,30,31,28,31];
+                    // Dias de pagamento e dia seguinte = consumo alto
+                    const diasPag = new Set([5, 6, 20, 21, ultimoDiaUtil[m]]);
+                    // Dia seguinte ao último útil: 1º dia do mês seguinte (aparece na sem 1 do próximo mês)
+                    // Marcar dias 1, 2 da primeira semana como consumo pós-pagamento público
+                    const diasPrimeiros = new Set([1, 2]);
+                    semDatas.forEach((d, di) => {
+                        const isPagamento = diasPag.has(d);
+                        const isPosPagPublico = wi === 0 && diasPrimeiros.has(d);
+                        const isDestaque = d > 0 && (isPagamento || isPosPagPublico);
+                        const bgDia = isDestaque ? 'background:rgba(13,158,95,0.1);' : '';
+                        const corDia = isDestaque ? 'color:#0d9e5f;font-weight:var(--fw-black);' : 'color:var(--text);';
+                        const badge = isDestaque ? `<span style="font-size:var(--fs-xs);color:#0d9e5f;display:block;">${isPagamento ? '💰' : '🛒'}</span>` : '';
+                        analiseHTML += `<td style="padding:4px 6px;text-align:center;border-left:1px solid var(--border);${bgDia}"><span style="font-family:JetBrains Mono;font-size:var(--fs-md);${corDia}">${d === 0 ? '' : (d < 10 ? '0' : '') + d + '/' + MESES_SHORT[m]}</span>${badge}</td>`;
+                    });
+                    analiseHTML += `<td style="padding:4px 8px;background:rgba(67,56,202,0.04);border-left:2px solid var(--border);"></td>`;
+                    analiseHTML += `</tr>`;
+
+                    // Linha 1: Vendas
+                    analiseHTML += `<tr style="background:white;">`;
+                    analiseHTML += `<td style="padding:10px 8px;border-right:2px solid var(--border);font-size:var(--fs-sm);font-weight:var(--fw-black);color:#4338ca;text-transform:uppercase;">Vendas (un)</td>`;
+                    wk.sales.forEach(v => {
+                        analiseHTML += `<td style="padding:10px 6px;text-align:center;border-left:1px solid var(--border);"><span style="font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:${v === 0 ? 'rgba(155,163,184,0.3)' : '#0f172a'};letter-spacing:-0.5px;">${v === 0 ? '-' : v.toLocaleString('pt-BR')}</span></td>`;
+                    });
+                    analiseHTML += `<td style="padding:10px 8px;text-align:center;background:rgba(67,56,202,0.04);border-left:2px solid var(--border);"><span style="font-family:JetBrains Mono;font-size:var(--fs-xl);font-weight:var(--fw-black);color:#4338ca;">${totalSales.toLocaleString('pt-BR')}</span></td>`;
+                    analiseHTML += `</tr>`;
+
+                    // Linha 2: Δ Média Mês
+                    analiseHTML += `<tr style="background:#f8fafc;">`;
+                    analiseHTML += `<td style="padding:6px 8px;border-right:2px solid var(--border);font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;">Δ Média Mês</td>`;
+                    wk.sales.forEach((v, di) => {
+                        const diff = v - wk.histDayAvg[di];
+                        const cor = v === 0 ? 'var(--text-muted)' : diff >= 0 ? '#059669' : '#dc2626';
+                        analiseHTML += `<td style="padding:6px 6px;text-align:center;border-left:1px solid var(--border);font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:${cor};">${v === 0 ? '-' : (diff >= 0 ? '+' : '') + diff.toLocaleString('pt-BR')}</td>`;
+                    });
+                    const totalDiffMes = wk.sales.reduce((s, v, di) => s + (v === 0 ? 0 : v - wk.histDayAvg[di]), 0);
+                    const corTotalMes = totalDiffMes >= 0 ? '#059669' : '#dc2626';
+                    analiseHTML += `<td style="padding:6px 8px;text-align:center;background:rgba(67,56,202,0.04);border-left:2px solid var(--border);font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:${corTotalMes};">${(totalDiffMes >= 0 ? '+' : '') + totalDiffMes.toLocaleString('pt-BR')}</td>`;
+                    analiseHTML += `</tr>`;
+
+                    // Linha 2b: Δ Mediana Mês (com faixas)
+                    const medMes = (typeof MEDIANA_MES !== 'undefined') ? MEDIANA_MES[m] : null;
+                    if (medMes) {
+                        function faixaMediana(valor, med) {
+                            if (valor === 0 || med === 0) return {label:'-', cor:'var(--text-muted)', bg:'transparent', badge:''};
+                            const pct = ((valor - med) / med) * 100;
+                            if (pct > 50) return {cor:'#059669', bg:'rgba(5,150,105,0.1)', pct: '+' + Math.round(pct) + '%', txt:'Muito acima do normal'};
+                            if (pct > 15) return {cor:'#059669', bg:'rgba(5,150,105,0.06)', pct: '+' + Math.round(pct) + '%', txt:'Acima do normal'};
+                            if (pct >= -15) return {cor:'#5f6780', bg:'rgba(100,116,139,0.05)', pct: (pct >= 0 ? '+' : '') + Math.round(pct) + '%', txt:'Normal'};
+                            if (pct >= -50) return {cor:'#dc2626', bg:'rgba(220,38,38,0.06)', pct: Math.round(pct) + '%', txt:'Abaixo do normal'};
+                            return {cor:'#dc2626', bg:'rgba(220,38,38,0.1)', pct: Math.round(pct) + '%', txt:'Muito abaixo do normal'};
+                        }
+
+                        analiseHTML += `<tr style="background:white;">`;
+                        analiseHTML += `<td style="padding:6px 8px;border-right:2px solid var(--border);font-size:var(--fs-xs);font-weight:var(--fw-black);color:#a16207;text-transform:uppercase;">vs Normal</td>`;
+                        wk.sales.forEach((v, di) => {
+                            const f = faixaMediana(v, medMes[di]);
+                            analiseHTML += `<td style="padding:6px 6px;text-align:center;border-left:1px solid var(--border);">`;
+                            if (v === 0) {
+                                analiseHTML += `<span style="color:var(--text-muted);">-</span>`;
+                            } else {
+                                const diff = v - medMes[di];
+                                analiseHTML += `<div style="display:flex;flex-direction:column;align-items:center;gap:1px;">`;
+                                analiseHTML += `<span style="font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:${f.cor};">${(diff >= 0 ? '+' : '') + diff.toLocaleString('pt-BR')} <span style="color:var(--border);">|</span> ${f.pct}</span>`;
+                                analiseHTML += `<span style="font-family:Outfit;font-size:var(--fs-xs);font-weight:var(--fw-black);color:${f.cor};text-transform:uppercase;letter-spacing:0.3px;margin-top:2px;">${f.txt}</span>`;
+                                analiseHTML += `<span style="font-family:JetBrains Mono;font-size:var(--fs-xs);font-weight:var(--fw-bold);color:var(--text-muted);margin-top:1px;">ref: ${medMes[di].toLocaleString('pt-BR')}</span>`;
+                                analiseHTML += `</div>`;
+                            }
+                            analiseHTML += `</td>`;
+                        });
+                        // Total da semana vs mediana total
+                        const totalSem = wk.sales.reduce((a,b) => a+b, 0);
+                        const totalMedSem = medMes.reduce((a,b) => a+b, 0);
+                        const fTotal = faixaMediana(totalSem, totalMedSem);
+                        analiseHTML += `<td style="padding:4px 8px;text-align:center;background:rgba(250,204,21,0.08);border-left:2px solid var(--border);">`;
+                        const diffTotal = totalSem - totalMedSem;
+                        const totalMedRef = medMes.reduce((a,b) => a+b, 0);
+                        analiseHTML += `<div style="display:flex;flex-direction:column;align-items:center;gap:1px;">`;
+                        analiseHTML += `<span style="font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:${fTotal.cor};">${(diffTotal >= 0 ? '+' : '') + diffTotal.toLocaleString('pt-BR')} <span style="color:var(--border);">|</span> ${fTotal.pct}</span>`;
+                        analiseHTML += `<span style="font-family:Outfit;font-size:var(--fs-xs);font-weight:var(--fw-black);color:${fTotal.cor};text-transform:uppercase;letter-spacing:0.3px;margin-top:2px;">${fTotal.txt}</span>`;
+                        analiseHTML += `<span style="font-family:JetBrains Mono;font-size:var(--fs-xs);font-weight:var(--fw-bold);color:var(--text-muted);margin-top:1px;">ref: ${totalMedRef.toLocaleString('pt-BR')}</span>`;
+                        analiseHTML += `</div>`;
+                        analiseHTML += `</td>`;
+                        analiseHTML += `</tr>`;
+                    }
+
+                    // Linha 3: Δ Média Ano
+                    analiseHTML += `<tr style="background:#f1f5f9;border-bottom:2px solid var(--border-light);">`;
+                    analiseHTML += `<td style="padding:6px 8px;border-right:2px solid var(--border);font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;">Δ Média Ano</td>`;
+                    wk.sales.forEach((v, di) => {
+                        const diff = v - avgYear[di];
+                        const cor = v === 0 ? 'var(--text-muted)' : diff >= 0 ? '#2563eb' : '#5f6780';
+                        analiseHTML += `<td style="padding:6px 6px;text-align:center;border-left:1px solid var(--border);font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:${cor};">${v === 0 ? '-' : (diff >= 0 ? '+' : '') + diff.toLocaleString('pt-BR')}</td>`;
+                    });
+                    const totalDiffAno = wk.sales.reduce((s, v, di) => s + (v === 0 ? 0 : v - avgYear[di]), 0);
+                    const corTotalAno = totalDiffAno >= 0 ? '#2563eb' : '#5f6780';
+                    analiseHTML += `<td style="padding:6px 8px;text-align:center;background:rgba(67,56,202,0.04);border-left:2px solid var(--border);font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:${corTotalAno};">${(totalDiffAno >= 0 ? '+' : '') + totalDiffAno.toLocaleString('pt-BR')}</td>`;
+                    analiseHTML += `</tr>`;
+
+                    // Linha 4: Clientes
+                    analiseHTML += `<tr style="border-top:1px dashed #cbd5e1;">`;
+                    analiseHTML += `<td style="padding:8px 8px;border-right:2px solid var(--border);font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;"><i class="fas fa-users" style="margin-right:4px;color:var(--text-muted);font-size:var(--fs-sm);"></i> Clientes</td>`;
+                    wk.clients.forEach(v => {
+                        analiseHTML += `<td style="padding:8px 6px;text-align:center;border-left:1px solid var(--border);font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:var(--text-secondary);">${v === 0 ? '-' : v}</td>`;
+                    });
+                    analiseHTML += `<td style="padding:8px;text-align:center;background:rgba(241,245,249,0.5);border-left:2px solid var(--border);font-family:JetBrains Mono;font-weight:var(--fw-black);color:var(--text-secondary);">${totalClientsUnicos}</td></tr>`;
+
+                    // Linha 5: NFs
+                    analiseHTML += `<tr>`;
+                    analiseHTML += `<td style="padding:8px 8px;border-right:2px solid var(--border);font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;"><i class="fas fa-file-alt" style="margin-right:4px;color:var(--text-muted);font-size:var(--fs-sm);"></i> NFs</td>`;
+                    wk.nfs.forEach(v => {
+                        analiseHTML += `<td style="padding:8px 6px;text-align:center;border-left:1px solid var(--border);font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:var(--text-secondary);">${v === 0 ? '-' : v}</td>`;
+                    });
+                    analiseHTML += `<td style="padding:8px;text-align:center;background:rgba(241,245,249,0.5);border-left:2px solid var(--border);font-family:JetBrains Mono;font-weight:var(--fw-black);color:var(--text-secondary);">${totalNfs}</td></tr>`;
+
+                    // Linha 6: Entregas
+                    analiseHTML += `<tr style="border-bottom:6px solid rgba(226,232,240,0.5);">`;
+                    analiseHTML += `<td style="padding:8px 8px;border-right:2px solid var(--border);font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;"><i class="fas fa-truck" style="margin-right:4px;color:var(--text-muted);font-size:var(--fs-sm);"></i> Entregas</td>`;
+                    wk.deliveries.forEach(v => {
+                        analiseHTML += `<td style="padding:8px 6px;text-align:center;border-left:1px solid var(--border);font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:var(--text-secondary);">${v === 0 ? '-' : v}</td>`;
+                    });
+                    analiseHTML += `<td style="padding:8px;text-align:center;background:rgba(241,245,249,0.5);border-left:2px solid var(--border);font-family:JetBrains Mono;font-weight:var(--fw-black);color:var(--text-secondary);">${totalDel}</td></tr>`;
+                });
+
+                // Bloco de Referência (Benchmarks)
+                const medMesRef = (typeof MEDIANA_MES !== 'undefined') ? MEDIANA_MES[m] : null;
+                const medAnoRef = (typeof MEDIANA_ANO !== 'undefined') ? MEDIANA_ANO : null;
+                const avgMesRef = weeks.length > 0 ? weeks[0].histDayAvg : [0,0,0,0,0,0];
+                const avgAnoRef = P.avgAnualPorDia;
+
+                analiseHTML += `<tr style="background:#f0fdf4;border-top:3px solid var(--border);">`;
+                analiseHTML += `<td rowspan="4" style="padding:8px 6px;text-align:center;background:#f0fdf4;border-right:2px solid var(--border);vertical-align:middle;"><div style="width:40px;height:40px;background:#059669;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 4px 8px rgba(5,150,105,0.2);"><i class="fas fa-bullseye" style="color:white;font-size:var(--fs-lg);"></i></div><div style="font-size:var(--fs-xs);font-weight:var(--fw-black);color:#059669;text-transform:uppercase;margin-top:4px;">Referência</div></td>`;
+                analiseHTML += `<td style="padding:6px 8px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);font-size:var(--fs-xs);font-weight:var(--fw-black);color:#059669;text-transform:uppercase;">Média Mês</td>`;
+                avgMesRef.forEach(v => {
+                    analiseHTML += `<td style="padding:6px 6px;text-align:center;border-left:1px solid var(--border);border-bottom:1px solid var(--border);font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:#059669;">${v.toLocaleString('pt-BR')}</td>`;
+                });
+                const avgMesTotal = avgMesRef.reduce((a,b) => a+b, 0);
+                analiseHTML += `<td style="padding:6px 8px;text-align:center;border-left:2px solid var(--border);border-bottom:1px solid var(--border);font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:#059669;">${Math.round(avgMesTotal / 6).toLocaleString('pt-BR')}</td></tr>`;
+
+                if (medMesRef) {
+                    analiseHTML += `<tr style="background:#fefce8;">`;
+                    analiseHTML += `<td style="padding:6px 8px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);font-size:var(--fs-xs);font-weight:var(--fw-black);color:#a16207;text-transform:uppercase;">Mediana Mês</td>`;
+                    medMesRef.forEach(v => {
+                        analiseHTML += `<td style="padding:6px 6px;text-align:center;border-left:1px solid var(--border);border-bottom:1px solid var(--border);font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:#a16207;">${v.toLocaleString('pt-BR')}</td>`;
+                    });
+                    const medMesTotal = medMesRef.reduce((a,b) => a+b, 0);
+                    analiseHTML += `<td style="padding:6px 8px;text-align:center;border-left:2px solid var(--border);border-bottom:1px solid var(--border);font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:#a16207;">${Math.round(medMesTotal / 6).toLocaleString('pt-BR')}</td></tr>`;
+                }
+
+                analiseHTML += `<tr style="background:#eff6ff;">`;
+                analiseHTML += `<td style="padding:6px 8px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);font-size:var(--fs-xs);font-weight:var(--fw-black);color:#2563eb;text-transform:uppercase;">Média Ano</td>`;
+                avgAnoRef.forEach(v => {
+                    analiseHTML += `<td style="padding:6px 6px;text-align:center;border-left:1px solid var(--border);border-bottom:1px solid var(--border);font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:#2563eb;">${v.toLocaleString('pt-BR')}</td>`;
+                });
+                const avgAnoTotal = avgAnoRef.reduce((a,b) => a+b, 0);
+                analiseHTML += `<td style="padding:6px 8px;text-align:center;border-left:2px solid var(--border);border-bottom:1px solid var(--border);font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:#2563eb;">${Math.round(avgAnoTotal / 6).toLocaleString('pt-BR')}</td></tr>`;
+
+                if (medAnoRef) {
+                    analiseHTML += `<tr style="background:#faf5ff;border-bottom:2px solid var(--border);">`;
+                    analiseHTML += `<td style="padding:6px 8px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);font-size:var(--fs-xs);font-weight:var(--fw-black);color:#7c3aed;text-transform:uppercase;">Mediana Ano</td>`;
+                    medAnoRef.forEach(v => {
+                        analiseHTML += `<td style="padding:6px 6px;text-align:center;border-left:1px solid var(--border);border-bottom:1px solid var(--border);font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:#7c3aed;">${v.toLocaleString('pt-BR')}</td>`;
+                    });
+                    const medAnoTotal = medAnoRef.reduce((a,b) => a+b, 0);
+                    analiseHTML += `<td style="padding:6px 8px;text-align:center;border-left:2px solid var(--border);border-bottom:1px solid var(--border);font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:#7c3aed;">${Math.round(medAnoTotal / 6).toLocaleString('pt-BR')}</td></tr>`;
+                }
+
+                // Legenda faixas vs Normal
+                analiseHTML += `<tr style="background:#f8fafc;border-top:2px solid var(--border);border-bottom:2px solid var(--border);">`;
+                analiseHTML += `<td colspan="2" style="padding:10px 8px;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;border-right:2px solid var(--border);">Faixas vs Normal</td>`;
+                analiseHTML += `<td style="padding:8px 6px;text-align:center;border-left:1px solid var(--border);border-right:1px solid var(--border);"><span style="font-size:var(--fs-md);font-weight:var(--fw-black);color:#059669;">Muito acima<br>&gt; +50%</span></td>`;
+                analiseHTML += `<td style="padding:8px 6px;text-align:center;border-right:1px solid var(--border);"><span style="font-size:var(--fs-md);font-weight:var(--fw-black);color:#059669;">Acima<br>+15% a +50%</span></td>`;
+                analiseHTML += `<td style="padding:8px 6px;text-align:center;border-right:1px solid var(--border);"><span style="font-size:var(--fs-md);font-weight:var(--fw-black);color:#5f6780;">Normal<br>±15%</span></td>`;
+                analiseHTML += `<td style="padding:8px 6px;text-align:center;border-right:1px solid var(--border);"><span style="font-size:var(--fs-md);font-weight:var(--fw-black);color:#dc2626;">Abaixo<br>-15% a -50%</span></td>`;
+                analiseHTML += `<td style="padding:8px 6px;text-align:center;border-right:1px solid var(--border);"><span style="font-size:var(--fs-md);font-weight:var(--fw-black);color:#dc2626;">Muito abaixo<br>&lt; -50%</span></td>`;
+                analiseHTML += `<td style="padding:8px 6px;text-align:center;border-right:1px solid var(--border);background:#f8fafc;"></td>`;
+                analiseHTML += `<td style="padding:8px;background:#f8fafc;border-left:2px solid var(--border);"></td>`;
+                analiseHTML += `</tr>`;
+
+                // Totais por dia
+                const totalsByDay = DIAS_LABEL.map((_, di) => ({
+                    sales: weeks.reduce((s, w) => s + w.sales[di], 0),
+                    clients: weeks.reduce((s, w) => s + w.clients[di], 0),
+                    nfs: weeks.reduce((s, w) => s + w.nfs[di], 0),
+                    deliveries: weeks.reduce((s, w) => s + w.deliveries[di], 0)
+                }));
+                const grandSales = totalsByDay.reduce((s, d) => s + d.sales, 0);
+                const cliUnicosMes = (typeof CLIENTES_UNICOS_MES !== 'undefined') ? CLIENTES_UNICOS_MES[m] : null;
+                const grandClients = cliUnicosMes ? cliUnicosMes.total : totalsByDay.reduce((s, d) => s + d.clients, 0);
+                const grandNfs = totalsByDay.reduce((s, d) => s + d.nfs, 0);
+                const grandDel = totalsByDay.reduce((s, d) => s + d.deliveries, 0);
+
+                // Linha total vendas
+                analiseHTML += `<tr style="background:#eef2ff;border-top:4px solid #c7d2fe;">`;
+                analiseHTML += `<td rowspan="5" style="padding:10px 6px;text-align:center;background:#eef2ff;border-right:2px solid #c7d2fe;vertical-align:middle;"><div style="width:40px;height:40px;background:#4338ca;border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto;box-shadow:0 6px 10px rgba(67,56,202,0.2);"><i class="fas fa-clipboard-list" style="color:white;font-size:var(--fs-lg);"></i></div><div style="font-size:var(--fs-xs);font-weight:var(--fw-black);color:#4338ca;text-transform:uppercase;margin-top:4px;">Totais</div></td>`;
+                analiseHTML += `<td style="padding:10px 8px;border-right:2px solid #c7d2fe;font-size:var(--fs-xs);font-weight:var(--fw-black);color:#4338ca;text-transform:uppercase;">Σ Vendas</td>`;
+                totalsByDay.forEach(d => {
+                    analiseHTML += `<td style="padding:10px 6px;text-align:center;border-left:1px solid #c7d2fe;"><span style="font-family:JetBrains Mono;font-size:var(--fs-lg);font-weight:var(--fw-black);color:#312e81;">${d.sales.toLocaleString('pt-BR')}</span></td>`;
+                });
+                analiseHTML += `<td style="padding:10px 8px;text-align:center;background:#4338ca;border-left:2px solid #3730a3;"><span style="font-family:JetBrains Mono;font-size:var(--fs-xl);font-weight:var(--fw-black);color:white;">${grandSales.toLocaleString('pt-BR')}</span></td></tr>`;
+
+                // Linha média realizada de vendas
+                const dpm = (typeof DATAS_SEMANA !== 'undefined') ? [4,4,5,5,5,4,4,4,4,4,4,4,5,4,4,4,4,5,4,5,5,4,4,4,4,4,4,4,5,5,5,4,4,4,4,4,4,5,5,4,4,4,4,4,4,5,5,4,4,5,5,4,4,4,4,5,5,5,4,4,4,4,4,4,5,5,5,4,4,4] : null;
+                const diasNoMesAtual = [[4,4,5,5,5,4],[4,4,4,4,4,4],[5,4,4,4,4,5],[4,5,5,4,4,4],[4,4,4,5,5,5],[5,4,4,4,4,4],[4,5,5,5,4,4],[4,4,4,4,5,5],[5,5,4,4,4,4],[4,4,5,5,5,4],[4,4,4,4,4,5],[5,5,5,4,4,4]][m];
+                const totalDiasMes = diasNoMesAtual.reduce((a,b) => a+b, 0);
+                analiseHTML += `<tr style="background:#eef2ff;border-top:1px solid #c7d2fe;">`;
+                analiseHTML += `<td style="padding:6px 8px;border-right:2px solid #c7d2fe;font-size:var(--fs-xs);font-weight:var(--fw-black);color:#4338ca;text-transform:uppercase;">x̄ Vendas/dia</td>`;
+                totalsByDay.forEach((d, di) => {
+                    const media = diasNoMesAtual[di] > 0 ? Math.round(d.sales / diasNoMesAtual[di]) : 0;
+                    analiseHTML += `<td style="padding:6px 6px;text-align:center;border-left:1px solid #c7d2fe;font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:#4338ca;">${media.toLocaleString('pt-BR')}</td>`;
+                });
+                const mediaGlobal = totalDiasMes > 0 ? Math.round(grandSales / totalDiasMes) : 0;
+                analiseHTML += `<td style="padding:6px 8px;text-align:center;background:#4338ca;border-left:2px solid #3730a3;font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:white;">${mediaGlobal.toLocaleString('pt-BR')}/d</td></tr>`;
+
+                // Linha total clientes
+                analiseHTML += `<tr style="background:#f8fafc;border-top:1px solid var(--border);">`;
+                analiseHTML += `<td style="padding:8px 8px;border-right:2px solid var(--border);font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;"><i class="fas fa-users" style="margin-right:4px;"></i> Σ Clientes</td>`;
+                totalsByDay.forEach((d, di) => {
+                    const cliDia = cliUnicosMes ? cliUnicosMes.porDia[di] : d.clients;
+                    analiseHTML += `<td style="padding:8px 6px;text-align:center;border-left:1px solid var(--border);font-family:JetBrains Mono;font-size:var(--fs-lg);font-weight:var(--fw-black);color:var(--text-secondary);">${cliDia}</td>`;
+                });
+                analiseHTML += `<td style="padding:8px;text-align:center;background:#1e293b;border-left:2px solid #334155;font-family:JetBrains Mono;font-weight:var(--fw-black);color:white;">${grandClients}</td></tr>`;
+
+                // Linha total NFs
+                analiseHTML += `<tr style="background:#f8fafc;border-top:1px solid var(--border);">`;
+                analiseHTML += `<td style="padding:8px 8px;border-right:2px solid var(--border);font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;"><i class="fas fa-file-alt" style="margin-right:4px;"></i> Σ NFs</td>`;
+                totalsByDay.forEach(d => { analiseHTML += `<td style="padding:8px 6px;text-align:center;border-left:1px solid var(--border);font-family:JetBrains Mono;font-size:var(--fs-lg);font-weight:var(--fw-black);color:var(--text-secondary);">${d.nfs}</td>`; });
+                analiseHTML += `<td style="padding:8px;text-align:center;background:#1e293b;border-left:2px solid #334155;font-family:JetBrains Mono;font-weight:var(--fw-black);color:white;">${grandNfs}</td></tr>`;
+
+                // Linha total entregas
+                analiseHTML += `<tr style="background:#f8fafc;border-top:1px solid var(--border);border-bottom:8px solid rgba(203,213,225,0.3);">`;
+                analiseHTML += `<td style="padding:8px 8px;border-right:2px solid var(--border);font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;"><i class="fas fa-truck" style="margin-right:4px;"></i> Σ Entregas</td>`;
+                totalsByDay.forEach(d => { analiseHTML += `<td style="padding:8px 6px;text-align:center;border-left:1px solid var(--border);font-family:JetBrains Mono;font-size:var(--fs-lg);font-weight:var(--fw-black);color:var(--text-secondary);">${d.deliveries}</td>`; });
+                analiseHTML += `<td style="padding:8px;text-align:center;background:#1e293b;border-left:2px solid #334155;font-family:JetBrains Mono;font-weight:var(--fw-black);color:white;">${grandDel}</td></tr>`;
+
+                // Linha performance (rodapé dark)
+                analiseHTML += `<tr style="background:#1e293b;">`;
+                analiseHTML += `<td style="padding:16px 6px;text-align:center;background:#1e293b;border-right:2px solid #334155;"><div style="width:40px;height:40px;background:rgba(96,165,250,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;margin:0 auto;border:1px solid rgba(96,165,250,0.25);"><i class="fas fa-crosshairs" style="color:white;font-size:var(--fs-lg);"></i></div></td>`;
+                analiseHTML += `<td style="padding:16px 8px;border-right:2px solid #334155;background:#1e293b;"><div style="font-size:var(--fs-xs);font-weight:var(--fw-black);color:#5f6780;text-transform:uppercase;letter-spacing:1px;">Mês Atual</div><div style="font-size:var(--fs-lg);font-weight:var(--fw-black);font-family:Outfit;color:white;text-transform:uppercase;letter-spacing:-0.5px;">Performance</div></td>`;
+                analiseHTML += `<td colspan="2" style="padding:16px 6px;text-align:center;border-left:1px solid #334155;"><div style="font-size:var(--fs-xs);font-weight:var(--fw-black);color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;">Qtd Total</div><div style="font-family:JetBrains Mono;font-size:var(--fs-xl);font-weight:var(--fw-black);color:white;">${grandSales.toLocaleString('pt-BR')}</div></td>`;
+                analiseHTML += `<td style="padding:16px 6px;text-align:center;border-left:1px solid #334155;"><div style="font-size:var(--fs-xs);font-weight:var(--fw-black);color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;">Clientes</div><div style="font-family:JetBrains Mono;font-size:var(--fs-xl);font-weight:var(--fw-black);color:white;">${grandClients}</div></td>`;
+                analiseHTML += `<td style="padding:16px 6px;text-align:center;border-left:1px solid #334155;"><div style="font-size:var(--fs-xs);font-weight:var(--fw-black);color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;">NFs</div><div style="font-family:JetBrains Mono;font-size:var(--fs-xl);font-weight:var(--fw-black);color:white;">${grandNfs}</div></td>`;
+                analiseHTML += `<td colspan="2" style="padding:16px 6px;text-align:center;border-left:1px solid #334155;"><div style="font-size:var(--fs-xs);font-weight:var(--fw-black);color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;">Entregas</div><div style="font-family:JetBrains Mono;font-size:var(--fs-xl);font-weight:var(--fw-black);color:white;">${grandDel}</div></td>`;
+                analiseHTML += `<td style="padding:16px 8px;text-align:center;background:#2563eb;border-left:2px solid #1d4ed8;"><div style="font-size:var(--fs-xs);font-weight:var(--fw-black);color:rgba(255,255,255,0.7);text-transform:uppercase;">Status</div><div style="font-family:JetBrains Mono;font-size:var(--fs-lg);font-weight:var(--fw-black);color:white;letter-spacing:3px;">OK</div></td>`;
+                analiseHTML += `</tr>`;
+
+                analiseHTML += `</tbody></table></div></div>`;
+            }
+        }
+
+        // Tabela dias da semana — design React-inspired
+        let diasHTML = '';
+        if (prod.diasSemana) {
+            const DIAS = [{key:'seg',label:'SEG'},{key:'ter',label:'TER'},{key:'qua',label:'QUA'},{key:'qui',label:'QUI'},{key:'sex',label:'SEX'},{key:'sab',label:'SÁB'}];
+            const ds = prod.diasSemana;
+            const diasId = 'dias-' + idx;
+            const diasContentId = diasId + '-content';
+
+            // Calcular médias anuais por dia
+            const avgAnual = DIAS.map((_, di) => {
+                const totalDiasAno = ds.diasNoMes.reduce((s, m) => s + m[di], 0);
+                const totalQtd = ds.qtd.reduce((s, m) => s + m[di], 0);
+                return totalDiasAno > 0 ? Math.round(totalQtd / totalDiasAno) : 0;
+            });
+            const totalQtdAno = ds.qtd.reduce((s, m) => s + m.reduce((a, b) => a + b, 0), 0);
+            const totalEntAno = ds.entregas.reduce((s, m) => s + m.reduce((a, b) => a + b, 0), 0);
+            const totalDiasAno = ds.diasNoMes.reduce((s, m) => s + m.reduce((a, b) => a + b, 0), 0);
+            const mediaGlobalDia = totalDiasAno > 0 ? Math.round(totalQtdAno / totalDiasAno) : 0;
+
+            // Encontrar melhor dia
+            const maxAvg = Math.max(...avgAnual);
+            const melhorDia = DIAS[avgAnual.indexOf(maxAvg)].label;
+
+            diasHTML = '';
+
+            // Tab bar meses
+            diasHTML += `<div style="display:flex;align-items:center;gap:4px;background:var(--white);padding:6px;border-radius:12px;border:1px solid var(--border);margin-bottom:8px;overflow-x:auto;" id="${diasId}-tabs">`;
+            MESES_LABEL.forEach((ml, mi) => {
+                const activeStyle = mi === 0 ? 'background:#4338ca;color:#fff;box-shadow:0 2px 8px rgba(67,56,202,0.2);' : 'color:#9ba3b8;background:transparent;';
+                diasHTML += `<button onclick="trocarMesDias('${diasId}',${mi})" style="padding:6px 12px;border-radius:8px;border:none;font-family:Outfit;font-size:var(--fs-sm);font-weight:var(--fw-black);text-transform:uppercase;cursor:pointer;white-space:nowrap;transition:all 0.2s;${activeStyle}" data-mes="${mi}">${ml}</button>`;
+            });
+            diasHTML += `</div>`;
+
+            // Card principal
+            diasHTML += `<div style="background:var(--white);border-radius:12px;border:1px solid var(--border);box-shadow:0 2px 4px rgba(0,0,0,0.02);overflow:hidden;">`;
+
+            // Header
+            diasHTML += `<div style="padding:16px 24px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);">`;
+            diasHTML += `<div style="display:flex;align-items:center;gap:14px;">`;
+            diasHTML += `<div id="${diasId}-avatar" style="width:40px;height:40px;border-radius:50%;background:#4338ca;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:var(--fw-black);font-size:var(--fs-md);box-shadow:0 2px 8px rgba(67,56,202,0.2);">JAN</div>`;
+            diasHTML += `<div><div style="font-size:var(--fs-lg);font-weight:var(--fw-black);color:var(--primary);" id="${diasId}-titulo">Janeiro <span style="color:var(--text-muted);font-weight:var(--fw-normal);">2025</span></div>`;
+            diasHTML += `<div style="font-size:var(--fs-sm);font-weight:var(--fw-normal);color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px;font-family:DM Sans;">Quantidade Vendida e Entregas por Dia da Semana</div></div></div>`;
+            diasHTML += `<div style="display:flex;align-items:center;gap:24px;">`;
+            diasHTML += `<div style="text-align:right;padding-right:20px;border-right:1px solid var(--border);"><div style="font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;">Média Anual</div><div style="font-family:JetBrains Mono;font-size:var(--fs-lg);font-weight:var(--fw-black);color:var(--text);">${mediaGlobalDia.toLocaleString('pt-BR')}/dia</div></div>`;
+            diasHTML += `<div style="text-align:right;"><div style="font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;">Dia Mais Forte</div><div style="font-family:JetBrains Mono;font-size:var(--fs-lg);font-weight:var(--fw-black);color:#0d9e5f;">${melhorDia}</div></div>`;
+            diasHTML += `</div></div>`;
+
+            // Conteúdo por mês (12 divs, só a primeira visível)
+            for (let m = 0; m < 12; m++) {
+                const dpm = ds.diasNoMes[m];
+                const totalDias = dpm.reduce((s, v) => s + v, 0);
+                const nSem = ds.semanas[m].length;
+                const display = m === 0 ? 'block' : 'none';
+
+                diasHTML += `<div id="${diasId}-mes-${m}" style="display:${display};padding:16px 24px;">`;
+
+                // Tabela
+                diasHTML += `<div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.04);">`;
+                diasHTML += `<table style="width:100%;border-collapse:collapse;">`;
+
+                // Thead
+                diasHTML += `<thead><tr style="background:rgba(245,246,248,0.5);border-bottom:1px solid var(--border);">`;
+                diasHTML += `<th style="padding:14px 16px;text-align:left;font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text-secondary);text-transform:uppercase;letter-spacing:1px;position:sticky;left:0;background:var(--bg);z-index:2;">Semana</th>`;
+                DIAS.forEach(d => {
+                    diasHTML += `<th style="padding:14px 10px;text-align:center;border-left:1px solid rgba(228,231,236,0.4);"><span style="display:block;font-size:var(--fs-md);font-weight:var(--fw-black);color:var(--text);margin-bottom:4px;">${d.label}</span><div style="display:flex;justify-content:center;gap:16px;font-size:var(--fs-xs);font-weight:var(--fw-bold);color:var(--text-muted);opacity:0.5;"><span>QTD</span><span>ENT</span></div></th>`;
+                });
+                diasHTML += `<th style="padding:14px 16px;text-align:center;border-left:2px solid var(--border);background:rgba(67,56,202,0.02);font-size:var(--fs-sm);font-weight:var(--fw-black);color:#4338ca;text-transform:uppercase;letter-spacing:0.5px;">Total</th>`;
+                diasHTML += `<th style="padding:14px 16px;text-align:center;border-left:1px solid var(--border);background:rgba(13,158,95,0.02);font-size:var(--fs-sm);font-weight:var(--fw-black);color:#0d9e5f;text-transform:uppercase;letter-spacing:0.5px;">Média</th>`;
+                diasHTML += `</tr></thead><tbody>`;
+
+                ds.semanas[m].forEach((sem, si) => {
+                    const semTotal = sem.qtd.reduce((s, v) => s + v, 0);
+                    const semEntr = sem.entr.reduce((s, v) => s + v, 0);
+                    const semDias = sem.qtd.filter(v => v > 0).length;
+                    const semMedia = semDias > 0 ? Math.round(semTotal / semDias) : 0;
+
+                    // Linha de dados
+                    diasHTML += `<tr style="border-bottom:1px solid var(--border);">`;
+                    diasHTML += `<td style="padding:12px 16px;font-weight:var(--fw-black);font-size:var(--fs-md);color:var(--text-secondary);position:sticky;left:0;background:var(--white);z-index:1;border-right:1px solid var(--border-light);">Sem ${si+1}</td>`;
+                    for (let di = 0; di < 6; di++) {
+                        const q = sem.qtd[di];
+                        const e = sem.entr[di];
+                        diasHTML += `<td style="padding:12px 10px;text-align:right;"><div style="display:flex;justify-content:center;gap:16px;align-items:center;">`;
+                        diasHTML += `<span style="font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:${q === 0 ? 'rgba(155,163,184,0.3)' : 'var(--text)'};">${q === 0 ? '-' : q.toLocaleString('pt-BR')}</span>`;
+                        diasHTML += `<span style="font-family:JetBrains Mono;font-size:var(--fs-sm);font-weight:var(--fw-black);color:${e === 0 ? 'rgba(155,163,184,0.2)' : 'var(--text-secondary)'};">${e === 0 ? '-' : e}</span>`;
+                        diasHTML += `</div></td>`;
+                    }
+                    diasHTML += `<td style="padding:12px 16px;text-align:center;background:rgba(67,56,202,0.02);border-left:2px solid var(--border);"><div style="display:flex;flex-direction:column;align-items:center;gap:2px;"><span style="font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:#4338ca;">${semTotal.toLocaleString('pt-BR')}</span><span style="font-size:var(--fs-xs);font-weight:var(--fw-black);color:white;background:#4338ca;padding:1px 6px;border-radius:4px;">${semEntr}</span></div></td>`;
+                    diasHTML += `<td style="padding:12px 16px;text-align:center;background:rgba(13,158,95,0.02);border-left:1px solid var(--border);"><div style="display:flex;flex-direction:column;align-items:center;gap:2px;"><span style="font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:#0d9e5f;">${semMedia.toLocaleString('pt-BR')}</span><span style="font-size:var(--fs-xs);font-weight:var(--fw-black);color:var(--text-secondary);">/dia</span></div></td>`;
+                    diasHTML += `</tr>`;
+
+                    // Linha 1: Média do mês (azul claro)
+                    diasHTML += `<tr style="background:rgba(37,99,235,0.04);border-bottom:1px solid rgba(228,231,236,0.6);">`;
+                    diasHTML += `<td style="padding:8px 16px;position:sticky;left:0;background:rgba(37,99,235,0.06);z-index:1;border-right:1px solid rgba(37,99,235,0.1);"><div style="display:flex;align-items:center;gap:6px;"><i class="fas fa-crosshairs" style="font-size:var(--fs-xs);color:#2563eb;"></i><span style="font-size:var(--fs-xs);font-weight:var(--fw-black);color:#1e3a5f;text-transform:uppercase;line-height:1;font-family:DM Sans;">Média<br/>${MESES_LABEL[m]}</span></div></td>`;
+                    for (let di = 0; di < 6; di++) {
+                        const mediaQ = dpm[di] > 0 ? Math.round(ds.qtd[m][di] / dpm[di]) : 0;
+                        diasHTML += `<td style="padding:8px 10px;text-align:center;border-left:1px solid rgba(37,99,235,0.08);"><span style="font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:#2563eb;">${mediaQ > 0 ? mediaQ.toLocaleString('pt-BR') : '-'}</span></td>`;
+                    }
+                    const totalQtdMes_avg = ds.qtd[m].reduce((s, v) => s + v, 0);
+                    const mediaQtdMes = totalDias > 0 ? Math.round(totalQtdMes_avg / totalDias) : 0;
+                    diasHTML += `<td style="padding:8px 16px;text-align:center;background:rgba(67,56,202,0.05);border-left:2px solid var(--border);"><span style="font-family:JetBrains Mono;font-size:var(--fs-md);font-weight:var(--fw-black);color:#4338ca;">${mediaQtdMes.toLocaleString('pt-BR')}</span></td>`;
+                    diasHTML += `<td style="padding:8px 16px;text-align:center;background:rgba(13,158,95,0.05);border-left:1px solid var(--border);"></td>`;
+                    diasHTML += `</tr>`;
+
+                    // Linha 2: Benchmark anual (dark)
+                    diasHTML += `<tr style="background:#1e293b;border-bottom:4px solid white;">`;
+                    diasHTML += `<td style="padding:8px 16px;position:sticky;left:0;background:#1e293b;z-index:1;border-right:1px solid #2a3d66;"><div style="display:flex;align-items:center;gap:6px;"><i class="fas fa-history" style="font-size:var(--fs-xs);color:#5f6780;"></i><span style="font-size:var(--fs-xs);font-weight:var(--fw-black);color:#5f6780;text-transform:uppercase;line-height:1;font-family:DM Sans;">Vs. Média<br/>Anual</span></div></td>`;
+                    for (let di = 0; di < 6; di++) {
+                        const mediaQ = dpm[di] > 0 ? Math.round(ds.qtd[m][di] / dpm[di]) : 0;
+                        const diff = avgAnual[di] > 0 ? Math.round((mediaQ - avgAnual[di]) / avgAnual[di] * 100) : 0;
+                        const isPos = diff >= 0;
+                        const cor = isPos ? '#4ade80' : '#f87171';
+                        const bg = isPos ? 'rgba(74,222,128,0.1)' : 'rgba(248,113,113,0.1)';
+                        const seta = isPos ? '&#9650;' : '&#9660;';
+                        diasHTML += `<td style="padding:8px 10px;text-align:center;border-left:1px solid #2a3d66;"><span style="display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:12px;font-family:JetBrains Mono;font-size:var(--fs-sm);font-weight:var(--fw-black);color:${cor};background:${bg};">${seta} ${Math.abs(diff)}%</span></td>`;
+                    }
+                    diasHTML += `<td style="padding:8px 16px;background:#162240;border-left:1px solid #2a3d66;"></td>`;
+                    diasHTML += `<td style="padding:8px 16px;background:#162240;border-left:1px solid #2a3d66;"></td>`;
+                    diasHTML += `</tr>`;
+                });
+
+                diasHTML += `</tbody></table></div>`;
+
+                // Cards resumo do mês
+                const totalQtdMes = ds.qtd[m].reduce((s, v) => s + v, 0);
+                const totalEntMes = ds.entregas[m].reduce((s, v) => s + v, 0);
+                const mediaQtdMesDia = totalDias > 0 ? Math.round(totalQtdMes / totalDias) : 0;
+                const maxDia = DIAS[ds.qtd[m].indexOf(Math.max(...ds.qtd[m]))].label;
+
+                diasHTML += `<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px;">`;
+                diasHTML += `<div style="background:var(--white);border:1px solid var(--border);padding:12px 14px;border-radius:10px;border-bottom:3px solid #4338ca;"><div style="font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;margin-bottom:4px;">Total Mês</div><span style="font-family:JetBrains Mono;font-size:var(--fs-xl);font-weight:var(--fw-black);color:var(--text);">${totalQtdMes.toLocaleString('pt-BR')}</span></div>`;
+                diasHTML += `<div style="background:var(--white);border:1px solid var(--border);padding:12px 14px;border-radius:10px;border-bottom:3px solid #0d9e5f;"><div style="font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;margin-bottom:4px;">Entregas</div><span style="font-family:JetBrains Mono;font-size:var(--fs-xl);font-weight:var(--fw-black);color:var(--text);">${totalEntMes}</span></div>`;
+                diasHTML += `<div style="background:var(--white);border:1px solid var(--border);padding:12px 14px;border-radius:10px;border-bottom:3px solid #e67e22;"><div style="font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;margin-bottom:4px;">Dia Mais Forte</div><span style="font-size:var(--fs-xl);font-weight:var(--fw-black);color:var(--text);">${maxDia}</span></div>`;
+                diasHTML += `<div style="background:var(--white);border:1px solid var(--border);padding:12px 14px;border-radius:10px;border-bottom:3px solid #7c3aed;"><div style="font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text);text-transform:uppercase;margin-bottom:4px;">Média/Dia</div><span style="font-family:JetBrains Mono;font-size:var(--fs-xl);font-weight:var(--fw-black);color:var(--text);">${mediaQtdMesDia.toLocaleString('pt-BR')}</span></div>`;
+                diasHTML += `</div>`;
+
+                diasHTML += `</div>`;
+            }
+
+            // Legenda
+            diasHTML += `<div style="margin:12px 24px 16px;background:var(--white);padding:14px 20px;border-radius:12px;border:1px solid var(--border);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;">`;
+            diasHTML += `<div style="display:flex;gap:20px;">`;
+            diasHTML += `<div style="display:flex;align-items:center;gap:8px;"><div style="width:12px;height:12px;border-radius:4px;background:white;border:2px solid var(--border);"></div><span style="font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text-secondary);text-transform:uppercase;">Dado Real</span></div>`;
+            diasHTML += `<div style="display:flex;align-items:center;gap:8px;"><div style="width:12px;height:12px;border-radius:4px;background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.2);"></div><span style="font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text-secondary);text-transform:uppercase;">Média do Mês</span></div>`;
+            diasHTML += `<div style="display:flex;align-items:center;gap:8px;"><div style="width:12px;height:12px;border-radius:4px;background:#1e293b;"></div><span style="font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text-secondary);text-transform:uppercase;">Benchmark vs Ano</span></div>`;
+            diasHTML += `</div>`;
+            diasHTML += `<span style="font-size:var(--fs-sm);font-weight:var(--fw-black);color:var(--text-muted);font-style:italic;">Linha escura identifica sazonalidade atípica vs média anual</span>`;
+            diasHTML += `</div>`;
+
+            diasHTML += `</div>`;
+        }
+
+        const sec = (id, content) => `<div class="sec-${id}" style="margin:12px 16px;padding:16px;background:var(--white);border-left:1px solid var(--border);border-right:1px solid var(--border);border-top:2px solid var(--border);border-bottom:2px solid var(--border);border-radius:var(--radius);overflow:hidden;">${content}</div>`;
+
+        card.innerHTML = headerHTML + `<div class="card-body card-collapsible">
+            ${sec('estrutura', cardsHTML)}
+            ${sec('spread', chartHTML)}
+            ${sec('dre', tableHTML)}
+            ${sec('devolucoes', devolHTML)}
+            ${sec('analise', analiseHTML)}
+        </div>`;
+        container.appendChild(card);
+
+        // Renderizar gráficos após inserir no DOM
+        if (prod.meses && prod.meses.length > 0) {
+            const chartIdQtd = 'chart-qtd-' + idx;
+            const chartIdPreco = 'chart-preco-' + idx;
+            setTimeout(() => {
+                // Gráfico 1: Qtd Vendas (topo)
+                const ctxQtd = document.getElementById(chartIdQtd);
+                if (!ctxQtd) return;
+                new Chart(ctxQtd, {
+                    type: 'line',
+                    plugins: [ChartDataLabels],
+                    data: {
+                        labels: MESES_LABEL,
+                        datasets: [{
+                            label: 'Qtd Vendas',
+                            data: prod.meses.map(m => m.qtd),
+                            borderColor: '#4338ca',
+                            backgroundColor: 'rgba(67,56,202,0.06)',
+                            fill: true,
+                            tension: 0.3,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#4338ca',
+                            borderWidth: 2.5,
+                            datalabels: {
+                                anchor: 'end', align: 'top',
+                                font: { family: 'JetBrains Mono', size: 11, weight: 700 },
+                                color: '#4338ca',
+                                formatter: v => v.toLocaleString('pt-BR')
+                            }
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        aspectRatio: 7,
+                        layout: { padding: { left: 20, right: 30, top: 20 } },
+                        plugins: { legend: { display: false }, datalabels: {},
+                            tooltip: { callbacks: { label: ctx => ctx.parsed.y.toLocaleString('pt-BR') + ' un' } }
+                        },
+                        scales: {
+                            x: { display: false },
+                            y: { display: false }
+                        }
+                    }
+                });
+
+                // Gráfico 2: Preço × Custo (baixo)
+                const ctxPreco = document.getElementById(chartIdPreco);
+                if (!ctxPreco) return;
+                new Chart(ctxPreco, {
+                    type: 'line',
+                    plugins: [ChartDataLabels],
+                    data: {
+                        labels: MESES_LABEL,
+                        datasets: [
+                            {
+                                label: 'R$ Unit. Pond.',
+                                data: prod.meses.map(m => m.pp),
+                                borderColor: '#0d9e5f',
+                                backgroundColor: 'transparent',
+                                fill: false,
+                                tension: 0.3,
+                                pointRadius: 3,
+                                pointBackgroundColor: '#0d9e5f',
+                                borderWidth: 2,
+                                datalabels: {
+                                    anchor: 'end', align: 'top',
+                                    font: { family: 'JetBrains Mono', size: 10, weight: 700 },
+                                    color: '#0d9e5f',
+                                    formatter: v => 'R$ ' + v.toFixed(2).replace('.', ',')
+                                }
+                            },
+                            {
+                                label: 'Custo Unit. Pond.',
+                                data: prod.meses.map(m => m.cu),
+                                borderColor: '#dc3545',
+                                backgroundColor: 'rgba(13,158,95,0.10)',
+                                fill: '-1',
+                                tension: 0.3,
+                                pointRadius: 3,
+                                pointBackgroundColor: '#dc3545',
+                                borderWidth: 2,
+                                borderDash: [4, 3],
+                                datalabels: {
+                                    anchor: 'start', align: 'bottom',
+                                    font: { family: 'JetBrains Mono', size: 10, weight: 700 },
+                                    color: '#dc3545',
+                                    formatter: v => 'R$ ' + v.toFixed(2).replace('.', ',')
+                                }
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        aspectRatio: 5,
+                        layout: { padding: { left: 20, right: 30, top: 15, bottom: 5 } },
+                        plugins: { legend: { display: false }, datalabels: {},
+                            tooltip: { callbacks: { label: ctx => 'R$ ' + ctx.parsed.y.toFixed(2).replace('.', ',') } }
+                        },
+                        scales: {
+                            x: {
+                                grid: { display: false },
+                                ticks: { font: { family: 'Outfit', size: 11, weight: 700 }, color: '#5f6780' }
+                            },
+                            y: {
+                                display: false,
+                                min: Math.min(...prod.meses.map(m => m.cu)) * 0.3,
+                                suggestedMax: Math.max(...prod.meses.map(m => m.pp)) * 1.2
+                            }
+                        }
+                    }
+                });
+            }, 100);
+        }
+
+        // Gráfico devoluções
+        if (prod.nome === 'ALFACE AMERICANA 150G' && typeof DEVOLUCOES_ALFACE !== 'undefined') {
+            const devolChartId = 'chart-devol-' + idx;
+            setTimeout(() => {
+                const ctx = document.getElementById(devolChartId);
+                if (!ctx) return;
+                const D = DEVOLUCOES_ALFACE;
+                new Chart(ctx, {
+                    type: 'bar',
+                    plugins: [ChartDataLabels],
+                    data: {
+                        labels: MESES_LABEL,
+                        datasets: [
+                            {
+                                label: 'Qtd Vendida',
+                                data: D.meses.map(m => m.qtdVenda),
+                                backgroundColor: 'rgba(67,56,202,0.15)',
+                                borderColor: '#4338ca',
+                                borderWidth: 1,
+                                borderRadius: 4,
+                                datalabels: { display: false }
+                            },
+                            {
+                                label: 'Qtd Devolvida',
+                                data: D.meses.map(m => m.qtdDev),
+                                backgroundColor: 'rgba(220,53,69,0.7)',
+                                borderColor: '#dc3545',
+                                borderWidth: 1,
+                                borderRadius: 4,
+                                datalabels: {
+                                    anchor: 'end', align: 'top',
+                                    font: { family: 'JetBrains Mono', size: 9, weight: 700 },
+                                    color: '#dc3545',
+                                    formatter: (v, ctx) => {
+                                        const pct = D.meses[ctx.dataIndex].pctQtd;
+                                        return pct + '%';
+                                    }
+                                }
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        aspectRatio: 4,
+                        layout: { padding: { top: 20 } },
+                        plugins: {
+                            legend: {
+                                display: true, position: 'top', align: 'end',
+                                labels: { font: { family: 'Outfit', size: 10, weight: 700 }, color: '#5f6780', usePointStyle: true, boxWidth: 8, padding: 16 }
+                            },
+                            datalabels: {},
+                            tooltip: {
+                                callbacks: {
+                                    label: ctx => ctx.dataset.label + ': ' + ctx.parsed.y.toLocaleString('pt-BR') + ' un'
+                                }
+                            }
+                        },
+                        scales: {
+                            x: { grid: { display: false }, ticks: { font: { family: 'Outfit', size: 11, weight: 700 }, color: '#5f6780' } },
+                            y: { display: false }
+                        }
+                    }
+                });
+            }, 150);
+
+            // Radar devoluções (qtd)
+            const radarChartId = 'chart-radar-devol-' + idx;
+            setTimeout(() => {
+                const ctx = document.getElementById(radarChartId);
+                if (!ctx) return;
+                const D = DEVOLUCOES_ALFACE;
+                new Chart(ctx, {
+                    type: 'radar',
+                    plugins: [ChartDataLabels],
+                    data: {
+                        labels: MESES_LABEL,
+                        datasets: [{
+                            label: 'Qtd Devolvida',
+                            data: D.meses.map(m => m.qtdDev),
+                            borderColor: '#dc3545',
+                            backgroundColor: 'rgba(220,53,69,0.12)',
+                            borderWidth: 2,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#dc3545',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 1,
+                            datalabels: {
+                                font: { family: 'JetBrains Mono', size: 9, weight: 700 },
+                                color: '#dc3545',
+                                formatter: v => v.toLocaleString('pt-BR'),
+                                anchor: 'end',
+                                align: function(ctx) {
+                                    const i = ctx.dataIndex;
+                                    // Meses à esquerda (OUT=9, NOV=10, SET=8) → alinhar à direita
+                                    if (i >= 7 && i <= 10) return 'right';
+                                    return 'end';
+                                },
+                                offset: 8
+                            }
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        layout: { padding: { left: 30, right: 30 } },
+                        plugins: { legend: { display: false }, datalabels: {} },
+                        scales: {
+                            r: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(228,231,236,0.6)' },
+                                angleLines: { color: 'rgba(228,231,236,0.4)' },
+                                pointLabels: { font: { family: 'Outfit', size: 11, weight: 700 }, color: '#1b1f2a' },
+                                ticks: { font: { family: 'JetBrains Mono', size: 8 }, color: '#9ba3b8', backdropColor: 'transparent' }
+                            }
+                        }
+                    }
+                });
+            }, 200);
+
+            // Barras verticais top 10 clientes devoluções
+            const radialChartId = 'chart-radial-devol-' + idx;
+            if (typeof TOP_CLIENTES_DEVOL !== 'undefined') {
+                setTimeout(() => {
+                    const ctx = document.getElementById(radialChartId);
+                    if (!ctx) return;
+                    const T = TOP_CLIENTES_DEVOL.slice(0, 10);
+                    const cores = ['#dc3545','#e85d6a','#e67e22','#f59e0b','#eab308','#4338ca','#6366f1','#0d9e5f','#10b981','#5f6780'];
+                    new Chart(ctx, {
+                        type: 'bar',
+                        plugins: [ChartDataLabels],
+                        data: {
+                            labels: T.map(c => c.nome),
+                            datasets: [{
+                                data: T.map(c => c.valor),
+                                backgroundColor: cores,
+                                borderColor: cores,
+                                borderWidth: 1,
+                                borderRadius: 4,
+                                datalabels: {
+                                    anchor: 'end', align: 'top',
+                                    font: { family: 'JetBrains Mono', size: 9, weight: 700 },
+                                    color: cores,
+                                    formatter: v => 'R$ ' + (v/1000).toFixed(1) + 'k'
+                                }
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            aspectRatio: 1.8,
+                            layout: { padding: { top: 20, bottom: 5 } },
+                            plugins: { legend: { display: false }, datalabels: {} },
+                            scales: {
+                                x: {
+                                    grid: { display: false },
+                                    ticks: { font: { family: 'Outfit', size: 9, weight: 700 }, color: '#1b1f2a', maxRotation: 35, minRotation: 35 }
+                                },
+                                y: { display: false }
+                            }
+                        }
+                    });
+                }, 250);
+            }
+        }
+    });
+
+    document.getElementById('countProdutos').textContent = MOCK_PRODUTOS.length + ' de 184 produtos';
+
+    // Initialize closed
+    setTimeout(() => {
+        document.querySelectorAll('.produto-card .card-collapsible').forEach(el => {
+            el.style.maxHeight = '0';
+            el.style.opacity = '0';
+        });
+        document.querySelectorAll('.produto-card .card-toggle').forEach(el => {
+            el.style.transform = 'rotate(180deg)';
+        });
+    }, 50);
+}
+
+function filtrarProdutos() {
+    const q = document.getElementById('filtroProduto').value.toLowerCase();
+    const cards = document.querySelectorAll('.produto-card');
+    let vis = 0;
+    cards.forEach(c => {
+        const match = c.dataset.nome.includes(q);
+        c.style.display = match ? '' : 'none';
+        if (match) vis++;
+    });
+    document.getElementById('countProdutos').textContent = vis + ' de 184 produtos';
+}
+
+// =============================================
+// RENDER: POR CLIENTE
+// =============================================
+function renderClientes() {
+    const tbody = document.getElementById('tbodyClientes');
+    tbody.innerHTML = MOCK_CLIENTES.map((c, i) => `
+        <tr class="cliente-row" data-nome="${c.nome.toLowerCase()}">
+            <td><span class="rank-badge ${i < 3 ? 'top3' : ''}">${i + 1}</span></td>
+            <td style="font-weight:var(--fw-bold);">${c.nome}</td>
+            <td class="mono">${fmtBRL(c.rec)}</td>
+            <td class="mono" style="color:var(--danger);">${fmtBRL(c.drs)}</td>
+            <td class="mono">${fmtPct(c.pdrs)}</td>
+            <td class="mono">${fmtBRL(c.com)}</td>
+            <td class="mono">${fmtBRL(c.cmv)}</td>
+            <td class="mono">${fmtBRL(c.mg)}</td>
+            <td class="mono"><span class="${mgClass(c.pmg)}">${fmtPct(c.pmg)}</span></td>
+        </tr>
+    `).join('');
+    document.getElementById('countClientes').textContent = MOCK_CLIENTES.length + ' de 174 clientes';
+}
+
+function filtrarClientes() {
+    const q = document.getElementById('filtroCliente').value.toLowerCase();
+    const rows = document.querySelectorAll('.cliente-row');
+    let vis = 0;
+    rows.forEach(r => {
+        const match = r.dataset.nome.includes(q);
+        r.style.display = match ? '' : 'none';
+        if (match) vis++;
+    });
+    document.getElementById('countClientes').textContent = vis + ' de 174 clientes';
+}
+
+// =============================================
+// RENDER: AJUSTES ESTOQUE (DRE Comparativa)
+// =============================================
+function renderAjustes() {
+    const container = document.getElementById('containerAjustes');
+    container.innerHTML = '';
+
+    MOCK_AJUSTES.forEach(aj => {
+        const diffMg = aj.pmgDepois - aj.pmgAntes;
+        const varCls = diffMg > 0 ? 'up' : diffMg < 0 ? 'down' : 'neutral';
+        const varLabel = diffMg > 0 ? '+' + diffMg.toFixed(1) + ' p.p.' : diffMg.toFixed(1) + ' p.p.';
+
+        const card = document.createElement('div');
+        card.className = 'card ajuste-card';
+        card.dataset.nome = aj.nome.toLowerCase();
+
+        card.innerHTML = `
+            <div class="card-header card-header-dark" onclick="toggleCard(this)">
+                <span><i class="fas fa-scale-balanced" style="margin-right:8px"></i> ${aj.nome}</span>
+                <div style="display:flex;align-items:center;gap:12px;">
+                    <span class="var-tag ${varCls}">${varLabel}</span>
+                    <i class="fas fa-chevron-up card-toggle" style="transition:transform 0.3s"></i>
+                </div>
+            </div>
+            <div class="card-body card-collapsible" style="padding:20px 24px;">
+                <!-- KPIs -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Qtd Vendida</div>
+                        <div class="kpi-value">${fmtNum(aj.qtd)} un</div>
+                    </div>
+                    <div class="kpi-card kpi-danger">
+                        <div class="kpi-label">CMV Antes</div>
+                        <div class="kpi-value">${fmtBRL(aj.cmvAntes)}</div>
+                    </div>
+                    <div class="kpi-card highlight">
+                        <div class="kpi-label">CMV Depois</div>
+                        <div class="kpi-value">${fmtBRL(aj.cmvDepois)}</div>
+                    </div>
+                    <div class="kpi-card kpi-danger">
+                        <div class="kpi-label">Margem Antes</div>
+                        <div class="kpi-value">${fmtPct(aj.pmgAntes)}</div>
+                    </div>
+                    <div class="kpi-card kpi-success">
+                        <div class="kpi-label">Margem Depois</div>
+                        <div class="kpi-value">${fmtPct(aj.pmgDepois)}</div>
+                    </div>
+                </div>
+
+                <!-- Compare boxes -->
+                <div class="compare-grid">
+                    <div class="compare-box antes">
+                        <div class="compare-header-box">Antes do Ajuste</div>
+                        <div class="compare-content">
+                            <div class="compare-item">
+                                <span class="compare-item-label">Receita</span>
+                                <span class="compare-item-value">${fmtBRL(aj.recAntes)}</span>
+                            </div>
+                            <div class="compare-item">
+                                <span class="compare-item-label">CMV</span>
+                                <span class="compare-item-value">${fmtBRL(aj.cmvAntes)}</span>
+                            </div>
+                            <div class="compare-item">
+                                <span class="compare-item-label">Margem R$</span>
+                                <span class="compare-item-value">${fmtBRL(aj.mgAntes)}</span>
+                            </div>
+                            <div class="compare-item">
+                                <span class="compare-item-label">Margem %</span>
+                                <span class="compare-item-value">${fmtPct(aj.pmgAntes)}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="compare-box depois">
+                        <div class="compare-header-box">Depois do Ajuste</div>
+                        <div class="compare-content">
+                            <div class="compare-item">
+                                <span class="compare-item-label">Receita</span>
+                                <span class="compare-item-value">${fmtBRL(aj.recDepois)}</span>
+                            </div>
+                            <div class="compare-item">
+                                <span class="compare-item-label">CMV</span>
+                                <span class="compare-item-value">${fmtBRL(aj.cmvDepois)}</span>
+                            </div>
+                            <div class="compare-item">
+                                <span class="compare-item-label">Margem R$</span>
+                                <span class="compare-item-value">${fmtBRL(aj.mgDepois)}</span>
+                            </div>
+                            <div class="compare-item">
+                                <span class="compare-item-label">Margem %</span>
+                                <span class="compare-item-value">${fmtPct(aj.pmgDepois)}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.appendChild(card);
+    });
+
+    document.getElementById('countAjustes').textContent = MOCK_AJUSTES.length + ' de 190 produtos';
+
+    setTimeout(() => {
+        document.querySelectorAll('.card-collapsible').forEach(el => {
+            el.style.maxHeight = el.scrollHeight + 'px';
+            el.style.opacity = '1';
+        });
+    }, 50);
+}
+
+function filtrarAjustes() {
+    const q = document.getElementById('filtroAjuste').value.toLowerCase();
+    const cards = document.querySelectorAll('.ajuste-card');
+    let vis = 0;
+    cards.forEach(c => {
+        const match = c.dataset.nome.includes(q);
+        c.style.display = match ? '' : 'none';
+        if (match) vis++;
+    });
+    document.getElementById('countAjustes').textContent = vis + ' de 190 produtos';
+}
+
+// =============================================
+// RENDER TUDO (chamado após decidir fonte)
+// =============================================
+function renderTudo() {
+    renderVisaoGeral();
+    renderProdutos();
+    renderClientes();
+    renderAjustes();
+
+    // Init collapsibles (exceto produto-cards que iniciam fechados)
+    setTimeout(() => {
+        document.querySelectorAll('.card-collapsible').forEach(el => {
+            if (el.closest('.produto-card')) return;
+            el.style.maxHeight = el.scrollHeight + 'px';
+            el.style.opacity = '1';
+        });
+    }, 100);
+}
+
+// =============================================
+// INIT — tenta Airtable, fallback mock
+// =============================================
+carregarDados();
+</script>
+
+<!-- Mapa UI -->
+<script src="painel-data.js"></script>
+<script src="mapa-ui.js"></script>
+
+</body>
+</html>

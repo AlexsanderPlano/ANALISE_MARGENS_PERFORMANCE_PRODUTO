@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<title>Mix de Produtos</title>
+<style>
+:root {
+  --bg: #f5f6f8;
+  --primary: #1b2a4a;
+  --primary-light: #2a3d66;
+  --success: #0d9e5f;
+  --success-light: rgba(13,158,95,0.07);
+  --warning: #e67e22;
+  --warning-light: rgba(230,126,34,0.07);
+  --danger: #dc3545;
+  --danger-light: rgba(220,53,69,0.06);
+  --white: #ffffff;
+  --text: #1b1f2a;
+  --text-secondary: #5f6780;
+  --text-muted: #9ba3b8;
+  --border: #e4e7ec;
+  --border-light: #f0f2f5;
+  --accent: #1a5cff;
+  --accent-dim: rgba(26,92,255,0.06);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+  --shadow: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,0.08);
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.main-content {
+  padding: 32px;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+/* Page Header */
+.page-header {
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.page-header h2 {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.5px;
+}
+.page-header p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  font-weight: 400;
+}
+.btn-fechar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
+  cursor: pointer;
+  background: var(--white);
+  color: var(--text-secondary);
+  transition: all 0.2s;
+}
+.btn-fechar:hover { background: var(--bg); transform: translateY(-1px); }
+
+/* Summary Cards */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  gap: 10px;
+  margin-bottom: 28px;
+}
+.summary-card {
+  background: var(--white);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+  position: relative;
+  overflow: hidden;
+}
+.summary-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #1e40af, #3b82f6);
+}
+.summary-card.card-success::before { background: linear-gradient(90deg, #059669, #10b981); }
+.summary-card.card-danger::before { background: linear-gradient(90deg, #dc2626, #ef4444); }
+.summary-card.card-warning::before { background: linear-gradient(90deg, #d97706, #f59e0b); }
+
+.card-label {
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+  white-space: nowrap;
+}
+.card-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+}
+.card-delta {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.62rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 12px;
+  margin-top: 4px;
+}
+.delta-up { background: var(--success-light); color: var(--success); }
+.delta-down { background: var(--danger-light); color: var(--danger); }
+.delta-neutral { background: var(--accent-dim); color: var(--text-muted); }
+
+/* Product Card */
+.card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 24px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+.card-header {
+  background: linear-gradient(135deg, #1e40af, #3b82f6);
+  color: #ffffff;
+  padding: 16px 24px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.card-header .badge {
+  font-size: 0.72rem;
+  background: rgba(255,255,255,0.2);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.card-body { padding: 0; }
+
+/* Table */
+.table-wrap { overflow-x: auto; }
+table {
+  width: auto;
+  border-collapse: collapse;
+  font-size: 0.78rem;
+}
+
+tr.col-head td {
+  background: #d5dae3;
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  padding: 12px 12px;
+  text-align: center;
+  border-top: 2px solid var(--primary);
+  border-bottom: 2px solid var(--primary);
+  width: 82px;
+}
+tr.col-head td:first-child {
+  text-align: left;
+  width: 190px;
+  color: var(--primary);
+  font-weight: 800;
+}
+tr.col-head td:last-child {
+  width: 90px;
+  color: var(--primary);
+  font-weight: 800;
+}
+
+tbody td {
+  padding: 8px 12px;
+  text-align: right;
+  border-bottom: 1px solid var(--border-light);
+  white-space: nowrap;
+  color: var(--text-secondary);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.76rem;
+  font-variant-numeric: tabular-nums;
+}
+tbody td:first-child {
+  text-align: left;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+tbody td.total-col {
+  font-weight: 700;
+  color: var(--text);
+  background: rgba(26,92,255,0.03);
+}
+
+/* Metric row styles */
+
+/* DRE icon badges */
+.dre-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 0.65rem;
+  font-weight: 800;
+  margin-right: 8px;
+  flex-shrink: 0;
+  font-family: 'Outfit', sans-serif;
+}
+.dre-icon-result {
+  background: var(--success);
+  color: #fff;
+}
+.dre-icon-info {
+  background: #969494;
+  color: #fff;
+  font-weight: 600;
+  font-style: italic;
+}
+.dre-icon-deduct {
+  background: #AD0524;
+  color: #fff;
+  font-weight: 500;
+}
+.dre-icon-cost {
+  background: #AD0524;
+  color: #fff;
+  font-weight: 500;
+}
+.dre-icon-pct {
+  background: #0F47B6;
+  color: #fff;
+  font-weight: 400;
+}
+.dre-icon-pct-final {
+  background: #969494;
+  color: #fff;
+  font-weight: 600;
+}
+.dre-icon-num {
+  background: #AD0524;
+  color: #fff;
+  font-weight: 500;
+}
+.dre-icon-final {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* Result rows - highlighted */
+tr.m-receita td {
+  background: var(--success) !important;
+  color: #fff !important;
+  font-weight: 700;
+}
+
+/* Margem final - gray bg with blue values */
+tr.m-margem td {
+  font-weight: 700;
+  border-top: 2px solid var(--accent);
+  padding-top: 12px;
+  background: #f4f7fc !important;
+  color: var(--accent) !important;
+}
+tr.m-margem td:first-child {
+  color: var(--accent) !important;
+}
+tr.m-margem-pct td {
+  font-weight: 700;
+  padding-bottom: 12px;
+  background: #f4f7fc !important;
+}
+
+/* Cost rows - separator before */
+tr.m-cost-first td {
+  border-top: 3px solid var(--primary) !important;
+  padding-top: 12px;
+}
+
+/* Deduction rows */
+tr.m-info td { color: #969494; font-weight: 500; }
+
+tr.m-devol-num td { color: #AD0524; font-weight: 500; }
+tr.m-deduct-rs td { color: #AD0524; font-weight: 500; }
+tr.m-cost-rs td { color: #AD0524; font-weight: 500; }
+
+tr.m-devol-pct td { font-size: 0.7rem; color: #0F47B6; font-weight: 700; }
+tr.m-desc-pct td,
+tr.m-com-pct td,
+tr.m-cu-pct td,
+tr.m-cmv-pct td { font-size: 0.7rem; color: #0F47B6; font-weight: 700; }
+
+tr.m-margem td {
+  font-weight: 700;
+  border-top: 2px solid var(--accent);
+  padding-top: 12px;
+}
+tr.m-margem-pct td {
+  font-weight: 700;
+  padding-bottom: 12px;
+}
+
+/* Margem colors */
+.mg-alta { color: var(--success); }
+.mg-media { color: var(--warning); }
+.mg-baixa { color: var(--danger); }
+
+.empty { color: var(--border) !important; text-align: center !important; }
+
+tbody tr:hover td { background: var(--accent-dim); }
+
+/* Footer */
+.footer {
+  padding: 20px 32px;
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+</style>
+</head>
+<body>
+
+<div class="main-content">
+
+  <div class="page-header">
+    <div>
+      <h2>MUFFATO PORTAO</h2>
+      <p>Mix de Produtos — Análise Mensal 2025</p>
+    </div>
+    <button class="btn-fechar"><i class="fas fa-times"></i> Fechar</button>
+  </div>
+
+  <div class="card">
+    <div class="card-header" onclick="toggleCard(this)" style="cursor:pointer">
+      <span><i class="fas fa-leaf" style="margin-right:8px"></i> ALFACE AMERICANA 150G</span>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span class="badge">Jan – Dez 2025</span>
+        <i class="fas fa-chevron-up card-toggle" style="transition:transform 0.3s"></i>
+      </div>
+    </div>
+    <div class="card-body card-collapsible" style="transition:max-height 0.4s ease, opacity 0.3s ease; overflow:hidden;">
+      <div class="cards-grid" id="cards" style="padding:16px 16px 0;"></div>
+      <div class="table-wrap">
+        <table><tbody id="tbody"></tbody></table>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">Adm. Alexsander Machado — CRA 20-22229</div>
+
+<script>
+const data = {
+  meses: [
+    {qtd:2300,pp:4.11,rec:9458,dq:378,pdq:16.4,drs:1463,pdrs:15.5,df:0,pdf:0,com:60,pcom:0.6,cu:1.29,pcu:31.4,cmv:2967,pcmv:31.4,mg:4969,pmg:52.5},
+    {qtd:1113,pp:3.70,rec:4118,dq:278,pdq:25.0,drs:1029,pdrs:25.0,df:0,pdf:0,com:23,pcom:0.6,cu:1.49,pcu:40.3,cmv:1658,pcmv:40.3,mg:1408,pmg:34.2},
+    {qtd:1420,pp:4.18,rec:5929,dq:0,pdq:0,drs:0,pdrs:0,df:0,pdf:0,com:44,pcom:0.7,cu:1.78,pcu:42.6,cmv:2528,pcmv:42.6,mg:3357,pmg:56.6},
+    {qtd:1870,pp:3.79,rec:7092,dq:335,pdq:17.9,drs:1273,pdrs:17.9,df:0,pdf:0,com:43,pcom:0.6,cu:1.34,pcu:35.3,cmv:2506,pcmv:35.3,mg:3270,pmg:46.1},
+    {qtd:1600,pp:3.42,rec:5477,dq:227,pdq:14.2,drs:885,pdrs:16.2,df:0,pdf:0,com:127,pcom:2.3,cu:1.27,pcu:37.1,cmv:2032,pcmv:37.1,mg:2433,pmg:44.4},
+    {qtd:1485,pp:3.13,rec:4644,dq:200,pdq:13.5,drs:560,pdrs:12.1,df:0,pdf:0,com:46,pcom:1.0,cu:1.32,pcu:42.2,cmv:1960,pcmv:42.2,mg:2078,pmg:44.7},
+    {qtd:1360,pp:3.50,rec:4760,dq:310,pdq:22.8,drs:1085,pdrs:22.8,df:0,pdf:0,com:36,pcom:0.8,cu:1.49,pcu:42.6,cmv:2026,pcmv:42.6,mg:1613,pmg:33.9},
+    {qtd:1910,pp:3.37,rec:6433,dq:94,pdq:4.9,drs:329,pdrs:5.1,df:0,pdf:0,com:36,pcom:0.6,cu:1.67,pcu:49.6,cmv:3190,pcmv:49.6,mg:2878,pmg:44.7},
+    {qtd:1880,pp:3.35,rec:6304,dq:461,pdq:24.5,drs:1495,pdrs:23.7,df:0,pdf:0,com:41,pcom:0.7,cu:1.25,pcu:37.3,cmv:2350,pcmv:37.3,mg:2418,pmg:38.4},
+    {qtd:2055,pp:2.79,rec:5740,dq:355,pdq:17.3,drs:994,pdrs:17.3,df:0,pdf:0,com:59,pcom:1.0,cu:1.20,pcu:43.0,cmv:2466,pcmv:43.0,mg:2221,pmg:38.7},
+    {qtd:1950,pp:3.43,rec:6687,dq:328,pdq:16.8,drs:1181,pdrs:17.7,df:0,pdf:0,com:48,pcom:0.7,cu:1.19,pcu:34.7,cmv:2320,pcmv:34.7,mg:3138,pmg:46.9},
+    {qtd:2120,pp:3.96,rec:8394,dq:154,pdq:7.3,drs:554,pdrs:6.6,df:0,pdf:0,com:0,pcom:0,cu:1.19,pcu:30.1,cmv:2523,pcmv:30.1,mg:5317,pmg:63.3}
+  ],
+  total: {qtd:21063,pp:3.56,rec:75037,dq:3120,pdq:14.8,drs:10848,pdrs:14.5,df:0,pdf:0,com:563,pcom:0.8,cu:1.35,pcu:38.0,cmv:28526,pcmv:38.0,mg:35100,pmg:46.8}
+};
+
+// Cards
+const t = data.total, m = data.meses, last = m[11], prev = m[10];
+function pctChange(c, p) { return p ? ((c - p) / p * 100) : 0; }
+
+const cardsData = [
+  { label: 'Qtd Vendas', value: t.qtd.toLocaleString('pt-BR') + ' un', pct: null, icon: 'fa-boxes-stacked', type: '' },
+  { label: 'R$ Unit. Pond.', value: 'R$ ' + t.pp.toFixed(2).replace('.',','), pct: null, icon: 'fa-tag', type: '' },
+  { label: 'Receita', value: 'R$ ' + t.rec.toLocaleString('pt-BR'), pct: null, icon: 'fa-dollar-sign', type: 'card-success' },
+  { label: 'Devol. Qtd / R$', value: t.dq.toLocaleString('pt-BR') + ' un | R$ ' + t.drs.toLocaleString('pt-BR'), pct: t.pdq.toFixed(1) + '% | ' + t.pdrs.toFixed(1) + '%', icon: 'fa-rotate-left', type: 'card-danger' },
+  { label: 'Desc. Financeiro', value: 'R$ ' + t.df.toLocaleString('pt-BR'), pct: t.pdf + '%', icon: 'fa-receipt', type: '' },
+  { label: 'Comissão', value: 'R$ ' + t.com.toLocaleString('pt-BR'), pct: t.pcom + '%', icon: 'fa-handshake', type: '' },
+  { label: 'Custo Unit. Pond.', value: 'R$ ' + t.cu.toFixed(2).replace('.',','), pct: t.pcu + '%', icon: 'fa-industry', type: '' },
+  { label: 'CMV', value: 'R$ ' + t.cmv.toLocaleString('pt-BR'), pct: t.pcmv + '%', icon: 'fa-calculator', type: 'card-warning' },
+  { label: 'Margem', value: 'R$ ' + t.mg.toLocaleString('pt-BR'), pct: t.pmg + '%', icon: 'fa-chart-line', type: 'card-success' },
+];
+
+const cardsEl = document.getElementById('cards');
+cardsData.forEach(c => {
+  const div = document.createElement('div');
+  div.className = 'summary-card ' + c.type;
+  let pctHtml = '';
+  if (c.pct) {
+    pctHtml = '<div class="card-delta delta-neutral">' + c.pct + '</div>';
+  }
+  div.innerHTML = '<div class="card-label"><i class="fas ' + c.icon + '" style="margin-right:4px"></i> ' + c.label + '</div><div class="card-value">' + c.value + '</div>' + pctHtml;
+  cardsEl.appendChild(div);
+});
+
+// Table
+function fmt(v, type) {
+  if (v === 0 || v === null || v === undefined) return '-';
+  if (type === 'int') return v.toLocaleString('pt-BR');
+  if (type === 'money') return 'R$ ' + v.toFixed(2).replace('.', ',');
+  if (type === 'reais') return v.toLocaleString('pt-BR', {maximumFractionDigits: 0});
+  if (type === 'pct') return v.toFixed(1).replace('.', ',') + '%';
+  return v;
+}
+function mgClass(p) { return p >= 50 ? 'mg-alta' : p >= 30 ? 'mg-media' : 'mg-baixa'; }
+
+const metricas = [
+  {key:'qtd',label:'Qtd Vendas',type:'int',cls:'m-info',icon:'info'},
+  {key:'pp',label:'R$ Unit. Pond.',type:'money',cls:'m-info',icon:'info'},
+  {key:'rec',label:'Receita',type:'reais',cls:'m-receita',icon:'result'},
+  {key:'dq',label:'Devol. Qtd',type:'int',cls:'m-devol-num',icon:'num'},
+  {key:'pdq',label:'Devol. Qtd',type:'pct',cls:'m-devol-pct',icon:'pct'},
+  {key:'drs',label:'Devol. R$',type:'reais',cls:'m-deduct-rs',icon:'deduct'},
+  {key:'pdrs',label:'Devol. R$',type:'pct',cls:'m-devol-pct',icon:'pct'},
+  {key:'df',label:'Desc. Financeiro',type:'reais',cls:'m-deduct-rs',icon:'deduct'},
+  {key:'pdf',label:'Desc. Fin.',type:'pct',cls:'m-desc-pct',icon:'pct'},
+  {key:'com',label:'Comissão',type:'reais',cls:'m-deduct-rs',icon:'deduct'},
+  {key:'pcom',label:'Comissão',type:'pct',cls:'m-com-pct',icon:'pct'},
+  {key:'cu',label:'Custo Unit. Pond.',type:'money',cls:'m-cost-first m-cost-rs',icon:'cost'},
+  {key:'pcu',label:'Custo Unit.',type:'pct',cls:'m-cu-pct',icon:'pct'},
+  {key:'cmv',label:'CMV',type:'reais',cls:'m-cost-rs',icon:'cost'},
+  {key:'pcmv',label:'CMV',type:'pct',cls:'m-cmv-pct',icon:'pct'},
+  {key:'mg',label:'Margem R$',type:'reais',cls:'m-margem',isMg:true,icon:'final'},
+  {key:'pmg',label:'Margem',type:'pct',cls:'m-margem-pct',isMgPct:true,icon:'pct-final'},
+];
+
+const tbody = document.getElementById('tbody');
+
+// Column headers
+const trH = document.createElement('tr');
+trH.className = 'col-head';
+['MÉTRICA','JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ','TOTAL'].forEach(l => {
+  const td = document.createElement('td'); td.textContent = l; trH.appendChild(td);
+});
+tbody.appendChild(trH);
+
+// Data rows
+metricas.forEach(mt => {
+  const tr = document.createElement('tr');
+  if (mt.cls) tr.className = mt.cls;
+  const tdL = document.createElement('td');
+  const iconMap = { result: '=', deduct: '−', cost: '−', final: '=', pct: '%', 'pct-final': '%', num: '#', info: 'i' };
+  const clsMap = { result: 'dre-icon-result', deduct: 'dre-icon-deduct', cost: 'dre-icon-cost', final: 'dre-icon-final', pct: 'dre-icon-pct', 'pct-final': 'dre-icon-pct-final', num: 'dre-icon-num', info: 'dre-icon-info' };
+  tdL.innerHTML = '<span class="dre-icon ' + clsMap[mt.icon] + '">' + iconMap[mt.icon] + '</span>' + mt.label;
+  tdL.style.display = 'flex';
+  tdL.style.alignItems = 'center';
+  tr.appendChild(tdL);
+
+  data.meses.forEach((mes, i) => {
+    const td = document.createElement('td');
+    const val = mes[mt.key], txt = fmt(val, mt.type);
+    td.textContent = txt;
+    if (txt === '-') td.className = 'empty';
+    if (mt.isMg && val) td.className = mgClass(mes.pmg);
+    if (mt.isMgPct && val) {
+      td.style.color = 'var(--text)';
+      if (i > 0 && data.meses[i-1].pmg > 0) {
+        const diff = val - data.meses[i-1].pmg;
+        if (diff > 2) {
+          td.style.color = 'var(--success)';
+          td.innerHTML = txt + ' ▲';
+        } else if (diff < -2) {
+          td.style.color = '#AD0524';
+          td.innerHTML = txt + ' ▼';
+        } else {
+          td.style.color = '#969494';
+          td.style.fontWeight = '600';
+          td.innerHTML = txt + ' ●';
+        }
+      }
+    }
+    tr.appendChild(td);
+  });
+
+  const tdT = document.createElement('td'); tdT.className = 'total-col';
+  const tval = data.total[mt.key]; tdT.textContent = fmt(tval, mt.type);
+  if (mt.isMg && tval) tdT.className += '';
+  if (mt.isMgPct && tval) tdT.style.color = 'var(--text)';
+  tr.appendChild(tdT);
+  tbody.appendChild(tr);
+});
+
+function toggleCard(header) {
+  const body = header.nextElementSibling;
+  const icon = header.querySelector('.card-toggle');
+  if (body.style.maxHeight && body.style.maxHeight !== '0px') {
+    body.style.maxHeight = '0px';
+    body.style.opacity = '0';
+    icon.style.transform = 'rotate(180deg)';
+  } else {
+    body.style.maxHeight = body.scrollHeight + 'px';
+    body.style.opacity = '1';
+    icon.style.transform = 'rotate(0deg)';
+  }
+}
+
+// Initialize open
+document.querySelectorAll('.card-collapsible').forEach(el => {
+  el.style.maxHeight = el.scrollHeight + 'px';
+  el.style.opacity = '1';
+});
+</script>
+</body>
+</html>
