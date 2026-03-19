@@ -7,6 +7,8 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf-autotable@3.5.31/dist/jspdf.plugin.autotable.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
     <style>
         canvas { image-rendering: -webkit-optimize-contrast; }
@@ -81,6 +83,29 @@
 .section-header.border-warning { border-left-color: var(--warning); }
 .section-header.border-primary { border-left-color: var(--primary); }
 .section-header.border-danger { border-left-color: var(--danger); }
+
+.btn-export {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--white);
+    color: var(--text-secondary);
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+.btn-export:hover {
+    background: var(--bg);
+    border-color: #cbd5e1;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
 .section-header.border-accent { border-left-color: var(--accent); }
 
 body {
@@ -821,7 +846,7 @@ tbody tr:hover td { background: var(--accent-dim); }
     <section id="por-produto" class="section">
         <div class="page-header">
             <div>
-                <h2>Rentabilidade por Produto</h2>
+                <h2>Inteligência de Rentabilidade — Margens de Contribuição, Performance e Tendências de Vendas</h2>
             </div>
         </div>
 
@@ -979,6 +1004,261 @@ function toggleDiaSemana(id) {
 }
 
 function exportarPDF() { alert('Exportar PDF — em breve'); }
+
+function exportarProdutoPDF(idx) {
+    const card = document.querySelectorAll('.produto-card')[idx];
+    if (!card) return;
+    const prod = MOCK_PRODUTOS[idx];
+    const nomeArq = prod.nome.replace(/\s+/g, '_');
+    const body = card.querySelector('.card-collapsible');
+
+    // Abrir card se fechado
+    if (body && (body.style.maxHeight === '0px' || body.style.opacity === '0')) {
+        toggleCard(card.querySelector('.card-header'));
+    }
+
+    setTimeout(() => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a3' });
+        const M = 10; // margem
+        const PW = 420; // largura A3
+        const PH = 297; // altura A3
+        const COR = {
+            texto: [27,31,42], sec: [95,103,128], muted: [155,163,184],
+            accent: [67,56,202], success: [13,158,95], danger: [220,53,69],
+            warning: [230,126,34], bgClaro: [245,246,248], branco: [255,255,255],
+            borda: [228,231,236]
+        };
+
+        function semAcento(s) { return s.normalize('NFD').replace(/[\u0300-\u036f]/g, ''); }
+        function fmt(v) { return v === 0 ? '-' : v.toLocaleString('pt-BR'); }
+        function fmtR(v) { return v === 0 ? '-' : 'R$ ' + v.toLocaleString('pt-BR', {maximumFractionDigits:0}); }
+        function fmtR2(v) { return 'R$ ' + v.toFixed(2).replace('.',','); }
+        function fmtP(v) { return v === 0 ? '-' : v.toFixed(1).replace('.',',') + '%'; }
+
+        // Capturar graficos como PNG
+        function getChartPNG(id) {
+            const cv = document.getElementById(id);
+            if (!cv) return null;
+            try { return cv.toDataURL('image/png'); } catch(e) { return null; }
+        }
+
+        // ========== PAGINA 1: HEADER + ESTRUTURA ==========
+        doc.setFont('helvetica','bold'); doc.setFontSize(18); doc.setTextColor(...COR.texto);
+        doc.text(semAcento(prod.nome), M, 18);
+        doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...COR.sec);
+        doc.text(semAcento('Inteligencia de Rentabilidade — Margens de Contribuicao, Performance e Tendencias · ' + new Date().toLocaleDateString('pt-BR')), M, 25);
+        doc.setDrawColor(...COR.borda); doc.setLineWidth(0.5); doc.line(M, 28, PW-M, 28);
+
+        // Titulo secao
+        doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(...COR.accent);
+        doc.text(semAcento('Estrutura de Resultado'), M, 36);
+
+        const recLiq = prod.rec - prod.drs - prod.df - prod.com;
+        const mgUnit = prod.qtd > 0 ? prod.mg / prod.qtd : 0;
+
+        doc.autoTable({
+            startY: 40,
+            head: [[semAcento('Metrica'), 'Valor', '% Receita']],
+            body: [
+                ['Qtd Vendas', fmt(prod.qtd) + ' un', ''],
+                [semAcento('R$ Unit. Ponderado'), fmtR2(prod.pp), ''],
+                ['Receita Bruta', fmtR(prod.rec), '100%'],
+                [semAcento('(-) Devolucoes'), fmtR(prod.drs), fmtP(prod.pdrs)],
+                ['(-) Desc. Financeiro', fmtR(prod.df), fmtP(prod.pdf)],
+                [semAcento('(-) Comissao'), fmtR(prod.com), fmtP(prod.pcom)],
+                [semAcento('= Receita Liquida'), fmtR(recLiq), fmtP(recLiq/prod.rec*100)],
+                [semAcento('(-) Custo Unit. Ponderado'), fmtR2(prod.cu), fmtP(prod.pcu)],
+                ['(-) CMV Total', fmtR(prod.cmv), fmtP(prod.pcmv)],
+                [semAcento('= Margem de Contribuicao'), fmtR(prod.mg), fmtP(prod.pmg)],
+                [semAcento('Margem Contrib. Unitaria'), fmtR2(mgUnit), fmtP(prod.pp > 0 ? mgUnit/prod.pp*100 : 0)],
+            ],
+            theme: 'plain',
+            styles: { font: 'helvetica', fontSize: 9, cellPadding: 4, lineColor: COR.borda, lineWidth: 0.2 },
+            headStyles: { fillColor: COR.bgClaro, textColor: COR.texto, fontStyle: 'bold' },
+            columnStyles: { 0: { cellWidth: 60, fontStyle: 'bold' }, 1: { halign: 'right', font: 'courier' }, 2: { halign: 'right', font: 'courier' } },
+            didParseCell: function(data) {
+                if (data.section !== 'body') return;
+                if (data.row.index === 2) { data.cell.styles.fillColor = COR.success; data.cell.styles.textColor = COR.branco; data.cell.styles.fontStyle = 'bold'; }
+                if (data.row.index === 6) { data.cell.styles.fillColor = [230,245,235]; data.cell.styles.fontStyle = 'bold'; }
+                if ([3,4,5,7,8].includes(data.row.index)) { data.cell.styles.textColor = COR.danger; }
+                if (data.row.index === 9) { data.cell.styles.fillColor = COR.accent; data.cell.styles.textColor = COR.branco; data.cell.styles.fontStyle = 'bold'; }
+                if (data.row.index === 10) { data.cell.styles.fillColor = [240,238,255]; data.cell.styles.textColor = COR.accent; }
+            },
+            margin: { left: M, right: M },
+        });
+
+        // Graficos na mesma pagina (se couber)
+        let yG = doc.lastAutoTable.finalY + 10;
+        const imgQtd = getChartPNG('chart-qtd-' + idx);
+        const imgPreco = getChartPNG('chart-preco-' + idx);
+
+        if (imgQtd || imgPreco) {
+            doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(...COR.success);
+            doc.text(semAcento('Spread de Margem de Contribuicao x Volume'), M, yG);
+            yG += 5;
+            if (imgQtd) { doc.addImage(imgQtd, 'PNG', M, yG, 390, 40); yG += 42; }
+            if (imgPreco) { doc.addImage(imgPreco, 'PNG', M, yG, 390, 50); yG += 52; }
+        }
+
+        // ========== PAGINA 2: DRE ==========
+        doc.addPage();
+        doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(...COR.texto);
+        doc.text(semAcento('DRE — Demonstrativo de Resultado'), M, 15);
+        doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...COR.sec);
+        doc.text(semAcento('Receita, deducoes, custos e margem — Jan a Dez 2025'), M, 20);
+
+        if (prod.meses && prod.meses.length > 0) {
+            const ML = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+            const dreHead = [['METRICA',...ML,'TOTAL']];
+            const dreRows = [
+                ['Qtd Vendas', ...prod.meses.map(m=>fmt(m.qtd)), fmt(prod.qtd)],
+                ['R$ Unit. Pond.', ...prod.meses.map(m=>fmtR2(m.pp)), fmtR2(prod.pp)],
+                ['= RECEITA', ...prod.meses.map(m=>fmtR(m.rec)), fmtR(prod.rec)],
+                ['Devol. Qtd', ...prod.meses.map(m=>fmt(m.dq)), fmt(prod.dq)],
+                ['Devol. Qtd %', ...prod.meses.map(m=>fmtP(m.pdq)), fmtP(prod.pdq)],
+                ['Devol. R$', ...prod.meses.map(m=>fmtR(m.drs)), fmtR(prod.drs)],
+                ['Devol. R$ %', ...prod.meses.map(m=>fmtP(m.pdrs)), fmtP(prod.pdrs)],
+                ['Desc. Financeiro', ...prod.meses.map(m=>fmtR(m.df)), fmtR(prod.df)],
+                ['Desc. Fin. %', ...prod.meses.map(m=>fmtP(m.pdf)), fmtP(prod.pdf)],
+                [semAcento('Comissao'), ...prod.meses.map(m=>fmtR(m.com)), fmtR(prod.com)],
+                [semAcento('Comissao %'), ...prod.meses.map(m=>fmtP(m.pcom)), fmtP(prod.pcom)],
+                ['Custo Unit. Pond.', ...prod.meses.map(m=>fmtR2(m.cu)), fmtR2(prod.cu)],
+                ['Custo Unit. %', ...prod.meses.map(m=>fmtP(m.pcu)), fmtP(prod.pcu)],
+                ['CMV', ...prod.meses.map(m=>fmtR(m.cmv)), fmtR(prod.cmv)],
+                ['CMV %', ...prod.meses.map(m=>fmtP(m.pcmv)), fmtP(prod.pcmv)],
+                [semAcento('= MARGEM R$'), ...prod.meses.map(m=>fmtR(m.mg)), fmtR(prod.mg)],
+                ['MARGEM %', ...prod.meses.map(m=>fmtP(m.pmg)), fmtP(prod.pmg)],
+            ];
+
+            doc.autoTable({
+                startY: 24,
+                head: dreHead,
+                body: dreRows,
+                theme: 'grid',
+                styles: { font: 'courier', fontSize: 7, cellPadding: 2.5, lineColor: COR.borda, lineWidth: 0.15, halign: 'right' },
+                headStyles: { fillColor: COR.bgClaro, textColor: COR.texto, fontStyle: 'bold', halign: 'center', font: 'helvetica', fontSize: 7 },
+                columnStyles: { 0: { halign: 'left', cellWidth: 35, font: 'helvetica', fontStyle: 'bold', fontSize: 7 }, 13: { fontStyle: 'bold', fillColor: [248,249,252] } },
+                didParseCell: function(data) {
+                    if (data.section !== 'body') return;
+                    const r = data.row.index;
+                    // Receita
+                    if (r === 2) { data.cell.styles.fillColor = COR.success; data.cell.styles.textColor = COR.branco; data.cell.styles.fontStyle = 'bold'; }
+                    // Margem R$
+                    if (r === 15) { data.cell.styles.fillColor = COR.accent; data.cell.styles.textColor = COR.branco; data.cell.styles.fontStyle = 'bold'; }
+                    // Deducoes
+                    if ([3,5,7,9,11,13].includes(r)) { data.cell.styles.textColor = COR.danger; }
+                    // Percentuais
+                    if ([4,6,8,10,12,14,16].includes(r)) { data.cell.styles.textColor = COR.sec; data.cell.styles.fontSize = 6; }
+                    // Info
+                    if ([0,1].includes(r)) { data.cell.styles.textColor = COR.sec; }
+                },
+                margin: { left: M, right: M },
+            });
+        }
+
+        // ========== PAGINA 3: DEVOLUCOES ==========
+        if (typeof DEVOLUCOES_ALFACE !== 'undefined' && prod.nome === 'ALFACE AMERICANA 150G') {
+            doc.addPage();
+            doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(...COR.danger);
+            doc.text(semAcento('Analise de Devolucoes'), M, 15);
+
+            // Grafico barras
+            const imgDevol = getChartPNG('chart-devol-' + idx);
+            let yD = 20;
+            if (imgDevol) { doc.addImage(imgDevol, 'PNG', M, yD, 390, 60); yD += 65; }
+
+            // Tabela devolucoes
+            const D = DEVOLUCOES_ALFACE;
+            const ML = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+            const devHead = [['Mes','Qtd Venda','Qtd Dev','% Qtd','R$ Venda','R$ Dev','% Rec','Clientes','Top Cliente']];
+            const devRows = D.meses.map((dm, mi) => [
+                ML[mi], fmt(dm.qtdVenda), fmt(dm.qtdDev), fmtP(dm.pctQtd),
+                fmtR(dm.recVenda), fmtR(dm.rsDev), fmtP(dm.pctRec),
+                dm.nCli.toString(), semAcento(dm.topCli.substring(0, 25))
+            ]);
+            // Total
+            const tQV = D.meses.reduce((s,m)=>s+m.qtdVenda,0);
+            const tQD = D.meses.reduce((s,m)=>s+m.qtdDev,0);
+            const tRV = D.meses.reduce((s,m)=>s+m.recVenda,0);
+            const tRD = D.meses.reduce((s,m)=>s+m.rsDev,0);
+            devRows.push(['TOTAL', fmt(tQV), fmt(tQD), fmtP(tQD/tQV*100), fmtR(tRV), fmtR(tRD), fmtP(tRD/tRV*100), '', '']);
+
+            doc.autoTable({
+                startY: yD,
+                head: devHead,
+                body: devRows,
+                theme: 'grid',
+                styles: { font: 'courier', fontSize: 7, cellPadding: 2.5, lineColor: COR.borda, lineWidth: 0.15 },
+                headStyles: { fillColor: COR.bgClaro, textColor: COR.texto, fontStyle: 'bold', font: 'helvetica', fontSize: 7 },
+                columnStyles: {
+                    0: { font: 'helvetica', fontStyle: 'bold', halign: 'left' },
+                    2: { textColor: COR.danger }, 3: { textColor: COR.danger },
+                    5: { textColor: COR.danger }, 6: { textColor: COR.danger },
+                    8: { font: 'helvetica', fontSize: 6, halign: 'left' }
+                },
+                didParseCell: function(data) {
+                    if (data.section !== 'body') return;
+                    if (data.row.index === 12) { data.cell.styles.fillColor = COR.bgClaro; data.cell.styles.fontStyle = 'bold'; }
+                    if (data.row.raw && data.row.raw[3] && parseFloat(data.row.raw[3]) > 10) { data.cell.styles.fillColor = [255,240,240]; }
+                },
+                margin: { left: M, right: M },
+            });
+
+            // Graficos radar + top 10
+            let yD2 = doc.lastAutoTable.finalY + 8;
+            const imgRadar = getChartPNG('chart-radar-devol-' + idx);
+            const imgTop = getChartPNG('chart-radial-devol-' + idx);
+            if (imgRadar) { doc.addImage(imgRadar, 'PNG', M, yD2, 140, 100); }
+            if (imgTop) { doc.addImage(imgTop, 'PNG', 160, yD2, 240, 100); }
+        }
+
+        // ========== RODAPE EM TODAS AS PAGINAS ==========
+        const totalPag = doc.internal.getNumberOfPages();
+        for (let p = 1; p <= totalPag; p++) {
+            doc.setPage(p);
+            doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...COR.muted);
+            doc.text('Adm. Alexsander Machado — CRA 20-22229 . Plano BPO', M, PH - 5);
+            doc.text('Pagina ' + p + ' de ' + totalPag, PW - M, PH - 5, { align: 'right' });
+        }
+
+        // ========== DOWNLOAD ==========
+        doc.save(nomeArq + '_Analise_2025.pdf');
+    }, 600);
+}
+
+function exportarProdutoHTML(idx) {
+    const card = document.querySelectorAll('.produto-card')[idx];
+    if (!card) return;
+    // Abrir card se fechado
+    const body = card.querySelector('.card-collapsible');
+    if (body && body.style.maxHeight === '0px') toggleCard(card.querySelector('.card-header'));
+
+    setTimeout(() => {
+        const nome = MOCK_PRODUTOS[idx].nome.replace(/\s+/g, '_');
+        let html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>${MOCK_PRODUTOS[idx].nome} — Análise</title>`;
+        html += `<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">`;
+        html += `<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">`;
+        // Copiar estilos
+        const styles = document.querySelector('style');
+        if (styles) html += `<style>${styles.textContent}</style>`;
+        html += `</head><body style="background:#f5f6f8;padding:24px;">`;
+        html += `<div style="max-width:1400px;margin:0 auto;">`;
+        html += `<h1 style="font-size:24px;font-weight:800;margin-bottom:4px;">${MOCK_PRODUTOS[idx].nome}</h1>`;
+        html += `<p style="font-size:12px;color:#5f6780;margin-bottom:24px;">Análise de Margens e Performance — Jan a Dez 2025 | Gerado em ${new Date().toLocaleDateString('pt-BR')}</p>`;
+        html += card.querySelector('.card-body').innerHTML;
+        html += `<div style="margin-top:24px;padding:16px;text-align:center;font-size:10px;color:#9ba3b8;">Adm. Alexsander Machado — CRA 20-22229</div>`;
+        html += `</div></body></html>`;
+
+        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${nome}_Analise_2025.html`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }, 300);
+}
 
 // =============================================
 // AIRTABLE API
@@ -1286,6 +1566,11 @@ function renderProdutos() {
                 </div>
             </div>
         `;
+
+        const exportBarHTML = `<div style="display:flex;justify-content:flex-end;gap:8px;padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--border);">
+            <button onclick="exportarProdutoPDF(${idx})" class="btn-export"><i class="fas fa-file-pdf" style="color:#dc3545;"></i> PDF</button>
+            <button onclick="exportarProdutoHTML(${idx})" class="btn-export"><i class="fas fa-code" style="color:#4338ca;"></i> HTML</button>
+        </div>`;
 
         // Summary cards para este produto
         let cardsHTML = `<div class="section-header border-accent"><h3>Estrutura de Resultado</h3><p>Composição da margem de contribuição — Jan a Dez 2025</p></div>`;
@@ -1996,7 +2281,7 @@ function renderProdutos() {
 
         const sec = (id, content) => `<div class="sec-${id}" style="margin:12px 16px;padding:16px;background:var(--white);border-left:1px solid var(--border);border-right:1px solid var(--border);border-top:2px solid var(--border);border-bottom:2px solid var(--border);border-radius:var(--radius);overflow:hidden;">${content}</div>`;
 
-        card.innerHTML = headerHTML + `<div class="card-body card-collapsible">
+        card.innerHTML = headerHTML + `<div class="card-body card-collapsible">${exportBarHTML}
             ${sec('estrutura', cardsHTML)}
             ${sec('spread', chartHTML)}
             ${sec('dre', tableHTML)}
