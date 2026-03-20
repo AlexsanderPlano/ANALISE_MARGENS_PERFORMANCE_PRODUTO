@@ -2672,11 +2672,6 @@ function renderSingleProduto(prod, idx) {
             </div>
         `;
 
-        const exportBarHTML = `<div style="display:flex;justify-content:flex-end;gap:8px;padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--border);">
-            <button onclick="exportarProdutoHTML(${idx})" class="btn-export"><i class="fas fa-external-link-alt" style="color:var(--accent);"></i> Abrir em Nova Aba</button>
-            <button onclick="exportarProdutoHTML(${idx},'download')" class="btn-export"><i class="fas fa-download" style="color:#4338ca;"></i> Salvar HTML</button>
-            <button onclick="exportarProdutoPDF(${idx})" class="btn-export"><i class="fas fa-file-pdf" style="color:#dc3545;"></i> PDF</button>
-        </div>`;
 
         // Summary cards para este produto
         let cardsHTML = `<div class="section-header border-accent"><h3>Estrutura de Resultado</h3><p>Composição da margem de contribuição — Jan a Dez 2025</p></div>`;
@@ -3549,7 +3544,7 @@ function renderSingleProduto(prod, idx) {
 
         const sec = (id, content) => `<div class="sec-${id}" style="margin:12px 16px;padding:16px;background:${id === 'devolucoes' ? 'var(--bg)' : 'var(--white)'};border-left:1px solid var(--border);border-right:1px solid var(--border);border-top:2px solid var(--border);border-bottom:2px solid var(--border);border-radius:var(--radius);overflow:visible;">${content}</div>`;
 
-        card.innerHTML = headerHTML + `<div class="card-body card-collapsible">${exportBarHTML}
+        card.innerHTML = headerHTML + `<div class="card-body card-collapsible">
             ${sec('estrutura', cardsHTML)}
             ${sec('spread', chartHTML)}
             ${sec('dre', tableHTML)}
