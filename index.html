@@ -461,6 +461,74 @@ body {
 }
 .card-body { padding: 0; }
 .card-body-padded { padding: 20px 24px; }
+
+/* ABC Classification */
+.abc-tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-bold);
+    letter-spacing: 0.5px;
+}
+.abc-a { background: #dcfce7; color: #166534; }
+.abc-b { background: #fef9c3; color: #854d0e; }
+.abc-c { background: #fee2e2; color: #991b1b; }
+.abc-bar {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--border-light);
+    overflow: hidden;
+}
+.abc-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.8s cubic-bezier(.4,0,.2,1);
+}
+.abc-row-a td, .abc-row-b td, .abc-row-c td { padding: 5px 14px; }
+.abc-row-a td { background: rgba(22,163,74,0.03); }
+.abc-row-b td { background: rgba(234,179,8,0.04); }
+.abc-row-c td { background: rgba(239,68,68,0.03); }
+#tblABCClientes thead th { padding: 7px 14px; }
+#tblABCClientes tbody td { font-size: var(--fs-sm); }
+.abc-row-a:hover td, .abc-row-b:hover td, .abc-row-c:hover td { background: var(--accent-dim) !important; }
+.abc-separator td {
+    border-top: 2px dashed var(--border) !important;
+}
+.abc-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 12px;
+}
+.abc-summary-card {
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    text-align: center;
+}
+.abc-summary-card h4 {
+    font-family: 'Outfit', sans-serif;
+    font-size: var(--fs-sm);
+    font-weight: var(--fw-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+.abc-summary-card .abc-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: var(--fs-lg);
+    font-weight: var(--fw-black);
+}
+.abc-summary-card .abc-sub {
+    font-size: var(--fs-xs);
+    margin-top: 2px;
+}
+.abc-summary-a { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+.abc-summary-b { background: #fef9c3; color: #854d0e; border: 1px solid #fde68a; }
+.abc-summary-c { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+@media (max-width: 600px) {
+    .abc-summary { grid-template-columns: 1fr; }
+}
 .card-collapsible {
     transition: max-height 0.4s ease, opacity 0.3s ease;
     overflow: hidden;
@@ -930,7 +998,8 @@ tbody tr:hover td { background: var(--accent-dim); }
         <div class="tab-item" data-tab="por-cliente" onclick="navegarTab(this)">
             <i class="fas fa-store" style="margin-right:6px;font-size:var(--fs-md);"></i>Por Cliente
         </div>
-        <div class="tab-item" data-tab="ajustes" onclick="navegarTab(this)">
+        <!-- Aba desativada (oculta, não excluída) -->
+        <div class="tab-item" data-tab="ajustes" onclick="navegarTab(this)" style="display:none">
             <i class="fas fa-scale-balanced" style="margin-right:6px;font-size:var(--fs-md);"></i>Ajustes Estoque
         </div>
     </div>
@@ -955,7 +1024,8 @@ tbody tr:hover td { background: var(--accent-dim); }
         <button class="sidebar-btn" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);" onclick="navegarTab(document.querySelector('[data-tab=por-cliente]')); toggleSidebar();">
             <i class="fas fa-store"></i> Por Cliente
         </button>
-        <button class="sidebar-btn" style="background:linear-gradient(135deg,#d97706,#b45309);" onclick="navegarTab(document.querySelector('[data-tab=ajustes]')); toggleSidebar();">
+        <!-- Botão desativado (oculto, não excluído) -->
+        <button class="sidebar-btn" style="display:none;background:linear-gradient(135deg,#d97706,#b45309);" onclick="navegarTab(document.querySelector('[data-tab=ajustes]')); toggleSidebar();">
             <i class="fas fa-scale-balanced"></i> Ajustes Estoque
         </button>
         <div style="border-top:1px solid var(--border);margin:4px 0;"></div>
@@ -1128,7 +1198,41 @@ tbody tr:hover td { background: var(--accent-dim); }
             <span class="filter-count" id="countClientes"></span>
         </div>
 
+        <!-- Classificação ABC -->
         <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <span><i class="fa-solid fa-chart-pie" style="margin-right:8px"></i>Classificação ABC dos Clientes</span>
+                <span class="badge" id="abcClientesBadge">—</span>
+            </div>
+            <div class="card-collapsible">
+                <div class="card-body-padded">
+                    <div class="abc-summary" id="abcSummaryCards"></div>
+                    <div class="table-wrap">
+                        <table class="ranking-table" id="tblABCClientes">
+                            <thead><tr>
+                                <th style="width:36px">#</th>
+                                <th>Cliente</th>
+                                <th class="text-right">Receita</th>
+                                <th class="text-right" style="width:70px">% Total</th>
+                                <th class="text-right" style="width:70px">% Acum.</th>
+                                <th style="width:120px">Participação</th>
+                                <th class="text-right">Margem %</th>
+                                <th style="width:55px;text-align:center">Classe</th>
+                            </tr></thead>
+                            <tbody id="tbodyABCClientes"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ranking detalhado -->
+        <div class="card">
+            <div class="card-header" onclick="toggleCard(this)">
+                <span><i class="fa-solid fa-ranking-star" style="margin-right:8px"></i>Ranking Detalhado</span>
+                <span class="badge" id="rankingClientesBadge">—</span>
+            </div>
+            <div class="card-collapsible">
             <div class="card-body">
                 <div class="table-wrap">
                     <table class="ranking-table">
@@ -1146,6 +1250,7 @@ tbody tr:hover td { background: var(--accent-dim); }
                         <tbody id="tbodyClientes"></tbody>
                     </table>
                 </div>
+            </div>
             </div>
         </div>
     </section>
@@ -4017,6 +4122,65 @@ function filtrarProdutos() { aplicarFiltros(); }
 // =============================================
 // RENDER: POR CLIENTE
 // =============================================
+function renderABCClientes() {
+    const sorted = [...MOCK_CLIENTES].sort((a, b) => b.rec - a.rec);
+    const totalRec = sorted.reduce((s, c) => s + c.rec, 0);
+    let acum = 0;
+    const dados = sorted.map(c => {
+        acum += c.rec;
+        const pct = totalRec > 0 ? (c.rec / totalRec * 100) : 0;
+        const pctAcum = totalRec > 0 ? (acum / totalRec * 100) : 0;
+        const classe = pctAcum <= 80 ? 'A' : pctAcum <= 95 ? 'B' : 'C';
+        return { ...c, pct, pctAcum, classe };
+    });
+
+    // Totais por classe
+    const grupos = { A: { n: 0, rec: 0, mg: 0 }, B: { n: 0, rec: 0, mg: 0 }, C: { n: 0, rec: 0, mg: 0 } };
+    dados.forEach(d => {
+        grupos[d.classe].n++;
+        grupos[d.classe].rec += d.rec;
+        grupos[d.classe].mg += d.mg;
+    });
+
+    document.getElementById('abcClientesBadge').textContent =
+        `A:${grupos.A.n}  B:${grupos.B.n}  C:${grupos.C.n}`;
+
+    // Summary cards
+    document.getElementById('abcSummaryCards').innerHTML = ['A', 'B', 'C'].map(cls => {
+        const g = grupos[cls];
+        const pctRec = totalRec > 0 ? (g.rec / totalRec * 100) : 0;
+        const mgPct = g.rec > 0 ? (g.mg / g.rec * 100) : 0;
+        return `<div class="abc-summary-card abc-summary-${cls.toLowerCase()}">
+            <h4><span class="abc-tag abc-${cls.toLowerCase()}">${cls}</span> ${g.n} clientes</h4>
+            <div class="abc-val">${fmtBRL(g.rec)}</div>
+            <div class="abc-sub">${pctRec.toFixed(1).replace('.', ',')}% da receita · Margem ${mgPct.toFixed(1).replace('.', ',')}%</div>
+        </div>`;
+    }).join('');
+
+    // Tabela com separadores entre classes
+    const maxPct = dados[0]?.pct || 1;
+    let prevClasse = '';
+    const tbody = document.getElementById('tbodyABCClientes');
+    tbody.innerHTML = dados.map((c, i) => {
+        const cls = c.classe.toLowerCase();
+        const barColor = c.classe === 'A' ? 'linear-gradient(90deg,#22c55e,#4ade80)' :
+                         c.classe === 'B' ? 'linear-gradient(90deg,#eab308,#facc15)' :
+                                            'linear-gradient(90deg,#ef4444,#f87171)';
+        const separator = (prevClasse && prevClasse !== c.classe) ? ' abc-separator' : '';
+        prevClasse = c.classe;
+        return `<tr class="abc-row-${cls}${separator}">
+            <td><span class="rank-badge ${i < 3 ? 'top3' : ''}">${i + 1}</span></td>
+            <td style="font-weight:var(--fw-bold)">${c.nome}</td>
+            <td class="mono">${fmtBRL(c.rec)}</td>
+            <td class="mono">${c.pct.toFixed(1).replace('.', ',')}%</td>
+            <td class="mono">${c.pctAcum.toFixed(1).replace('.', ',')}%</td>
+            <td><div class="abc-bar"><div class="abc-bar-fill" style="width:${c.pct / maxPct * 100}%;background:${barColor}"></div></div></td>
+            <td class="mono"><span class="${mgClass(c.pmg)}">${fmtPct(c.pmg)}</span></td>
+            <td style="text-align:center"><span class="abc-tag abc-${cls}">${c.classe}</span></td>
+        </tr>`;
+    }).join('');
+}
+
 function renderClientes() {
     const tbody = document.getElementById('tbodyClientes');
     tbody.innerHTML = MOCK_CLIENTES.map((c, i) => `
@@ -4033,6 +4197,8 @@ function renderClientes() {
         </tr>
     `).join('');
     document.getElementById('countClientes').textContent = MOCK_CLIENTES.length + ' de 174 clientes';
+    document.getElementById('rankingClientesBadge').textContent = MOCK_CLIENTES.length + ' clientes';
+    renderABCClientes();
 }
 
 function filtrarClientes() {
