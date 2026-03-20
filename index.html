@@ -332,8 +332,8 @@ body {
     margin-bottom: 28px;
 }
 .produto-card .cards-grid {
-    grid-template-columns: 1fr 24px 1fr 24px 1fr 24px 1fr 24px 1fr 24px 1fr 24px 1fr;
-    gap: 4px;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
 }
 .produto-card .summary-card {
     padding: 8px 8px;
@@ -363,7 +363,8 @@ body {
     min-width: 0;
 }
 .produto-card .cards-grid-row2 {
-    grid-template-columns: 1fr 24px 1fr 24px 1fr 24px 1fr 24px 1fr 24px 1fr 24px 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
     margin-top: 0;
     margin-bottom: 12px;
 }
@@ -613,14 +614,44 @@ tbody tr:hover td { background: var(--accent-dim); }
 .aj-delta-zero { color: var(--text-muted); }
 
 /* Seção intro ajustes */
-.aj-intro { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); border-radius: var(--radius); padding: 28px 32px; margin-bottom: 24px; color: #fff; }
-.aj-intro h3 { font-size: 1.15rem; font-weight: var(--fw-black); margin: 0 0 12px; color: #fff; }
-.aj-intro p { font-size: var(--fs-lg); color: #cbd5e1; margin: 0 0 8px; line-height: 1.6; }
-.aj-intro .aj-highlight { display: inline-block; background: rgba(26,92,255,0.2); color: #93c5fd; padding: 2px 8px; border-radius: 4px; font-weight: var(--fw-bold); }
-.aj-intro-stats { display: flex; gap: 24px; margin-top: 16px; flex-wrap: wrap; }
-.aj-intro-stat { text-align: center; }
-.aj-intro-stat .aj-stat-value { font-size: 1.5rem; font-weight: var(--fw-black); font-family: 'JetBrains Mono', monospace; color: #fff; }
-.aj-intro-stat .aj-stat-label { font-size: var(--fs-xs); color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+/* --- Ajustes: Layout intro 2 colunas --- */
+.aj-intro-grid { display: flex; gap: 24px; margin-bottom: 24px; }
+.aj-intro-text { flex: 1; background: #fff; border-radius: var(--radius); padding: 28px 32px; border: 1px solid var(--border); box-shadow: var(--shadow); position: relative; overflow: hidden; }
+.aj-intro-text::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--accent); border-radius: var(--radius) 0 0 var(--radius); }
+.aj-intro-text h3 { font-size: 1.15rem; font-weight: var(--fw-black); margin: 0 0 16px; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+.aj-intro-text h3 i { color: var(--accent); }
+.aj-intro-text p { font-size: var(--fs-lg); color: var(--text-muted); margin: 0 0 12px; line-height: 1.65; }
+.aj-intro-text .aj-highlight { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 99px; font-size: 0.85rem; font-weight: var(--fw-semi); background: #e0e7ff; color: #3730a3; white-space: nowrap; }
+.aj-intro-text strong.aj-alert { font-weight: var(--fw-semi); color: var(--primary); background: #fef2f2; padding: 1px 6px; border-radius: 4px; }
+
+.aj-intro-side { width: 420px; display: flex; flex-direction: column; gap: 16px; }
+.aj-kpi-card { background: #fff; border-radius: var(--radius); padding: 20px 24px; border: 1px solid var(--border); box-shadow: var(--shadow); display: flex; align-items: center; justify-content: space-between; transition: box-shadow 0.2s; }
+.aj-kpi-card:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+.aj-kpi-card .aj-kpi-label { font-size: var(--fs-xs); font-weight: var(--fw-bold); color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.aj-kpi-card .aj-kpi-value { font-size: 1.75rem; font-weight: var(--fw-black); color: var(--primary); font-family: 'JetBrains Mono', monospace; }
+.aj-kpi-card .aj-kpi-unit { font-size: var(--fs-md); font-weight: var(--fw-medium); color: var(--text-muted); margin-left: 4px; }
+.aj-kpi-icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; }
+
+/* Margem evolution card */
+.aj-margem-card { background: #fff; border-radius: var(--radius); padding: 28px; border: 1px solid var(--border); box-shadow: var(--shadow); flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.aj-margem-card h4 { font-size: var(--fs-sm); font-weight: var(--fw-bold); color: var(--primary); text-transform: uppercase; letter-spacing: 0.5px; margin: 0 0 28px; display: flex; align-items: center; gap: 8px; }
+.aj-margem-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.aj-margem-label { font-size: 0.68rem; font-weight: var(--fw-bold); text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+.aj-margem-val-antes { font-size: 1.5rem; font-weight: var(--fw-bold); color: var(--text-muted); }
+.aj-margem-val-depois { font-size: 1.85rem; font-weight: var(--fw-black); color: var(--success); }
+.aj-margem-badge { background: #dcfce7; color: #166534; padding: 6px 14px; border-radius: 99px; font-size: var(--fs-sm); font-weight: var(--fw-bold); display: inline-flex; align-items: center; gap: 6px; border: 1px solid #bbf7d0; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+.aj-bar-wrap { margin-top: 20px; }
+.aj-bar-track { height: 18px; background: #f1f5f9; border-radius: 99px; overflow: hidden; display: flex; box-shadow: inset 0 1px 3px rgba(0,0,0,0.06); }
+.aj-bar-base { height: 100%; background: #cbd5e1; }
+.aj-bar-gain { height: 100%; background: var(--success); position: relative; overflow: hidden; }
+.aj-bar-gain::after { content: ''; position: absolute; inset: 0; opacity: 0.2; background-image: linear-gradient(45deg, rgba(255,255,255,.3) 25%, transparent 25%, transparent 50%, rgba(255,255,255,.3) 50%, rgba(255,255,255,.3) 75%, transparent 75%); background-size: 1rem 1rem; }
+.aj-bar-legend { display: flex; justify-content: space-between; margin-top: 6px; font-size: 0.65rem; font-weight: var(--fw-bold); text-transform: uppercase; color: var(--text-muted); }
+.aj-bar-legend .aj-legend-ok { color: var(--success); display: flex; align-items: center; gap: 4px; }
+
+@media (max-width: 900px) {
+    .aj-intro-grid { flex-direction: column; }
+    .aj-intro-side { width: 100%; }
+}
 
 /* Compliance CTA card (Visão Geral) */
 .compliance-cta {
@@ -990,7 +1021,7 @@ tbody tr:hover td { background: var(--accent-dim); }
         <div class="cards-grid" id="cardsCompliance" style="margin-bottom:24px;"></div>
 
         <!-- Camada 2: Memorial Descritivo / Compliance -->
-        <div class="compliance-cta" onclick="window.open('compliance.html','_blank')">
+        <div class="compliance-cta" onclick="toggleCompliance()" id="complianceCta">
             <div class="compliance-cta-icon">
                 <i class="fas fa-shield-halved"></i>
             </div>
@@ -1002,9 +1033,13 @@ tbody tr:hover td { background: var(--accent-dim); }
                     e auditoria dos 190 SKUs com rastreabilidade total via Ordens de Producao.
                 </div>
             </div>
-            <div class="compliance-cta-arrow">
-                <i class="fas fa-arrow-right"></i>
+            <div class="compliance-cta-arrow" id="complianceArrow">
+                <i class="fas fa-chevron-down"></i>
             </div>
+        </div>
+        <!-- Compliance embutido (iframe isolado) -->
+        <div id="complianceContainer" style="max-height:0;overflow:hidden;transition:max-height 0.5s ease;margin-bottom:0;">
+            <iframe id="complianceFrame" src="" style="width:100%;border:none;border-radius:16px;box-shadow:var(--shadow);background:#fff;" scrolling="no"></iframe>
         </div>
 
         <!-- Summary Cards -->
@@ -1230,27 +1265,71 @@ tbody tr:hover td { background: var(--accent-dim); }
             </div>
         </div>
 
-        <!-- Intro: contexto do projeto -->
-        <div class="aj-intro">
-            <h3><i class="fas fa-microscope" style="margin-right:8px;"></i> Por que este ajuste importa?</h3>
-            <p>
-                O estoque da Plano operava com <span class="aj-highlight">CMC distorcido</span> — entradas antigas,
-                devoluções sem custo e saldos negativos contaminavam o custo médio contábil de cada produto.
-                Dos 190 produtos analisados, <span class="aj-highlight">115 (60%)</span> tinham saldo negativo.
-                Em <span class="aj-highlight">10.714 dias</span> (37% do período) pelo menos um produto estava negativo.
-                Isso significa que a margem de contribuição que aparecia nos relatórios <strong>não era real</strong>.
-            </p>
-            <p>
-                Foram <span class="aj-highlight">190 produtos</span> auditados, com reimportação completa dos
-                movimentos via API OMIE e recálculo do CMC mês a mês. Ordens de Produção caíram de
-                <span class="aj-highlight">13.562 para 5.612</span> (-59%). O resultado: uma DRE com margens que
-                refletem a realidade operacional, permitindo decisões de pricing, mix e compras com dados confiáveis.
-            </p>
-            <div class="aj-intro-stats" id="ajIntroStats"></div>
-        </div>
+        <!-- Intro: 2 colunas (texto + KPIs) -->
+        <div class="aj-intro-grid">
+            <!-- Texto explicativo -->
+            <div class="aj-intro-text">
+                <h3><i class="fas fa-lightbulb"></i> Por que este ajuste importa?</h3>
+                <p>
+                    O estoque da Plano operava com <span class="aj-highlight">CMC distorcido</span> — entradas antigas,
+                    devoluções sem custo e saldos negativos contaminavam o custo médio contábil de cada produto.
+                    Dos 190 produtos analisados, <span class="aj-highlight">115 (60%)</span> tinham saldo negativo.
+                    Em <span class="aj-highlight">10.714 dias</span> (37% do período) pelo menos um produto estava negativo.
+                    Isso significa que a margem que aparecia nos relatórios <strong class="aj-alert">não era real</strong>.
+                </p>
+                <p>
+                    Foram <span class="aj-highlight">190 produtos</span> auditados, com reimportação completa dos
+                    movimentos via API OMIE e recálculo do CMC mês a mês. Ordens de Produção caíram de
+                    <span class="aj-highlight">13.562 para 5.612</span> (-59%). O resultado: uma DRE com margens que
+                    refletem a realidade operacional, permitindo decisões de pricing, mix e compras com dados confiáveis.
+                </p>
+            </div>
 
-        <!-- Summary Cards -->
-        <div class="cards-grid" id="cardsAjusteSummary"></div>
+            <!-- KPIs lado direito -->
+            <div class="aj-intro-side">
+                <!-- Card Volume -->
+                <div class="aj-kpi-card" id="ajKpiVolume">
+                    <div>
+                        <div class="aj-kpi-label">Volume Auditado</div>
+                        <div><span class="aj-kpi-value" id="ajKpiQtd">—</span><span class="aj-kpi-unit">produtos</span></div>
+                    </div>
+                    <div class="aj-kpi-icon" style="background:#eef2ff;color:#6366f1;">
+                        <i class="fas fa-box-open"></i>
+                    </div>
+                </div>
+
+                <!-- Card Margem Evolution -->
+                <div class="aj-margem-card">
+                    <h4><i class="fas fa-chart-bar" style="color:var(--success);"></i> Evolução da Margem Bruta</h4>
+                    <div class="aj-margem-row">
+                        <div style="width:80px;">
+                            <div class="aj-margem-label">Antes</div>
+                            <div class="aj-margem-val-antes" id="ajMgAntes">—</div>
+                        </div>
+                        <div style="flex:1;display:flex;flex-direction:column;align-items:center;position:relative;">
+                            <div style="height:2px;width:100%;background:#f1f5f9;position:absolute;top:50%;"></div>
+                            <div class="aj-margem-badge" id="ajMgDelta" style="position:relative;">
+                                <i class="fas fa-arrow-trend-up"></i> <span>—</span>
+                            </div>
+                        </div>
+                        <div style="width:80px;text-align:right;">
+                            <div class="aj-margem-label" style="color:var(--success);">Depois</div>
+                            <div class="aj-margem-val-depois" id="ajMgDepois">—</div>
+                        </div>
+                    </div>
+                    <div class="aj-bar-wrap">
+                        <div class="aj-bar-track">
+                            <div class="aj-bar-base" id="ajBarBase" style="width:0%"></div>
+                            <div class="aj-bar-gain" id="ajBarGain" style="width:0%"></div>
+                        </div>
+                        <div class="aj-bar-legend">
+                            <span>0%</span>
+                            <span class="aj-legend-ok">Margem Real Corrigida <i class="fas fa-circle-check"></i></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Filtro -->
         <div class="filter-bar">
@@ -1312,6 +1391,46 @@ function navegarTab(el) {
 function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('open');
     document.getElementById('sidebarOverlay').classList.toggle('active');
+}
+
+let _complianceOpen = false;
+function toggleCompliance() {
+    const container = document.getElementById('complianceContainer');
+    const frame = document.getElementById('complianceFrame');
+    const arrow = document.querySelector('#complianceArrow i');
+    _complianceOpen = !_complianceOpen;
+    if (_complianceOpen) {
+        if (!frame.src || frame.src === '' || frame.src === 'about:blank') {
+            frame.src = 'compliance.html';
+        }
+        // Auto-resize iframe
+        frame.onload = function() {
+            try {
+                const h = frame.contentDocument.body.scrollHeight;
+                frame.style.height = h + 'px';
+                container.style.maxHeight = (h + 20) + 'px';
+                container.style.marginBottom = '24px';
+            } catch(e) {
+                frame.style.height = '2000px';
+                container.style.maxHeight = '2020px';
+                container.style.marginBottom = '24px';
+            }
+        };
+        // Fallback se ja carregou
+        if (frame.contentDocument && frame.contentDocument.body && frame.contentDocument.body.scrollHeight > 100) {
+            frame.style.height = frame.contentDocument.body.scrollHeight + 'px';
+            container.style.maxHeight = (frame.contentDocument.body.scrollHeight + 20) + 'px';
+            container.style.marginBottom = '24px';
+        } else {
+            container.style.maxHeight = '3000px';
+            container.style.marginBottom = '24px';
+        }
+        if (arrow) arrow.className = 'fas fa-chevron-up';
+    } else {
+        container.style.maxHeight = '0';
+        container.style.marginBottom = '0';
+        if (arrow) arrow.className = 'fas fa-chevron-down';
+    }
 }
 
 function toggleCard(header) {
@@ -1537,7 +1656,7 @@ function toggleDiaSemana(id) {
 function exportarPDF() { alert('Exportar PDF — em breve'); }
 
 function exportarProdutoPDF(idx) {
-    const card = document.querySelectorAll('.produto-card')[idx];
+    const card = document.querySelector(`.produto-card[data-idx="${idx}"]`);
     if (!card) return;
     const prod = MOCK_PRODUTOS[idx];
     const nomeArq = prod.nome.replace(/\s+/g, '_');
@@ -1758,36 +1877,152 @@ function exportarProdutoPDF(idx) {
     }, 600);
 }
 
-function exportarProdutoHTML(idx) {
-    const card = document.querySelectorAll('.produto-card')[idx];
+function exportarProdutoHTML(idx, modo) {
+    // Buscar card por data-idx (imune a filtros/ordenação)
+    var card = document.querySelector('.produto-card[data-idx="' + idx + '"]');
     if (!card) return;
+    var prod = MOCK_PRODUTOS[idx];
+    if (!prod) return;
+
     // Abrir card se fechado
-    const body = card.querySelector('.card-collapsible');
-    if (body && body.style.maxHeight === '0px') toggleCard(card.querySelector('.card-header'));
+    var collapseBody = card.querySelector('.card-collapsible');
+    if (collapseBody && collapseBody.style.maxHeight === '0px') toggleCard(card.querySelector('.card-header'));
 
-    setTimeout(() => {
-        const nome = MOCK_PRODUTOS[idx].nome.replace(/\s+/g, '_');
-        let html = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>${MOCK_PRODUTOS[idx].nome} — Análise</title>`;
-        html += `<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">`;
-        html += `<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">`;
-        // Copiar estilos
-        const styles = document.querySelector('style');
-        if (styles) html += `<style>${styles.textContent}</style>`;
-        html += `</head><body style="background:#f5f6f8;padding:24px;">`;
-        html += `<div style="max-width:1400px;margin:0 auto;">`;
-        html += `<h1 style="font-size:24px;font-weight:800;margin-bottom:4px;">${MOCK_PRODUTOS[idx].nome}</h1>`;
-        html += `<p style="font-size:12px;color:#5f6780;margin-bottom:24px;">Análise de Margens e Performance — Jan a Dez 2025 | Gerado em ${new Date().toLocaleDateString('pt-BR')}</p>`;
-        html += card.querySelector('.card-body').innerHTML;
-        html += `<div style="margin-top:24px;padding:16px;text-align:center;font-size:10px;color:#9ba3b8;">Adm. Alexsander Machado — CRA 20-22229</div>`;
-        html += `</div></body></html>`;
+    setTimeout(function() {
+        var nome = prod.nome.replace(/\s+/g, '_');
+        var cardBody = card.querySelector('.card-body') || card.querySelector('.card-collapsible');
+        if (!cardBody) { alert('Abra o detalhe do produto antes de exportar.'); return; }
 
-        const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${nome}_Analise_2025.html`;
-        a.click();
-        URL.revokeObjectURL(url);
+        // 1. Clonar e converter canvas → img
+        var clone = cardBody.cloneNode(true);
+        var origCanvases = cardBody.querySelectorAll('canvas');
+        var cloneCanvases = clone.querySelectorAll('canvas');
+        for (var i = 0; i < cloneCanvases.length; i++) {
+            try {
+                var img = document.createElement('img');
+                img.src = origCanvases[i].toDataURL('image/png');
+                img.style.width = '100%';
+                img.style.height = 'auto';
+                cloneCanvases[i].parentNode.replaceChild(img, cloneCanvases[i]);
+            } catch(e) { /* canvas tainted ou vazio */ }
+        }
+
+        // 2. Remover botões de export do clone
+        var exportBtns = clone.querySelectorAll('[onclick*="exportar"], [onclick*="Exportar"]');
+        for (var j = 0; j < exportBtns.length; j++) {
+            var btnParent = exportBtns[j].closest('div');
+            if (btnParent && btnParent.querySelectorAll('button').length >= 2) btnParent.remove();
+        }
+
+        // 3. Montar documento via DOM API (sem template literals)
+        var doc = document.implementation.createHTMLDocument(prod.nome + ' — Análise 2025');
+
+        // Meta viewport
+        var meta = doc.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width,initial-scale=1.0';
+        doc.head.appendChild(meta);
+
+        // Google Fonts
+        var fontLink = doc.createElement('link');
+        fontLink.rel = 'stylesheet';
+        fontLink.href = 'https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap';
+        doc.head.appendChild(fontLink);
+
+        // Font Awesome
+        var faLink = doc.createElement('link');
+        faLink.rel = 'stylesheet';
+        faLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css';
+        doc.head.appendChild(faLink);
+
+        // CSS: copiar todos os styles da página original via textContent (seguro)
+        var styleEl = doc.createElement('style');
+        var cssTexts = [];
+        var origStyles = document.querySelectorAll('style');
+        for (var s = 0; s < origStyles.length; s++) {
+            cssTexts.push(origStyles[s].textContent);
+        }
+        styleEl.textContent = cssTexts.join('\n') +
+            '\nbody { background: #f5f6f8; padding: 32px; }' +
+            '\n.page-wrap { max-width: 1400px; margin: 0 auto; }' +
+            '\n.card-collapsible { max-height: none !important; opacity: 1 !important; overflow: visible !important; }' +
+            '\n@media print { .no-print { display: none !important; } body { padding: 12px; } }';
+        doc.head.appendChild(styleEl);
+
+        // Body: page-wrap container
+        var wrap = doc.createElement('div');
+        wrap.className = 'page-wrap';
+
+        // Header bar
+        var headerBar = doc.createElement('div');
+        headerBar.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;';
+
+        var headerLeft = doc.createElement('div');
+        var h1 = doc.createElement('h1');
+        h1.style.cssText = 'font-family:Outfit,sans-serif;font-size:1.5rem;font-weight:800;color:#1b1f2a;margin:0 0 2px;';
+        h1.textContent = prod.nome;
+        var subtitle = doc.createElement('p');
+        subtitle.style.cssText = 'font-size:12px;color:#9ba3b8;font-weight:600;margin:0 0 24px;';
+        subtitle.textContent = 'Análise de Margens e Performance — Jan a Dez 2025 | Gerado em ' + new Date().toLocaleDateString('pt-BR');
+        headerLeft.appendChild(h1);
+        headerLeft.appendChild(subtitle);
+
+        var headerRight = doc.createElement('div');
+        headerRight.className = 'no-print';
+        headerRight.style.cssText = 'display:flex;gap:8px;';
+
+        var btnPrint = doc.createElement('button');
+        btnPrint.setAttribute('onclick', 'window.print()');
+        btnPrint.style.cssText = 'background:#4338ca;color:#fff;border:none;padding:8px 18px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Outfit,sans-serif;box-shadow:0 2px 8px rgba(67,56,202,0.25);';
+        btnPrint.innerHTML = '<i class="fas fa-print"></i> Imprimir / PDF';
+
+        var btnSave = doc.createElement('button');
+        btnSave.setAttribute('onclick', 'salvarHTML()');
+        btnSave.style.cssText = 'background:#1b1f2a;color:#fff;border:none;padding:8px 18px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Outfit,sans-serif;';
+        btnSave.innerHTML = '<i class="fas fa-download"></i> Salvar HTML';
+
+        headerRight.appendChild(btnPrint);
+        headerRight.appendChild(btnSave);
+        headerBar.appendChild(headerLeft);
+        headerBar.appendChild(headerRight);
+        wrap.appendChild(headerBar);
+
+        // Conteúdo clonado dentro de wrapper .produto-card (preserva seletores CSS)
+        var cardWrap = doc.createElement('div');
+        cardWrap.className = 'card produto-card';
+        var importedContent = doc.importNode(clone, true);
+        cardWrap.appendChild(importedContent);
+        wrap.appendChild(cardWrap);
+
+        // Footer
+        var footer = doc.createElement('div');
+        footer.style.cssText = 'margin-top:32px;padding:16px;text-align:center;font-size:10px;color:#9ba3b8;border-top:1px solid #e4e7ec;';
+        footer.textContent = 'Adm. Alexsander Machado — CRA 20-22229';
+        wrap.appendChild(footer);
+
+        doc.body.appendChild(wrap);
+
+        // Script: salvarHTML
+        var scriptEl = doc.createElement('script');
+        scriptEl.textContent = 'function salvarHTML(){var a=document.createElement("a");a.href="data:text/html;charset=utf-8,"+encodeURIComponent(document.documentElement.outerHTML);a.download="' + nome + '_Analise_2025.html";a.click();}';
+        doc.body.appendChild(scriptEl);
+
+        // Serializar e abrir/baixar
+        var serializer = new XMLSerializer();
+        var htmlString = '<!DOCTYPE html>\n' + serializer.serializeToString(doc.documentElement);
+
+        var blob = new Blob([htmlString], { type: 'text/html;charset=utf-8' });
+        var blobUrl = URL.createObjectURL(blob);
+
+        if (modo === 'download') {
+            var a = document.createElement('a');
+            a.href = blobUrl;
+            a.download = nome + '_Analise_2025.html';
+            a.click();
+            URL.revokeObjectURL(blobUrl);
+        } else {
+            window.open(blobUrl, '_blank');
+        }
     }, 300);
 }
 
@@ -2415,6 +2650,7 @@ async function lazyLoadAndRender(idx, prod, container) {
 function renderSingleProduto(prod, idx) {
         const card = document.createElement('div');
         card.className = 'card produto-card';
+        card.dataset.idx = idx;
         card.dataset.nome = prod.nome.toLowerCase();
         card.dataset.pdrs = prod.pdrs || 0;
         card.dataset.pmg = prod.pmg || 0;
@@ -2437,8 +2673,9 @@ function renderSingleProduto(prod, idx) {
         `;
 
         const exportBarHTML = `<div style="display:flex;justify-content:flex-end;gap:8px;padding:10px 16px;background:var(--bg);border-bottom:1px solid var(--border);">
+            <button onclick="exportarProdutoHTML(${idx})" class="btn-export"><i class="fas fa-external-link-alt" style="color:var(--accent);"></i> Abrir em Nova Aba</button>
+            <button onclick="exportarProdutoHTML(${idx},'download')" class="btn-export"><i class="fas fa-download" style="color:#4338ca;"></i> Salvar HTML</button>
             <button onclick="exportarProdutoPDF(${idx})" class="btn-export"><i class="fas fa-file-pdf" style="color:#dc3545;"></i> PDF</button>
-            <button onclick="exportarProdutoHTML(${idx})" class="btn-export"><i class="fas fa-code" style="color:#4338ca;"></i> HTML</button>
         </div>`;
 
         // Summary cards para este produto
@@ -2448,57 +2685,38 @@ function renderSingleProduto(prod, idx) {
         // Linha 1: Qtd × Preço = Receita − Devol − Desc.Fin − Comissão = Rec.Líquida
         // Linha 2: Custo Unit × Qtd = CMV ... Margem
         const linha1 = [
-            {card:{label:'Qtd Vendas', value: fmtNum(prod.qtd) + ' un', icon:'fa-boxes-stacked', type:''}},
-            {op:'×'},
-            {card:{label:'R$ Unit. Pond.', value: fmtBRL2(prod.pp), icon:'fa-tag', type:''}},
-            {op:'='},
-            {card:{label:'Receita Bruta', value: fmtBRL(prod.rec), icon:'fa-dollar-sign', type:'card-success'}},
-            {op:'−'},
-            {card:{label:'Devoluções', value: fmtBRL(prod.drs), icon:'fa-rotate-left', type:'card-danger', pct: fmtPct(prod.pdrs)}},
-            {op:'−'},
-            {card:{label:'Desc. Financeiro', value: fmtBRL(prod.df), icon:'fa-receipt', type:'card-danger', pct: fmtPct(prod.pdf)}},
-            {op:'−'},
-            {card:{label:'Comissão', value: fmtBRL(prod.com), icon:'fa-handshake', type:'card-danger', pct: fmtPct(prod.pcom)}},
-            {op:'='},
-            {card:{label:'Receita Líquida', value: fmtBRL(recLiq), icon:'fa-equals', type:'card-success', pct: fmtPct(recLiq/prod.rec*100)}},
+            {label:'Qtd Vendas', value: fmtNum(prod.qtd) + ' un', icon:'fa-boxes-stacked', type:''},
+            {label:'R$ Unit. Pond.', value: fmtBRL2(prod.pp), icon:'fa-tag', type:''},
+            {label:'Receita Bruta', value: fmtBRL(prod.rec), icon:'fa-dollar-sign', type:'card-success'},
+            {label:'Devoluções', value: fmtBRL(prod.drs), icon:'fa-rotate-left', type:'card-danger', pct: fmtPct(prod.pdrs)},
+            {label:'Desc. Financeiro', value: fmtBRL(prod.df), icon:'fa-receipt', type:'card-danger', pct: fmtPct(prod.pdf)},
+            {label:'Comissão', value: fmtBRL(prod.com), icon:'fa-handshake', type:'card-danger', pct: fmtPct(prod.pcom)},
+            {label:'Receita Líquida', value: fmtBRL(recLiq), icon:'fa-equals', type:'card-success', pct: fmtPct(recLiq/prod.rec*100)},
         ];
         const linha2 = [
-            {card:{label:'Custo Unit. Pond.', value: fmtBRL2(prod.cu), icon:'fa-industry', type:'card-danger'}},
-            {op:'×'},
-            {card:{label:'Qtd Vendas', value: fmtNum(prod.qtd) + ' un', icon:'fa-boxes-stacked', type:''}},
-            {op:'='},
-            {card:{label:'CMV Total', value: fmtBRL(prod.cmv), icon:'fa-calculator', type:'card-warning', pct: fmtPct(prod.pcmv)}},
-            {op:'|'},
-            {card:{label:'Receita Líquida', value: fmtBRL(recLiq), icon:'fa-equals', type:'card-success'}},
-            {op:'−'},
-            {card:{label:'CMV Total', value: fmtBRL(prod.cmv), icon:'fa-calculator', type:'card-warning'}},
-            {op:'='},
-            {card:{label:'Marg. Contrib.', value: fmtBRL(prod.mg), icon:'fa-chart-line', type:'card-success', pct: fmtPct(prod.pmg)}},
-            {op:'÷'},
-            {card:{label:'Marg. Contrib. Unit.', value: fmtBRL2(prod.qtd > 0 ? prod.mg / prod.qtd : 0), icon:'fa-coins', type:'card-success', pct: fmtPct(prod.pp > 0 ? (prod.mg / prod.qtd) / prod.pp * 100 : 0)}},
+            {label:'Custo Unit. Pond.', value: fmtBRL2(prod.cu), icon:'fa-industry', type:'card-danger'},
+            {label:'Qtd Vendas', value: fmtNum(prod.qtd) + ' un', icon:'fa-boxes-stacked', type:''},
+            {label:'CMV Total', value: fmtBRL(prod.cmv), icon:'fa-calculator', type:'card-warning', pct: fmtPct(prod.pcmv)},
+            {label:'Receita Líquida', value: fmtBRL(recLiq), icon:'fa-equals', type:'card-success'},
+            {label:'CMV Total', value: fmtBRL(prod.cmv), icon:'fa-calculator', type:'card-warning'},
+            {label:'Marg. Contrib.', value: fmtBRL(prod.mg), icon:'fa-chart-line', type:'card-success', pct: fmtPct(prod.pmg)},
+            {label:'Marg. Contrib. Unit.', value: fmtBRL2(prod.qtd > 0 ? prod.mg / prod.qtd : 0), icon:'fa-coins', type:'card-success', pct: fmtPct(prod.pp > 0 ? (prod.mg / prod.qtd) / prod.pp * 100 : 0)},
         ];
 
         function renderLinha(items) {
             let html = '';
-            const opColors = {'×':'#4338ca','=':'#0d9e5f','−':'#dc3545','÷':'#4338ca','|':'#e4e7ec','':'transparent'};
-            items.forEach(item => {
-                if (item.op !== undefined) {
-                    const cor = opColors[item.op] || 'var(--text-muted)';
-                    html += `<div class="card-operator" style="color:${cor}">${item.op}</div>`;
-                } else {
-                    const c = item.card;
-                    html += `<div class="summary-card ${c.type}">
-                        <div class="card-label"><i class="fas ${c.icon}" style="margin-right:4px"></i> ${c.label}</div>
-                        <div class="card-value">${c.value}</div>
-                        ${c.pct ? `<div class="card-delta delta-neutral">${c.pct}</div>` : ''}
-                    </div>`;
-                }
+            items.forEach(function(c) {
+                html += '<div class="summary-card ' + c.type + '">' +
+                    '<div class="card-label"><i class="fas ' + c.icon + '" style="margin-right:4px"></i> ' + c.label + '</div>' +
+                    '<div class="card-value">' + c.value + '</div>' +
+                    (c.pct ? '<div class="card-delta delta-neutral">' + c.pct + '</div>' : '') +
+                    '</div>';
             });
             return html;
         }
         cardsHTML += renderLinha(linha1);
         cardsHTML += '</div>';
-        cardsHTML += `<div class="cards-grid cards-grid-row2" style="padding:0 16px 8px;">`;
+        cardsHTML += '<div class="cards-grid cards-grid-row2" style="padding:0 16px 8px;">';
         cardsHTML += renderLinha(linha2);
         cardsHTML += '</div>';
 
@@ -4030,31 +4248,14 @@ function renderAjustes() {
     const neutros = sorted.length - melhoraram - pioraram;
     const economiaCMV = totCmvAntes - totCmvDepois;
 
-    document.getElementById('ajIntroStats').innerHTML = `
-        <div class="aj-intro-stat"><div class="aj-stat-value">${sorted.length}</div><div class="aj-stat-label">Produtos auditados</div></div>
-        <div class="aj-intro-stat"><div class="aj-stat-value">${fmtPct(pctMgAntes)}</div><div class="aj-stat-label">Margem Bruta antes</div></div>
-        <div class="aj-intro-stat"><div class="aj-stat-value">${fmtPct(pctMgDepois)}</div><div class="aj-stat-label">Margem Bruta depois</div></div>
-        <div class="aj-intro-stat"><div class="aj-stat-value" style="color:#4ade80;">+${(pctMgDepois - pctMgAntes).toFixed(1)} p.p.</div><div class="aj-stat-label">Ganho margem bruta</div></div>
-    `;
-
-    // --- Summary Cards ---
-    const summaryCards = [
-        { label: 'CMV Antes', value: fmtBRL(totCmvAntes), type: 'card-danger', icon: 'fa-arrow-down' },
-        { label: 'CMV Depois', value: fmtBRL(totCmvDepois), type: 'card-success', icon: 'fa-arrow-up' },
-        { label: 'Economia CMV', value: fmtBRL(economiaCMV), type: 'card-success', icon: 'fa-piggy-bank' },
-        { label: 'Margem Bruta Antes', value: fmtPct(pctMgAntes), type: 'card-warning', icon: 'fa-chart-line' },
-        { label: 'Margem Bruta Depois', value: fmtPct(pctMgDepois), type: 'card-success', icon: 'fa-chart-line' },
-        { label: 'Melhoraram', value: melhoraram.toString(), type: 'card-success', icon: 'fa-arrow-trend-up' },
-        { label: 'Pioraram', value: pioraram.toString(), type: 'card-danger', icon: 'fa-arrow-trend-down' },
-        { label: 'Neutros', value: neutros.toString(), type: '', icon: 'fa-minus' },
-    ];
-
-    document.getElementById('cardsAjusteSummary').innerHTML = summaryCards.map(c => `
-        <div class="summary-card ${c.type}">
-            <div class="card-label"><i class="fas ${c.icon}" style="margin-right:4px"></i> ${c.label}</div>
-            <div class="card-value">${c.value}</div>
-        </div>
-    `).join('');
+    // --- Intro KPIs (lado direito) ---
+    document.getElementById('ajKpiQtd').textContent = sorted.length;
+    document.getElementById('ajMgAntes').textContent = fmtPct(pctMgAntes);
+    document.getElementById('ajMgDepois').textContent = fmtPct(pctMgDepois);
+    const deltaPP = (pctMgDepois - pctMgAntes).toFixed(1);
+    document.getElementById('ajMgDelta').innerHTML = `<i class="fas fa-arrow-trend-up"></i> +${deltaPP} p.p.`;
+    document.getElementById('ajBarBase').style.width = pctMgAntes.toFixed(1) + '%';
+    document.getElementById('ajBarGain').style.width = deltaPP + '%';
 
     // --- Tabela Ranking ---
     const tbody = document.getElementById('tbodyAjustes');
@@ -4275,6 +4476,107 @@ function expandirAjuste(idx) {
     }
 
     container.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    // --- Botão "Abrir Dashboard Completo" no topo do detalhe ---
+    const btnBar = document.createElement('div');
+    btnBar.style.cssText = 'display:flex;justify-content:flex-end;margin-bottom:12px;';
+    btnBar.innerHTML = `<button onclick="abrirAjusteHTML(${idx})" style="background:var(--accent);color:#fff;border:none;padding:8px 18px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Outfit,sans-serif;box-shadow:0 2px 8px rgba(67,56,202,0.25);"><i class="fas fa-external-link-alt"></i> Abrir em Nova Aba</button>`;
+    container.firstElementChild.prepend(btnBar);
+}
+
+function abrirAjusteHTML(idx) {
+    const aj = window._ajSorted[idx];
+    if (!aj) return;
+
+    // Captura CSS do documento
+    const styles = document.querySelector('style');
+    const cssText = styles ? styles.textContent : '';
+
+    // Gera o HTML do detalhe (reutiliza o container já renderizado)
+    const container = document.getElementById('containerAjusteDetalhe');
+    const conteudo = container ? container.innerHTML : '';
+
+    // Coletar TODOS os estilos da pagina
+    const allStyles = Array.from(document.querySelectorAll('style')).map(s => s.textContent).join('\n');
+
+    // Dados do gráfico CMC
+    const hasMensal = aj.cmcMesAntes && aj.cmcMesAntes.length === 12 && aj.cmcMesAntes.some(v => v > 0);
+    const chartScript = hasMensal ? `
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const MESES = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+    const cvs = document.querySelector('canvas');
+    if (!cvs) return;
+    new Chart(cvs.getContext('2d'), {
+        type: 'line',
+        data: { labels: MESES, datasets: [
+            { label: 'CMC Antes', data: ${JSON.stringify(aj.cmcMesAntes)}, borderColor: '#fca5a5', backgroundColor: 'transparent', borderWidth: 2, pointRadius: 4, borderDash: [5,5], tension: 0.3 },
+            { label: 'CMC Depois', data: ${JSON.stringify(aj.cmcMesDepois)}, borderColor: '#10b981', backgroundColor: 'rgba(16,185,129,0.08)', fill: true, borderWidth: 3, pointRadius: 5, pointBackgroundColor: '#10b981', tension: 0.3 }
+        ]},
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, grid: { borderDash: [3,3], color: '#f1f5f9' }, ticks: { font: { size: 10, weight: 'bold', family: 'JetBrains Mono' }, callback: v => 'R$ ' + v.toFixed(2) } },
+                x: { grid: { display: false }, ticks: { font: { size: 10, weight: '900', family: 'Outfit' } } }
+            }
+        }
+    });
+});
+<\/script>` : '';
+
+    const html = `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>${aj.nome} — Ajuste de Estoque 2025</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>
+<style>${allStyles}
+body { background: var(--bg); padding: 32px; margin: 0; }
+.page-wrap { max-width: 1400px; margin: 0 auto; }
+.page-title { font-family: 'Outfit', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--text); margin-bottom: 2px; }
+/* Reset para nova aba - esconder elementos da pagina principal */
+.nav-tabs, .sidebar, .section, #tabPanels, .page-header, .filter-bar, .filter-panel { display: none !important; }
+.page-sub { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-bottom: 24px; }
+.no-print { }
+@media print { .no-print { display: none !important; } body { padding: 12px; } }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <div>
+            <div class="page-title">${aj.nome}</div>
+            <div class="page-sub">Analise Comparativa — Ajuste de Estoque 2025 | Gerado em ${new Date().toLocaleDateString('pt-BR')}</div>
+        </div>
+        <div class="no-print" style="display:flex;gap:8px;">
+            <button onclick="window.print()" style="background:var(--accent);color:#fff;border:none;padding:8px 18px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Outfit,sans-serif;box-shadow:0 2px 8px rgba(67,56,202,0.25);"><i class="fas fa-print"></i> Imprimir / PDF</button>
+            <button onclick="salvarHTML()" style="background:var(--text);color:#fff;border:none;padding:8px 18px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:Outfit,sans-serif;"><i class="fas fa-download"></i> Salvar HTML</button>
+        </div>
+    </div>
+    ${conteudo}
+    <div style="margin-top:32px;padding:16px;text-align:center;font-size:10px;color:var(--text-muted);border-top:1px solid var(--border);">
+        Adm. Alexsander Machado — CRA 20-22229 | Projeto Ajuste de Estoque 2025
+    </div>
+</div>
+${chartScript}
+<script>
+function salvarHTML() {
+    const a = document.createElement('a');
+    a.href = 'data:text/html;charset=utf-8,' + encodeURIComponent(document.documentElement.outerHTML);
+    a.download = '${aj.nome.replace(/\s+/g, '_')}_Ajuste_2025.html';
+    a.click();
+}
+<\/script>
+</body>
+</html>`;
+
+    const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank');
 }
 
 function filtrarAjustes() {
