@@ -653,36 +653,6 @@ tbody tr:hover td { background: var(--accent-dim); }
     .aj-intro-side { width: 100%; }
 }
 
-/* Compliance CTA card (Visão Geral) */
-.compliance-cta {
-    display: flex; align-items: center; gap: 20px;
-    background: linear-gradient(135deg, #f0f4ff 0%, #e8f0fe 50%, #f0fdf4 100%);
-    border: 2px solid var(--accent); border-radius: 16px;
-    padding: 24px 28px; margin-bottom: 24px; cursor: pointer;
-    transition: all 0.25s ease; position: relative; overflow: hidden;
-}
-.compliance-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,92,255,0.15); border-color: #3b82f6; }
-.compliance-cta-icon {
-    flex-shrink: 0; width: 56px; height: 56px; border-radius: 14px;
-    background: linear-gradient(135deg, var(--accent), #3b82f6);
-    display: flex; align-items: center; justify-content: center;
-    color: #fff; font-size: 1.4rem; box-shadow: 0 4px 12px rgba(26,92,255,0.3);
-}
-.compliance-cta-body { flex: 1; }
-.compliance-cta-tag {
-    font-size: var(--fs-xs); font-weight: var(--fw-black);
-    text-transform: uppercase; letter-spacing: 1px;
-    color: var(--accent); margin-bottom: 4px;
-}
-.compliance-cta-title { font-size: 1.05rem; font-weight: var(--fw-black); color: var(--primary); margin-bottom: 6px; }
-.compliance-cta-desc { font-size: var(--fs-md); color: var(--text-muted); line-height: 1.5; }
-.compliance-cta-arrow {
-    flex-shrink: 0; width: 40px; height: 40px; border-radius: 50%;
-    background: var(--accent); color: #fff;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.9rem; transition: transform 0.2s;
-}
-.compliance-cta:hover .compliance-cta-arrow { transform: translateX(4px); }
 
 /* Compliance status cards */
 .compliance-stat { position: relative; overflow: hidden; }
@@ -1010,86 +980,12 @@ tbody tr:hover td { background: var(--accent-dim); }
          TAB 1: VISAO GERAL
          ========================================== -->
     <section id="visao-geral" class="section active">
-        <div class="page-header">
-            <div>
-                <h2>Visao Geral</h2>
-                <p>Resumo consolidado — Jan a Dez 2025</p>
-            </div>
-        </div>
-
         <!-- Camada 1: Status Compliance -->
         <div class="cards-grid" id="cardsCompliance" style="margin-bottom:24px;"></div>
 
-        <!-- Camada 2: Memorial Descritivo / Compliance -->
-        <div class="compliance-cta" onclick="toggleCompliance()" id="complianceCta">
-            <div class="compliance-cta-icon">
-                <i class="fas fa-shield-halved"></i>
-            </div>
-            <div class="compliance-cta-body">
-                <div class="compliance-cta-tag">Memorial Descritivo</div>
-                <div class="compliance-cta-title">Blindagem Patrimonial & Compliance Fiscal</div>
-                <div class="compliance-cta-desc">
-                    Relatorio tecnico completo: metodologia Saldo Colchao, riscos SPED Fiscal (Blocos K/H),
-                    e auditoria dos 190 SKUs com rastreabilidade total via Ordens de Producao.
-                </div>
-            </div>
-            <div class="compliance-cta-arrow" id="complianceArrow">
-                <i class="fas fa-chevron-down"></i>
-            </div>
-        </div>
-        <!-- Compliance embutido (iframe isolado) -->
-        <div id="complianceContainer" style="max-height:0;overflow:hidden;transition:max-height 0.5s ease;margin-bottom:0;">
-            <iframe id="complianceFrame" src="" style="width:100%;border:none;border-radius:16px;box-shadow:var(--shadow);background:#fff;" scrolling="no"></iframe>
-        </div>
+        <!-- Compliance Report -->
+        <iframe src="compliance.html" id="complianceFrame" style="width:100%;border:none;border-radius:16px;box-shadow:var(--shadow);background:#fff;display:block;" scrolling="no" onload="this.style.height=this.contentDocument.body.scrollHeight+'px'"></iframe>
 
-        <!-- Summary Cards -->
-        <div class="cards-grid" id="cardsVisaoGeral"></div>
-
-        <!-- Top 10 Produtos por Receita -->
-        <div class="card">
-            <div class="card-header card-header-green" onclick="toggleCard(this)">
-                <span><i class="fas fa-trophy" style="margin-right:8px"></i> Top 10 Produtos — Receita</span>
-                <i class="fas fa-chevron-up card-toggle" style="transition:transform 0.3s"></i>
-            </div>
-            <div class="card-body card-collapsible">
-                <div class="table-wrap">
-                    <table class="ranking-table">
-                        <thead><tr>
-                            <th style="width:40px">#</th>
-                            <th>Produto</th>
-                            <th class="text-right">Receita</th>
-                            <th class="text-right">CMV</th>
-                            <th class="text-right">Margem</th>
-                            <th class="text-right">Mg %</th>
-                        </tr></thead>
-                        <tbody id="tbodyTopProdutos"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- Top 10 Clientes por Receita -->
-        <div class="card">
-            <div class="card-header card-header-dark" onclick="toggleCard(this)">
-                <span><i class="fas fa-ranking-star" style="margin-right:8px"></i> Top 10 Clientes — Receita</span>
-                <i class="fas fa-chevron-up card-toggle" style="transition:transform 0.3s"></i>
-            </div>
-            <div class="card-body card-collapsible">
-                <div class="table-wrap">
-                    <table class="ranking-table">
-                        <thead><tr>
-                            <th style="width:40px">#</th>
-                            <th>Cliente</th>
-                            <th class="text-right">Receita</th>
-                            <th class="text-right">Devol. %</th>
-                            <th class="text-right">Margem</th>
-                            <th class="text-right">Mg %</th>
-                        </tr></thead>
-                        <tbody id="tbodyTopClientes"></tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
     </section>
 
     <!-- ==========================================
@@ -1098,7 +994,7 @@ tbody tr:hover td { background: var(--accent-dim); }
     <section id="por-produto" class="section">
         <div class="page-header">
             <div>
-                <h2>Inteligência de Rentabilidade — Margens de Contribuição, Performance e Tendências de Vendas</h2>
+                <h2>Análise Descritiva de Séries Históricas, Rankings, Composição de Margem</h2>
             </div>
         </div>
 
@@ -1369,7 +1265,6 @@ tbody tr:hover td { background: var(--accent-dim); }
 
 </div>
 
-<div class="footer">Adm. Alexsander Machado — CRA 20-22229</div>
 
 <!-- ============================================
      SCRIPTS
@@ -1393,45 +1288,6 @@ function toggleSidebar() {
     document.getElementById('sidebarOverlay').classList.toggle('active');
 }
 
-let _complianceOpen = false;
-function toggleCompliance() {
-    const container = document.getElementById('complianceContainer');
-    const frame = document.getElementById('complianceFrame');
-    const arrow = document.querySelector('#complianceArrow i');
-    _complianceOpen = !_complianceOpen;
-    if (_complianceOpen) {
-        if (!frame.src || frame.src === '' || frame.src === 'about:blank') {
-            frame.src = 'compliance.html';
-        }
-        // Auto-resize iframe
-        frame.onload = function() {
-            try {
-                const h = frame.contentDocument.body.scrollHeight;
-                frame.style.height = h + 'px';
-                container.style.maxHeight = (h + 20) + 'px';
-                container.style.marginBottom = '24px';
-            } catch(e) {
-                frame.style.height = '2000px';
-                container.style.maxHeight = '2020px';
-                container.style.marginBottom = '24px';
-            }
-        };
-        // Fallback se ja carregou
-        if (frame.contentDocument && frame.contentDocument.body && frame.contentDocument.body.scrollHeight > 100) {
-            frame.style.height = frame.contentDocument.body.scrollHeight + 'px';
-            container.style.maxHeight = (frame.contentDocument.body.scrollHeight + 20) + 'px';
-            container.style.marginBottom = '24px';
-        } else {
-            container.style.maxHeight = '3000px';
-            container.style.marginBottom = '24px';
-        }
-        if (arrow) arrow.className = 'fas fa-chevron-up';
-    } else {
-        container.style.maxHeight = '0';
-        container.style.marginBottom = '0';
-        if (arrow) arrow.className = 'fas fa-chevron-down';
-    }
-}
 
 function toggleCard(header) {
     const body = header.nextElementSibling;
@@ -2299,7 +2155,7 @@ function renderVisaoGeral() {
         <div class="summary-card ${c.type} compliance-stat ${c.cls}">
             <div class="card-label"><i class="fas ${c.icon}" style="margin-right:4px"></i> ${c.label}</div>
             <div class="card-value">${c.value}</div>
-            <div style="font-size:var(--fs-xs);color:var(--text-muted);margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;">${c.sub}</div>
+            <div class="card-sub" style="font-size:var(--fs-xs);color:var(--text-muted);margin-top:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.3px;">${c.sub}</div>
         </div>
     `).join('');
 
@@ -2322,39 +2178,7 @@ function renderVisaoGeral() {
         { label: 'Clientes', value: '174', type: '', icon: 'fa-store' },
     ];
 
-    const el = document.getElementById('cardsVisaoGeral');
-    el.innerHTML = cards.map(c => `
-        <div class="summary-card ${c.type}">
-            <div class="card-label"><i class="fas ${c.icon}" style="margin-right:4px"></i> ${c.label}</div>
-            <div class="card-value">${c.value}</div>
-            ${c.pct ? `<div class="card-delta delta-neutral">${c.pct}</div>` : ''}
-        </div>
-    `).join('');
 
-    // Top 10 Produtos
-    const sorted = [...MOCK_PRODUTOS].sort((a, b) => b.rec - a.rec);
-    document.getElementById('tbodyTopProdutos').innerHTML = sorted.slice(0, 10).map((p, i) => `
-        <tr>
-            <td><span class="rank-badge ${i < 3 ? 'top3' : ''}">${i + 1}</span></td>
-            <td style="font-weight:var(--fw-bold);">${p.nome}</td>
-            <td class="mono">${fmtBRL(p.rec)}</td>
-            <td class="mono">${fmtBRL(p.cmv)}</td>
-            <td class="mono">${fmtBRL(p.mg)}</td>
-            <td class="mono"><span class="${mgClass(p.pmg)}">${fmtPct(p.pmg)}</span></td>
-        </tr>
-    `).join('');
-
-    // Top 10 Clientes
-    document.getElementById('tbodyTopClientes').innerHTML = MOCK_CLIENTES.slice(0, 10).map((c, i) => `
-        <tr>
-            <td><span class="rank-badge ${i < 3 ? 'top3' : ''}">${i + 1}</span></td>
-            <td style="font-weight:var(--fw-bold);">${c.nome}</td>
-            <td class="mono">${fmtBRL(c.rec)}</td>
-            <td class="mono">${fmtPct(c.pdrs)}</td>
-            <td class="mono">${fmtBRL(c.mg)}</td>
-            <td class="mono"><span class="${mgClass(c.pmg)}">${fmtPct(c.pmg)}</span></td>
-        </tr>
-    `).join('');
 }
 
 // =============================================
@@ -3542,7 +3366,7 @@ function renderSingleProduto(prod, idx) {
             diasHTML += `</div>`;
         }
 
-        const sec = (id, content) => `<div class="sec-${id}" style="margin:12px 16px;padding:16px;background:${id === 'devolucoes' ? 'var(--bg)' : 'var(--white)'};border-left:1px solid var(--border);border-right:1px solid var(--border);border-top:2px solid var(--border);border-bottom:2px solid var(--border);border-radius:var(--radius);overflow:visible;">${content}</div>`;
+        const sec = (id, content) => `<div class="sec-${id}" style="margin:12px ${id === 'dre' ? '0' : '16px'};padding:16px;background:${id === 'devolucoes' ? 'var(--bg)' : 'var(--white)'};border-left:1px solid var(--border);border-right:1px solid var(--border);border-top:2px solid var(--border);border-bottom:2px solid var(--border);border-radius:var(--radius);overflow:visible;">${content}</div>`;
 
         card.innerHTML = headerHTML + `<div class="card-body card-collapsible">
             ${sec('estrutura', cardsHTML)}

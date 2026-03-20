@@ -113,7 +113,7 @@ I explicitly confirm that NEITHER Mermaid JS NOR SVG were used anywhere in the o
             </div>
         </section>
 
-        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
             <div class="order-2 lg:order-1 glass-card rounded-3xl p-6 md:p-10">
                 <h3 class="text-sm font-bold text-blue-600 uppercase tracking-widest mb-2">Análise de Ameaças</h3>
                 <h2 class="text-2xl font-black text-slate-800 mb-6">Distribuição de Severidade de Riscos</h2>
@@ -121,7 +121,7 @@ I explicitly confirm that NEITHER Mermaid JS NOR SVG were used anywhere in the o
                     <canvas id="risksChart"></canvas>
                 </div>
             </div>
-            <div class="order-1 lg:order-2 space-y-6">
+            <div class="order-1 lg:order-2 glass-card rounded-3xl p-6 md:p-10 space-y-6">
                 <h2 class="text-3xl font-black text-slate-800 tracking-tight">O Peso das Autuações</h2>
                 <p class="text-slate-600 leading-relaxed text-lg">
                     A divergência entre o físico e o escriturado, especialmente no fechamento anual exigido pelo <strong>Bloco H (Inventário)</strong>, atua como um convite formal para auditorias presenciais rigorosas.
@@ -133,60 +133,87 @@ I explicitly confirm that NEITHER Mermaid JS NOR SVG were used anywhere in the o
             </div>
         </section>
 
-        <section class="glass-card rounded-3xl p-8 md:p-12">
-            <div class="max-w-3xl mx-auto text-center mb-10">
-                <h2 class="text-3xl font-black text-slate-800 mb-4 tracking-tight">O Efeito Cascata: Distorção do Custo (CMC)</h2>
-                <p class="text-slate-600 leading-relaxed text-lg">
-                    Dos <strong>192 produtos</strong> analisados, <strong class="text-rose-600 font-bold">115 (60%)</strong> operavam com saldo negativo.
-                    O pior caso — Tomate Grape 300G — chegou a <strong class="text-rose-600 font-bold">-71.225 unidades</strong>.
-                    No total, <strong>10.714 dias</strong> (37% de todos os dias úteis) tiveram saldo negativo em pelo menos um produto.
-                    Estoques negativos causam uma explosão matemática no Custo Médio Contábil (CMC), refletindo lucros irreais na DRE e configurando erro crasso de escrituração.
-                </p>
-            </div>
 
-            <div class="chart-container mt-8">
-                <canvas id="cmcChart"></canvas>
+        <section class="bg-white rounded-3xl p-8 md:p-12 shadow-xl border border-blue-100">
+            <h2 class="text-2xl font-black text-slate-800 mb-6 tracking-tight">Exposição Fiscal em 31/12/2025</h2>
+            <div class="space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 bg-rose-50 border border-rose-200 rounded-xl p-5">
+                    <div>
+                        <span class="text-rose-600 font-black text-lg">&#9660; Saldos Negativos</span>
+                        <span class="text-slate-500 text-sm ml-2">— 106 produtos</span>
+                        <p class="text-slate-600 text-sm mt-1">Presunção de compra sem nota &times; CMC Mediana</p>
+                    </div>
+                    <div class="text-2xl font-black text-rose-600">R$ 1.232.288,19</div>
+                </div>
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 bg-amber-50 border border-amber-200 rounded-xl p-5">
+                    <div>
+                        <span class="text-amber-600 font-black text-lg">&#9650; Saldos Excessivos</span>
+                        <span class="text-slate-500 text-sm ml-2">— 61 produtos</span>
+                        <p class="text-slate-600 text-sm mt-1">Presunção de venda sem nota &times; Preço Médio</p>
+                    </div>
+                    <div class="text-2xl font-black text-amber-600">R$ 304.416,00</div>
+                </div>
             </div>
         </section>
 
-        <section class="bg-white rounded-3xl p-8 md:p-12 shadow-xl border border-blue-100">
-            <div class="flex flex-col md:flex-row gap-12 items-center">
-                <div class="flex-1">
-                    <h2 class="text-3xl font-black text-blue-900 mb-4 tracking-tight">A Solução: O "Saldo Colchão"</h2>
-                    <p class="text-slate-600 leading-relaxed text-lg mb-6">
-                        A estratégia definitiva de compliance fiscal baseia-se em manter os saldos operacionais rigorosamente controlados dentro de uma margem segura de erro. Esta margem não apenas evita o estoque negativo, mas funciona como prova cabal de governança perante a fiscalização.
-                    </p>
-                    <div class="flex items-center gap-3 bg-emerald-50 text-emerald-800 px-4 py-3 rounded-lg border border-emerald-200">
-                        <span class="text-2xl">&#10004;</span>
-                        <span class="font-semibold">Blindagem Patrimonial Ativa Implementada</span>
+        <section class="glass-card rounded-3xl p-8 md:p-12">
+            <h2 class="text-2xl font-black text-slate-800 mb-8 tracking-tight">Simulação de Risco Fiscal — Divergência de Estoque</h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="space-y-4">
+                    <h3 class="text-sm font-bold text-blue-600 uppercase tracking-widest mb-4">Composição da Receita Omitida</h3>
+                    <div class="flex justify-between items-center py-3 border-b border-slate-100">
+                        <span class="text-slate-600">Saldos Excessivos</span>
+                        <span class="font-bold text-slate-800">R$ 304.416,00</span>
                     </div>
+                    <div class="flex justify-between items-center py-3 border-b border-slate-100">
+                        <span class="text-slate-600">Saldos Negativos</span>
+                        <span class="font-bold text-slate-800">R$ 1.232.288,19</span>
+                    </div>
+                    <div class="flex justify-between items-center py-3 border-b-2 border-slate-300">
+                        <span class="font-bold text-slate-800">Total Receita Omitida</span>
+                        <span class="font-black text-lg text-slate-900">R$ 1.536.704,19</span>
+                    </div>
+                    <div class="mt-4 bg-rose-500 text-white text-center py-2 rounded-lg font-bold text-sm uppercase tracking-widest">Risco CRÍTICO</div>
                 </div>
 
-                <div class="flex-1 w-full">
-                    <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4 text-center">Espectro de Conformidade do Inventário</h3>
-
-                    <div class="flex w-full h-16 rounded-xl overflow-hidden shadow-inner font-bold text-xs md:text-sm text-white text-center">
-                        <div class="w-1/3 bg-rose-500 flex flex-col justify-center items-center px-2">
-                            <span class="uppercase tracking-wider text-[10px] md:text-xs">Risco Severo</span>
-                            <span>&lt; 0 un</span>
-                        </div>
-                        <div class="w-1/3 bg-emerald-500 flex flex-col justify-center items-center px-2 border-l border-r border-white/20 relative shadow-[inset_0_0_20px_rgba(0,0,0,0.2)]">
-                            <span class="uppercase tracking-wider text-[10px] md:text-xs">Saldo Colchão</span>
-                            <span>+1 a +10 un</span>
-                            <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-slate-800 text-white text-[10px] py-1 px-3 rounded-full whitespace-nowrap shadow-lg">Alvo Operacional</div>
-                        </div>
-                        <div class="w-1/3 bg-amber-500 flex flex-col justify-center items-center px-2">
-                            <span class="uppercase tracking-wider text-[10px] md:text-xs">Alerta IRPJ</span>
-                            <span>&gt; 20 un</span>
-                        </div>
+                <div class="space-y-4">
+                    <h3 class="text-sm font-bold text-blue-600 uppercase tracking-widest mb-4">Cálculo Tributário</h3>
+                    <div class="flex justify-between items-center py-3 border-b border-slate-100">
+                        <span class="text-slate-600">Base IRPJ (8,0%)</span>
+                        <span class="font-bold text-slate-800">R$ 122.936,34</span>
                     </div>
-
-                    <div class="grid grid-cols-3 gap-2 mt-4 text-center text-[10px] md:text-xs text-slate-500 font-medium">
-                        <div>Multas / Omissão de Entrada</div>
-                        <div class="text-emerald-600 font-bold">Full Compliance (Bloco K/H)</div>
-                        <div>Inflação de Ativos / CSLL</div>
+                    <div class="flex justify-between items-center py-3 border-b border-slate-100">
+                        <span class="text-slate-600">Base CSLL (12,0%)</span>
+                        <span class="font-bold text-slate-800">R$ 184.404,50</span>
+                    </div>
+                    <div class="flex justify-between items-center py-3 border-b border-slate-100">
+                        <span class="text-slate-600">IRPJ (15% + adicional)</span>
+                        <span class="font-bold text-slate-800">R$ 18.440,45</span>
+                    </div>
+                    <div class="flex justify-between items-center py-3 border-b border-slate-100">
+                        <span class="text-slate-600">CSLL (9%)</span>
+                        <span class="font-bold text-slate-800">R$ 16.596,41</span>
+                    </div>
+                    <div class="flex justify-between items-center py-3 border-b border-slate-100">
+                        <span class="text-slate-600">Subtotal Tributos</span>
+                        <span class="font-bold text-slate-800">R$ 35.036,86</span>
+                    </div>
+                    <div class="flex justify-between items-center py-3 border-b border-slate-100">
+                        <span class="text-slate-600">Multa Ofício (75%)</span>
+                        <span class="font-bold text-rose-600">R$ 26.277,64</span>
+                    </div>
+                    <div class="flex justify-between items-center py-3 border-b-2 border-slate-300">
+                        <span class="text-slate-600">Juros SELIC (14,75%)</span>
+                        <span class="font-bold text-rose-600">R$ 5.167,94</span>
                     </div>
                 </div>
+            </div>
+
+            <div class="mt-8 bg-slate-800 text-white p-6 rounded-2xl text-center">
+                <div class="text-sm font-light uppercase tracking-widest mb-2">Exposição Total Estimada</div>
+                <div class="text-4xl font-black text-emerald-400 mb-2">R$ 66.482,43</div>
+                <div class="text-xs text-slate-400">Tributos + Multa + SELIC &middot; 1 ano &middot; Lucro Presumido &middot; Atividade Rural</div>
             </div>
         </section>
 
@@ -282,54 +309,6 @@ I explicitly confirm that NEITHER Mermaid JS NOR SVG were used anywhere in the o
             }
         });
 
-        const ctxCmc = document.getElementById('cmcChart').getContext('2d');
-        const rawCmcLabels = [
-            'Estoque com Saldo Negativo Extremo (Risco)',
-            'Estoque com Saldo Colchão (Compliance Total)'
-        ];
-
-        new Chart(ctxCmc, {
-            type: 'bar',
-            data: {
-                labels: rawCmcLabels.map(wrapLabel),
-                datasets: [
-                    {
-                        label: 'Índice de Custo Médio Contábil (CMC)',
-                        data: [450, 100],
-                        backgroundColor: 'rgba(244, 63, 94, 0.9)',
-                        borderRadius: 8
-                    },
-                    {
-                        label: 'Realidade do Lucro Bruto na DRE',
-                        data: [20, 180],
-                        backgroundColor: 'rgba(16, 185, 129, 0.9)',
-                        borderRadius: 8
-                    }
-                ]
-            },
-            options: {
-                maintainAspectRatio: false,
-                responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { color: 'rgba(0,0,0,0.05)' },
-                        ticks: { font: { family: 'Inter' } }
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: { font: { family: 'Inter', weight: 'bold' } }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: { font: { family: 'Inter', size: 12 }, usePointStyle: true, padding: 20 }
-                    },
-                    ...tooltipConfig
-                }
-            }
-        });
     </script>
 </body>
 </html>
